@@ -26,23 +26,37 @@ resource "kubernetes_namespace" "jhub" {
   }
 }
 
+resource "random_id" "jhub_proxy_token" {
+  byte_length = 32
+}
+
 resource "helm_release" "jhub" {
-  
+
   name       = "jhub"
-  repository = data.helm_repository.jhub_namespace.metadata[0].name
+  repository = data.helm_repository.jhub.metadata[0].name
   chart      = "jupyterhub/jupyterhub"
   version    = var.jhub_helm_version
   namespace  = var.jhub_namespace
   timeout    = var.helm_deploy_timeout
 
   values = [
-    "${file(var.helm_secrets_file)}", 
+    "${file(var.helm_secrets_file)}",
     "${file(var.helm_values_file)}"
   ]
 
   set {
-    name = "proxy.service.loadBalancerIP"
+    name  = "proxy.secretToken"
+    value = random_id.jhub_proxy_token.hex
+  }
+
+  set {
+    name  = "proxy.service.loadBalancerIP"
     value = var.static_ip
+  }
+
+  set {
+    name  = "proxy.https.hosts"
+    value = "{${var.jhub_url}}"
   }
 
   depends_on = [kubernetes_namespace.jhub]
@@ -54,22 +68,22 @@ resource "helm_release" "jhub" {
 
 resource "kubernetes_cluster_role_binding" "cronjob" {
 
-    metadata {
-     name = "default-clusterrolebinding"
-   }
-   role_ref {
-     kind      = "ClusterRole"
-     name      = "cluster-admin"
-     api_group = "rbac.authorization.k8s.io"
-   }
-   subject {
-     kind      = "ServiceAccount"
-     name      = "default"
-     namespace = var.jhub_namespace
-   }
+  metadata {
+    name = "default-clusterrolebinding"
+  }
+  role_ref {
+    kind      = "ClusterRole"
+    name      = "cluster-admin"
+    api_group = "rbac.authorization.k8s.io"
+  }
+  subject {
+    kind      = "ServiceAccount"
+    name      = "default"
+    namespace = var.jhub_namespace
+  }
 
-    depends_on = [helm_release.jhub]
- }
+  depends_on = [helm_release.jhub]
+}
 
 resource "kubernetes_cron_job" "scale_down" {
   metadata {

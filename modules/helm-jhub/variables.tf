@@ -1,7 +1,3 @@
-variable credentials_path {
-  description = "Location of the credential file."
-}
-
 # ---------------------------------------------------------------
 #  HELM VARIABLES
 # ---------------------------------------------------------------
@@ -11,23 +7,6 @@ variable "kubernetes_context" {
 
 variable "static_ip" {
   description = "static ip of load-balancer" 
-}
-
-variable "helm_version" {
-  default = "v2.15.2"
-}
-
-
-variable "install_tiller" {
-  default = true
-}
-
-variable "tiller_image" {
-  default = "gcr.io/kubernetes-helm/tiller:v2.15.2"
-}
-
-variable "k8_service_account_name" {
-  default = "tiller"
 }
 
 variable "automount_service_account_token" {
@@ -61,6 +40,10 @@ variable "helm_deploy_timeout" {
 
 variable "jhub_namespace" {
   default = "jhub"
+}
+
+variable "jhub_url" {
+  description = "URL for the jupyter hub"
 }
 
 # --------------------------------------

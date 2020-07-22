@@ -1,19 +1,8 @@
 # ---------------------------------------------------------------
 #  PROJECT VARIABLES
 # ---------------------------------------------------------------
-
-# variable tenant {
-#   description = "JupyterHub tenant eg., neur2060, ccv"
-# }
-
-
-variable credentials_path {
-  description = "Location of the credential file."
-}
-
 variable org_id {
   description = "Organization id."
-  default = 256312081084
 }
 
 variable billing_account {
@@ -22,7 +11,6 @@ variable billing_account {
 
 variable project_name {
   description = "Name of the project."
-  # default     = "${var.tenant}-jupyterhub"
 }
 
 variable random_project_id {
@@ -37,16 +25,15 @@ variable auto_create_network {
 
 variable activate_apis {
   description = "The list of apis to activate within the project	"
-  default = [ 
-    "compute.googleapis.com", 
-    "container.googleapis.com", 
+  default = [
+    "compute.googleapis.com",
+    "container.googleapis.com",
     "containerregistry.googleapis.com"
-    ]
+  ]
 }
 
 variable folder_id {
   description = "The ID of a folder to host this project"
-  default = "92794819057"
 }
 
 variable default_service_account {
@@ -72,7 +59,7 @@ variable labels {
 
 variable network_name {
   description = "Name of the VPC."
-  default = "kubernetes-vpc"
+  default     = "kubernetes-vpc"
 }
 
 variable routing_mode {
@@ -82,17 +69,13 @@ variable routing_mode {
 
 variable subnet_name {
   description = "Name of the subnet."
-  default = "kubernetes-subnet"
+  default     = "kubernetes-subnet"
 }
 
 variable subnet_ip {
   description = "Subnet IP CIDR."
-  default = "10.0.0.0/17"
+  default     = "10.0.0.0/17"
 }
-
-# variable subnet_region {
-#   description = "Region subnet lives in."
-# }
 
 variable subnet_private_access {
   default = "true"
@@ -108,12 +91,12 @@ variable description {
 
 variable "ip_range_pods" {
   description = "The secondary ip range to use for pods"
-  default = "192.168.0.0/18"
+  default     = "192.168.0.0/18"
 }
 
 variable "ip_range_services" {
   description = "The secondary ip range to use for pods"
-  default = "192.168.64.0/18"
+  default     = "192.168.64.0/18"
 }
 
 variable range_name_pods {
@@ -130,14 +113,9 @@ variable range_name_services {
 #  GKE VARIABLES
 # ---------------------------------------------------------------
 
-# variable "cluster_name_suffix" {
-#   description = "A suffix to append to the default cluster name"
-#   default     = ""
-# }
-
 variable "cluster_name" {
   description = "Cluster name"
-  default = "default"
+  default     = "default"
 }
 
 variable "regional" {
@@ -148,20 +126,19 @@ variable "region" {
   description = "The region to host the cluster in"
 }
 
-variable "node_zones" {
-   description = "The zones to host the cluster in (optional if regional cluster / required if zonal)"
-   default     = ["us-east1-b"]
- }
+variable "gcp_zone" {
+  type        = string
+  description = "The GCP zone to deploy the runner into."
+}
 
-# ASK: I don't think this is used
-# variable "network" {
-#   description = "The VPC network to host the cluster in"
-#   default = "kubernetes-vpc"
-# }
+variable "network" {
+  description = "The VPC network to host the cluster in"
+  default     = "kubernetes-vpc"
+}
 
 variable "subnetwork" {
   description = "The subnetwork to host the cluster in"
-  default = "kubernetes-subnet"
+  default     = "kubernetes-subnet"
 }
 
 variable "monitoring_service" {
@@ -329,23 +306,6 @@ variable "user_pool_oauth_scope" {
 #  HELM VARIABLES
 # ---------------------------------------------------------------
 
-variable "helm_version" {
-  default = "v2.15.2"
-}
-
-
-variable "install_tiller" {
-  default = true
-}
-
-variable "tiller_image" {
-  default = "gcr.io/kubernetes-helm/tiller:v2.15.2"
-}
-
-variable "k8_service_account_name" {
-  default = "tiller"
-}
-
 variable "automount_service_account_token" {
   default = true
 }
@@ -360,11 +320,9 @@ variable "helm_repository_url" {
 
 variable "helm_values_file" {
   description = "Relative path and file name. Example: values.yaml"
-  # default = "../${var.tenant}/secret-config-${var.tenant}.yaml"
 }
 variable "helm_secrets_file" {
   description = "Relative path and file name. Example: secrets.yaml"
-  # default = "../${var.tenant}/secret-config-${var.tenant}.yaml"
 }
 
 variable "jhub_helm_version" {
@@ -373,24 +331,28 @@ variable "jhub_helm_version" {
 
 variable "helm_deploy_timeout" {
   description = "Time for helm to wait for deployment of chart and downloading of docker image"
-  default = 1000
+  default     = 1000
 }
 
 # INFOBLOX
 variable "infoblox_username" {
-  
+
 }
 
 variable "infoblox_password" {
-  
+
 }
 
 variable "infoblox_host" {
-  
+
 }
 
-variable "domain_name" {
-  
+variable "record_hostname" {
+
+}
+
+variable "record_domain" {
+
 }
 
 # --------------------------------------
@@ -419,4 +381,4 @@ variable scale_up_schedule {
 
 variable scale_up_command {
   default = ["kubectl", "scale", "--replicas=3", "statefulset/user-placeholder"]
-} 	
+}  

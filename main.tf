@@ -1,7 +1,7 @@
 # ------------------------------------------------------------
 #   PROJECT
 # ------------------------------------------------------------
-module "renku_project" {
+module "jhub_project" {
   source = "git@github.com:BrownUniversity/terraform-gcp-project.git"
 
   project_name               = var.project_name
@@ -18,10 +18,10 @@ module "renku_project" {
 # ------------------------------------------------------------
 #   VPC
 # ------------------------------------------------------------
-module "renku_vpc" {
+module "jhub_vpc" {
   source = "git@github.com:BrownUniversity/terraform-gcp-vpc.git"
 
-  project_id          = module.renku_project.project_id
+  project_id          = module.jhub_project.project_id
   network_name        = var.network_name
   subnet_name         = var.subnet_name
   subnet_region       = var.region
@@ -35,7 +35,7 @@ module "renku_vpc" {
 # Reserve a static IP address
 resource "google_compute_address" "static" {
   name    = "loadbalancer"
-  project = module.renku_project.project_id
+  project = module.jhub_project.project_id
   region  = var.region
 }
 
@@ -66,25 +66,25 @@ module "external_infoblox_record" {
 # Create the cluster
 module "jhub_cluster" {
   source                     = "git@github.com:BrownUniversity/terraform-gcp-cluster.git"
-  cluster_name                = var.cluster_name
-  project_id                  = module.jhub_project.project_id
-  regional                    = var.regional
-  region                      = var.region
-  node_zones                  = var.node_zones
-  network                = module.jhub_vpc.network_name
-  subnetwork                  = module.jhub_vpc.subnetwork
-  logging_service             = var.logging_service
-  monitoring_service          = var.monitoring_service
-  maintenance_start_time      = var.maintenance_start_time
-  create_service_account      = var.create_service_account
-  service_account_email       = module.jhub_project.service_account_email
-  skip_provisioners           = var.skip_provisioners
-  http_load_balancing         = var.http_load_balancing
-  horizontal_pod_autoscaling  = var.horizontal_pod_autoscaling
-  network_policy              = var.network_policy
-  enable_private_nodes        = var.enable_private_nodes
-  master_ipv4_cidr_block      = var.master_ipv4_cidr_block
-  remove_default_node_pool    = var.remove_default_node_pool
+  cluster_name               = var.cluster_name
+  project_id                 = module.jhub_project.project_id
+  regional                   = var.regional
+  region                     = var.region
+  node_zones                 = [var.gcp_zone]
+  network                    = module.jhub_vpc.network_name
+  subnetwork                 = module.jhub_vpc.subnet_name
+  logging_service            = var.logging_service
+  monitoring_service         = var.monitoring_service
+  maintenance_start_time     = var.maintenance_start_time
+  create_service_account     = var.create_service_account
+  service_account_email      = module.jhub_project.service_account_email
+  skip_provisioners          = var.skip_provisioners
+  http_load_balancing        = var.http_load_balancing
+  horizontal_pod_autoscaling = var.horizontal_pod_autoscaling
+  network_policy             = var.network_policy
+  enable_private_nodes       = var.enable_private_nodes
+  master_ipv4_cidr_block     = var.master_ipv4_cidr_block
+  remove_default_node_pool   = var.remove_default_node_pool
 
 
   core_pool_name               = var.core_pool_name
@@ -112,7 +112,7 @@ module "jhub_cluster" {
   user_pool_auto_upgrade       = var.user_pool_auto_upgrade
   user_pool_preemptible        = var.user_pool_preemptible
   user_pool_initial_node_count = var.user_pool_initial_node_count
-  
+
 }
 
 # ------------------------------------------------------------
@@ -121,10 +121,10 @@ module "jhub_cluster" {
 
 resource "null_resource" "cluster_credentials" {
   provisioner "local-exec" {
-    command = "gcloud container clusters get-credentials ${var.cluster_name} --zone ${var.gcp_zone} --project ${module.renku_project.project_id}"
+    command = "gcloud container clusters get-credentials ${var.cluster_name} --zone ${var.gcp_zone} --project ${module.jhub_project.project_id}"
   }
 
-  depends_on = [module.renku_cluster]
+  depends_on = [module.jhub_cluster]
 }
 
 data "google_client_config" "default" {}
@@ -133,17 +133,15 @@ data "google_client_config" "default" {}
 #  CONNECT KUBECTL
 # ------------------------------------------------------------
 module "jhub_helm" {
-  source                          = "./modules/helm-jhub"
-  
-  install_tiller                  = var.install_tiller
-  tiller_image                    = var.tiller_image
-  k8_service_account_name         = var.k8_service_account_name
+  source = "./modules/helm-jhub"
+
   automount_service_account_token = var.automount_service_account_token
   helm_values_file                = var.helm_values_file
   helm_secrets_file               = var.helm_secrets_file
   helm_repository_name            = var.helm_repository_name
   helm_repository_url             = var.helm_repository_url
   jhub_helm_version               = var.jhub_helm_version
+  jhub_url                        = "${var.record_hostname}.${var.record_domain}"
   helm_deploy_timeout             = var.helm_deploy_timeout
   static_ip                       = google_compute_address.static.address
   kubernetes_context              = "gke_${module.jhub_project.project_id}_${var.gcp_zone}_${var.cluster_name}"
