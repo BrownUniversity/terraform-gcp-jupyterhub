@@ -119,15 +119,30 @@ module "jhub_cluster" {
 #  CONNECT KUBECTL
 # ------------------------------------------------------------
 
+locals {
+  gcloud_location = var.regional ? "--region ${var.region}" : "--zone ${var.gcp_zone}"
+}
+
+
 resource "null_resource" "cluster_credentials" {
   provisioner "local-exec" {
-    command = "gcloud container clusters get-credentials ${var.cluster_name} --zone ${var.gcp_zone} --project ${module.jhub_project.project_id}"
+    command = "gcloud container clusters get-credentials ${var.cluster_name} ${local.gcloud_location} --project ${module.jhub_project.project_id}"
   }
 
   depends_on = [module.jhub_cluster]
 }
 
-data "google_client_config" "default" {}
+
+# define after local-exec to create a dependency for the next module
+data "null_data_source" "context" {
+  inputs = {
+    location = var.regional ? var.region : var.gcp_zone
+  }
+
+  depends_on = [null_resource.cluster_credentials]
+}
+
+# data "google_client_config" "default" {}
 
 # ------------------------------------------------------------
 #  CONNECT KUBECTL
@@ -144,11 +159,12 @@ module "jhub_helm" {
   jhub_url                        = "${var.record_hostname}.${var.record_domain}"
   helm_deploy_timeout             = var.helm_deploy_timeout
   static_ip                       = google_compute_address.static.address
-  kubernetes_context              = "gke_${module.jhub_project.project_id}_${var.gcp_zone}_${var.cluster_name}"
+  kubernetes_context              = "gke_${module.jhub_project.project_id}_${data.null_data_source.context.outputs["location"]}_${var.cluster_name}"
   scale_down_name                 = var.scale_down_name
   scale_down_schedule             = var.scale_down_schedule
   scale_down_command              = var.scale_down_command
   scale_up_name                   = var.scale_up_name
   scale_up_schedule               = var.scale_up_schedule
   scale_up_command                = var.scale_up_command
+
 }
