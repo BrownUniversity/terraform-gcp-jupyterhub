@@ -153,7 +153,6 @@ module "jhub_helm" {
   automount_service_account_token = var.automount_service_account_token
   helm_values_file                = var.helm_values_file
   helm_secrets_file               = var.helm_secrets_file
-  helm_repository_name            = var.helm_repository_name
   helm_repository_url             = var.helm_repository_url
   jhub_helm_version               = var.jhub_helm_version
   jhub_url                        = "${var.record_hostname}.${var.record_domain}"

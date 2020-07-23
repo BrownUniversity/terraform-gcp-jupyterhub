@@ -6,15 +6,11 @@ variable "kubernetes_context" {
 }
 
 variable "static_ip" {
-  description = "static ip of load-balancer" 
+  description = "static ip of load-balancer"
 }
 
 variable "automount_service_account_token" {
   default = true
-}
-
-variable "helm_repository_name" {
-  default = "jupyterhub"
 }
 
 variable "helm_repository_url" {
@@ -35,7 +31,7 @@ variable "jhub_helm_version" {
 
 variable "helm_deploy_timeout" {
   description = "Time for helm to wait for deployment of chart and downloading of docker image"
-  default = 1000
+  default     = 1000
 }
 
 variable "jhub_namespace" {
@@ -51,11 +47,11 @@ variable "jhub_url" {
 # --------------------------------------
 
 variable scale_down_name {
-   default = "scale-down"
+  default = "scale-down"
 }
 
 variable scale_up_name {
-   default = "scale-up"
+  default = "scale-up"
 }
 
 variable scale_down_schedule {
@@ -72,4 +68,4 @@ variable scale_up_schedule {
 
 variable scale_up_command {
   default = ["kubectl", "scale", "--replicas=3", "statefulset/user-placeholder"]
-} 	
+}
