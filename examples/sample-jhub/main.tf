@@ -2,13 +2,14 @@ locals {
   gcp_region  = "us-east1"
   gcp_zone    = "us-east1-b"
   jhub_tenant = "sample"
+  jhub_domain = "jupyter.brown.edu"
 }
 
 module "sample-jhub" {
   source = "../../"
 
   # ---------------- PROJECT VARIABLES -----------------------
-  project_name      = local.jhub_tenant
+  project_name      = "jhub-${local.jhub_tenant}"
   random_project_id = true
 
 
@@ -23,7 +24,7 @@ module "sample-jhub" {
   infoblox_password = var.infoblox_password
   infoblox_host     = var.infoblox_host
   record_hostname   = local.jhub_tenant
-  record_domain     = "jupyter.brown.edu"
+  record_domain     = local.jhub_domain
 
   # ---------------- CLUSTER VARIABLES -----------------------
   regional                   = true
@@ -54,7 +55,7 @@ module "sample-jhub" {
   user_pool_initial_node_count = 1
 
   # ---------------- HELM/JHUB VARIABLES -----------------------
-  jhub_helm_version   = "v0.9.0"
+  jhub_helm_version   = "0.9.0"
   helm_deploy_timeout = 1000
   helm_values_file    = "./values.yaml"
   helm_secrets_file   = "./secrets.yaml"

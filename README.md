@@ -1,5 +1,7 @@
-# terraform-gcp-jupyterhub
-Terraform module to deploy JupyterHub in GCP
+# Terraform GCP-module for JupyterHub 
+
+This repository defines a [Terraform module](https://www.terraform.io/docs/modules/usage.html), which you can use in your code by adding a `module` configuration and setting its `source` parameter to URL of this folder.  See the [examples](/examples) folder for guidance
+
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
@@ -111,6 +113,32 @@ No output.
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 
-# Development
+## Testing
 
-Use terraform [pre-hooks](https://github.com/antonbabenko/pre-commit-terraform)
+This repository uses Kitchen-Terraform to test the terraform modules. In the [examples](/examples)directory you can find examples of how each module can be used. Those examples are fed to [Test Kitchen][https://kitchen.ci/]. To install test kitchen, first make sure you have Ruby and bundler installed.
+
+```
+brew install ruby
+gem install bundler
+```
+
+Then install the prerequisites for test kitchen.
+
+```
+bundle install
+```
+
+You'll need to add some common credentials and secret variables
+
+And now you're ready to run test kitchen. Test kitchen has a couple main commands:
+
+- `bundle exec kitchen create` initializes terraform.
+- `bundle exec kitchen converge` runs our terraform examples.
+- `bundle exec kitchen verify` runs our inspec scripts against a converged kitchen.
+- `bundle exec kitchen test` does all the above.
+
+
+## Development
+
+Install and configure terraform [pre-commit hooks](https://github.com/antonbabenko/pre-commit-terraform)
+To run them: `pre-commit run -a`

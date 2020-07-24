@@ -13,6 +13,10 @@ variable "automount_service_account_token" {
   default = true
 }
 
+variable "helm_repository_name" {
+  default = "jupyterhub"
+}
+
 variable "helm_repository_url" {
   default = "https://jupyterhub.github.io/helm-chart/"
 }
@@ -68,4 +72,4 @@ variable scale_up_schedule {
 
 variable scale_up_command {
   default = ["kubectl", "scale", "--replicas=3", "statefulset/user-placeholder"]
-}
+}  

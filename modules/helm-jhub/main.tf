@@ -15,6 +15,11 @@ provider "helm" {
 # ------------------------------------------------------------
 #   JHUB Helm deployment
 # ------------------------------------------------------------
+data "helm_repository" "jhub" {
+  name = var.helm_repository_name
+  url  = var.helm_repository_url
+}
+
 resource "kubernetes_namespace" "jhub" {
   metadata {
     name = var.jhub_namespace
@@ -28,7 +33,7 @@ resource "random_id" "jhub_proxy_token" {
 resource "helm_release" "jhub" {
 
   name       = "jhub"
-  repository = var.helm_repository_url
+  repository = data.helm_repository.jhub.metadata[0].name
   chart      = "jupyterhub/jupyterhub"
   version    = var.jhub_helm_version
   namespace  = var.jhub_namespace

@@ -1,3 +1,6 @@
+#Kitchen terraform
+*.kitchen
+
 # secret files
 *secrets*
 
