@@ -63,7 +63,7 @@ resource "helm_release" "jhub" {
 }
 
 # ------------------------------------------------------------
-#   CronJobs for scaling an downsacling during class time
+#   CronJobs for scaling an downnscaling during class time
 # ------------------------------------------------------------
 
 resource "kubernetes_cluster_role_binding" "cronjob" {
@@ -110,7 +110,7 @@ resource "kubernetes_cron_job" "scale_down" {
               command = var.scale_down_command
             }
             restart_policy                  = "OnFailure"
-            automount_service_account_token = true
+            automount_service_account_token = var.automount_service_account_token
           }
         }
       }
@@ -146,7 +146,7 @@ resource "kubernetes_cron_job" "scale_up" {
               command = var.scale_up_command
             }
             restart_policy                  = "OnFailure"
-            automount_service_account_token = true
+            automount_service_account_token = var.automount_service_account_token
           }
         }
       }

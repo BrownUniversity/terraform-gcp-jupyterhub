@@ -1,3 +1,12 @@
+locals {
+  default_apis = [
+    "compute.googleapis.com",
+    "container.googleapis.com",
+    "containerregistry.googleapis.com"
+  ]
+}
+
+
 # ------------------------------------------------------------
 #   PROJECT
 # ------------------------------------------------------------
@@ -9,7 +18,7 @@ module "jhub_project" {
   billing_account            = var.billing_account
   folder_id                  = var.folder_id
   auto_create_network        = var.auto_create_network
-  activate_apis              = var.activate_apis
+  activate_apis              = concat(local.default_apis, var.activate_apis)
   default_service_account    = var.default_service_account
   disable_dependent_services = var.disable_dependent_services
   labels                     = var.labels
