@@ -2,28 +2,34 @@
 #  PROJECT VARIABLES
 # ---------------------------------------------------------------
 variable org_id {
+  type        = number
   description = "Organization id."
 }
 
 variable billing_account {
+  type        = string
   description = "Billing account id."
 }
 
 variable project_name {
+  type        = string
   description = "Name of the project."
 }
 
 variable random_project_id {
+  type        = bool
   description = "Enable random number to the end of the project."
   default     = true
 }
 
 variable auto_create_network {
+  type        = bool
   description = "Auto create default network."
   default     = false
 }
 
 variable activate_apis {
+  type        = list(string)
   description = "The list of apis to activate within the project	"
   default     = []
 }
@@ -33,15 +39,18 @@ variable folder_id {
 }
 
 variable default_service_account {
+  type        = string
   description = "Project default service account setting: can be one of delete, depriviledge, or keep."
   default     = "delete"
 }
 variable disable_dependent_services {
+  type        = string
   description = "Whether services that are enabled and which depend on this service should also be disabled when this service is destroyed."
   default     = "true"
 }
 
 variable labels {
+  type        = map(string)
   description = "Map of labels for project."
   default = {
     "environment" = "automation"
@@ -54,31 +63,39 @@ variable labels {
 # ---------------------------------------------------------------
 
 variable network_name {
+  type        = string
   description = "Name of the VPC."
   default     = "kubernetes-vpc"
 }
 
 variable routing_mode {
+  type        = string
   description = "Routing mode. GLOBAL or REGIONAL"
   default     = "GLOBAL"
 }
 
 variable subnet_name {
+  type        = string
   description = "Name of the subnet."
   default     = "kubernetes-subnet"
 }
 
 variable subnet_ip {
+  type        = string
   description = "Subnet IP CIDR."
   default     = "10.0.0.0/17"
 }
 
 variable subnet_private_access {
-  default = "true"
+  type        = string
+  description = "Whether this subnet will have private Google access enabled"
+  default     = "true"
 }
 
 variable subnet_flow_logs {
-  default = "true"
+  type        = string
+  description = "Whether the subnet will record and send flow log data to logging"
+  default     = "true"
 }
 
 variable description {
@@ -381,25 +398,34 @@ variable "user_pool_oauth_scope" {
 # ---------------------------------------------------------------
 
 variable "automount_service_account_token" {
-  default = true
+  type        = bool
+  description = "Enable automatin mounting of the service account token"
+  default     = true
 }
 
 variable "helm_repository_url" {
-  default = "https://jupyterhub.github.io/helm-chart/"
+  type        = string
+  description = "URL for JupyterHub's Helm chart"
+  default     = "https://jupyterhub.github.io/helm-chart/"
 }
 
 variable "helm_values_file" {
+  type        = string
   description = "Relative path and file name. Example: values.yaml"
 }
+
 variable "helm_secrets_file" {
+  type        = string
   description = "Relative path and file name. Example: secrets.yaml"
 }
 
 variable "jhub_helm_version" {
+  type        = string
   description = "Version of the JupyterHub Helm Chart Release"
 }
 
 variable "helm_deploy_timeout" {
+  type        = number
   description = "Time for helm to wait for deployment of chart and downloading of docker image"
   default     = 1000
 }
@@ -435,25 +461,37 @@ variable "record_hostname" {
 # --------------------------------------
 
 variable "scale_down_name" {
-  default = "scale-down"
-}
-
-variable "scale_down_schedule" {
-  default = "1 18 * * 1-5"
-}
-
-variable "scale_down_command" {
-  default = ["kubectl", "scale", "--replicas=0", "statefulset/user-placeholder"]
+  type        = string
+  description = "Name of scale-down cron job"
+  default     = "scale-down"
 }
 
 variable "scale_up_name" {
-  default = "scale-up"
+  type        = string
+  description = "Name of scale-up cron job"
+  default     = "scale-up"
+}
+
+variable "scale_down_schedule" {
+  type        = string
+  description = "Schedule for scale-down cron job"
+  default     = "1 18 * * 1-5"
+}
+
+variable "scale_down_command" {
+  type        = list(string)
+  description = "Command for scale-down cron job"
+  default     = ["kubectl", "scale", "--replicas=0", "statefulset/user-placeholder"]
 }
 
 variable "scale_up_schedule" {
-  default = "1 6 * * 1-5"
+  type        = string
+  description = "Schedule for scale-up cron job"
+  default     = "1 6 * * 1-5"
 }
 
 variable "scale_up_command" {
-  default = ["kubectl", "scale", "--replicas=3", "statefulset/user-placeholder"]
+  type        = list(string)
+  description = "Command for scale-up cron job"
+  default     = ["kubectl", "scale", "--replicas=3", "statefulset/user-placeholder"]
 }

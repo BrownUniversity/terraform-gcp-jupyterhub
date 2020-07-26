@@ -25,10 +25,10 @@ This repository defines a [Terraform module](https://www.terraform.io/docs/modul
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| activate\_apis | The list of apis to activate within the project | `list` | `[]` | no |
+| activate\_apis | The list of apis to activate within the project | `list(string)` | `[]` | no |
 | auto\_create\_network | Auto create default network. | `bool` | `false` | no |
-| automount\_service\_account\_token | n/a | `bool` | `true` | no |
-| billing\_account | Billing account id. | `any` | n/a | yes |
+| automount\_service\_account\_token | Enable automatin mounting of the service account token | `bool` | `true` | no |
+| billing\_account | Billing account id. | `string` | n/a | yes |
 | cluster\_name | Cluster name | `string` | `"default"` | no |
 | core\_pool\_auto\_repair | Enable auto-repair of core-component pool | `bool` | `true` | no |
 | core\_pool\_auto\_upgrade | Enable auto-upgrade of core-component pool | `bool` | `true` | no |
@@ -51,9 +51,9 @@ This repository defines a [Terraform module](https://www.terraform.io/docs/modul
 | folder\_id | The ID of a folder to host this project | `any` | n/a | yes |
 | gcp\_zone | The GCP zone to deploy the runner into. | `string` | `"us-east1-b"` | no |
 | helm\_deploy\_timeout | Time for helm to wait for deployment of chart and downloading of docker image | `number` | `1000` | no |
-| helm\_repository\_url | n/a | `string` | `"https://jupyterhub.github.io/helm-chart/"` | no |
-| helm\_secrets\_file | Relative path and file name. Example: secrets.yaml | `any` | n/a | yes |
-| helm\_values\_file | Relative path and file name. Example: values.yaml | `any` | n/a | yes |
+| helm\_repository\_url | URL for JupyterHub's Helm chart | `string` | `"https://jupyterhub.github.io/helm-chart/"` | no |
+| helm\_secrets\_file | Relative path and file name. Example: secrets.yaml | `string` | n/a | yes |
+| helm\_values\_file | Relative path and file name. Example: values.yaml | `string` | n/a | yes |
 | horizontal\_pod\_autoscaling | Enable horizontal pod autoscaling addon | `bool` | `true` | no |
 | http\_load\_balancing | Enable httpload balancer addon | `bool` | `false` | no |
 | infoblox\_host | Infoblox host | `string` | n/a | yes |
@@ -61,8 +61,8 @@ This repository defines a [Terraform module](https://www.terraform.io/docs/modul
 | infoblox\_username | Username to authenticate with Infoblox server | `string` | n/a | yes |
 | ip\_range\_pods | The secondary ip range to use for pods | `string` | `"192.168.0.0/18"` | no |
 | ip\_range\_services | The secondary ip range to use for pods | `string` | `"192.168.64.0/18"` | no |
-| jhub\_helm\_version | Version of the JupyterHub Helm Chart Release | `any` | n/a | yes |
-| labels | Map of labels for project. | `map` | <pre>{<br>  "environment": "automation",<br>  "managed_by": "terraform"<br>}</pre> | no |
+| jhub\_helm\_version | Version of the JupyterHub Helm Chart Release | `string` | n/a | yes |
+| labels | Map of labels for project. | `map(string)` | <pre>{<br>  "environment": "automation",<br>  "managed_by": "terraform"<br>}</pre> | no |
 | logging\_service | The logging service that the cluster should write logs to. Available options include logging.googleapis.com, logging.googleapis.com/kubernetes (beta), and none | `string` | `"logging.googleapis.com/kubernetes"` | no |
 | maintenance\_start\_time | Time window specified for daily maintenance operations in RFC3339 format | `string` | `"03:00"` | no |
 | master\_ipv4\_cidr\_block | (Beta) The IP range in CIDR notation to use for the hosted master network | `string` | `"172.16.0.0/28"` | no |
@@ -70,8 +70,8 @@ This repository defines a [Terraform module](https://www.terraform.io/docs/modul
 | network | The VPC network to host the cluster in | `string` | `"kubernetes-vpc"` | no |
 | network\_name | Name of the VPC. | `string` | `"kubernetes-vpc"` | no |
 | network\_policy | Enable network policy addon | `bool` | `true` | no |
-| org\_id | Organization id. | `any` | n/a | yes |
-| project\_name | Name of the project. | `any` | n/a | yes |
+| org\_id | Organization id. | `number` | n/a | yes |
+| project\_name | Name of the project. | `string` | n/a | yes |
 | random\_project\_id | Enable random number to the end of the project. | `bool` | `true` | no |
 | range\_name\_pods | The range name for pods | `string` | `"kubernetes-pods"` | no |
 | range\_name\_services | The range name for services | `string` | `"kubernetes-services"` | no |
@@ -81,17 +81,17 @@ This repository defines a [Terraform module](https://www.terraform.io/docs/modul
 | regional | Whether the master node should be regional or zonal | `bool` | `true` | no |
 | remove\_default\_node\_pool | Remove default node pool while setting up the cluster | `bool` | `false` | no |
 | routing\_mode | Routing mode. GLOBAL or REGIONAL | `string` | `"GLOBAL"` | no |
-| scale\_down\_command | n/a | `list` | <pre>[<br>  "kubectl",<br>  "scale",<br>  "--replicas=0",<br>  "statefulset/user-placeholder"<br>]</pre> | no |
-| scale\_down\_name | n/a | `string` | `"scale-down"` | no |
-| scale\_down\_schedule | n/a | `string` | `"1 18 * * 1-5"` | no |
-| scale\_up\_command | n/a | `list` | <pre>[<br>  "kubectl",<br>  "scale",<br>  "--replicas=3",<br>  "statefulset/user-placeholder"<br>]</pre> | no |
-| scale\_up\_name | n/a | `string` | `"scale-up"` | no |
-| scale\_up\_schedule | n/a | `string` | `"1 6 * * 1-5"` | no |
+| scale\_down\_command | Command for scale-down cron job | `list(string)` | <pre>[<br>  "kubectl",<br>  "scale",<br>  "--replicas=0",<br>  "statefulset/user-placeholder"<br>]</pre> | no |
+| scale\_down\_name | Name of scale-down cron job | `string` | `"scale-down"` | no |
+| scale\_down\_schedule | Schedule for scale-down cron job | `string` | `"1 18 * * 1-5"` | no |
+| scale\_up\_command | Command for scale-up cron job | `list(string)` | <pre>[<br>  "kubectl",<br>  "scale",<br>  "--replicas=3",<br>  "statefulset/user-placeholder"<br>]</pre> | no |
+| scale\_up\_name | Name of scale-up cron job | `string` | `"scale-up"` | no |
+| scale\_up\_schedule | Schedule for scale-up cron job | `string` | `"1 6 * * 1-5"` | no |
 | skip\_provisioners | Flag to skip local-exec provisioners | `bool` | `false` | no |
-| subnet\_flow\_logs | n/a | `string` | `"true"` | no |
+| subnet\_flow\_logs | Whether the subnet will record and send flow log data to logging | `string` | `"true"` | no |
 | subnet\_ip | Subnet IP CIDR. | `string` | `"10.0.0.0/17"` | no |
 | subnet\_name | Name of the subnet. | `string` | `"kubernetes-subnet"` | no |
-| subnet\_private\_access | n/a | `string` | `"true"` | no |
+| subnet\_private\_access | Whether this subnet will have private Google access enabled | `string` | `"true"` | no |
 | subnetwork | The subnetwork to host the cluster in | `string` | `"kubernetes-subnet"` | no |
 | user\_pool\_auto\_repair | Enable auto-repair of user pool | `bool` | `true` | no |
 | user\_pool\_auto\_upgrade | Enable auto-upgrade of user pool | `bool` | `true` | no |
