@@ -1,0 +1,30 @@
+prePuller:
+  continuous:
+    enabled: true
+scheduling:
+  userScheduler:
+    enabled: true
+  podPriority:
+    enabled: true
+  userPlaceholder:
+    enabled: true
+    replicas: 4
+  userPods:
+    nodeAffinity:
+      matchNodePurpose: require
+singleuser: 
+  memory:
+    limit: 3G
+    guarantee: 1G
+  cpu:
+    limit: 2
+    guarantee: 1
+  image:
+    name: gcr.io/jupyterhub-docker-images/jupyterhub-scipy
+    tag: phys1600-spring2020
+    pullPolicy: Always
+  defaultUrl: "/lab"
+  lifecycleHooks:
+    postStart:
+      exec:
+        command: ["/bin/sh", "-c", "chmod -f 600 /home/jovyan/.ssh/id_rsa || true;"]
