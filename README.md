@@ -1,6 +1,30 @@
 # Terraform GCP-module for JupyterHub 
 
+![kitchen-tests](https://github.com/BrownUniversity/terraform-gcp-jupyterhub/workflows/kitchen-tests/badge.svg)
+
 This repository defines a [Terraform module](https://www.terraform.io/docs/modules/usage.html), which you can use in your code by adding a `module` configuration and setting its `source` parameter to URL of this folder.  See the [examples](/examples) folder for guidance
+
+# Contents:
+
+- [Getting Started](#getting-started)
+- [How to use this module](#how-to-use-this-module)
+- [Requirements](#requirements)
+- [Providers](#providers)
+- [Inputs](#inputs)
+- [Testing](#testing)
+- [Development](#development)
+
+## Getting Started
+
+This module depends on you having GCP credentials of some kind. The module looks for a credential file in JSON format. You should export the following:
+
+```
+GOOGLE_APPLICATION_CREDENTIALS=/path/to/file.json
+```
+## How to use this module
+
+This repository defines a [Terraform module](https://www.terraform.io/docs/modules/usage.html), which you can use in your
+code by adding a `module` configuration and setting its `source` parameter to URL of this repository. See the [examples](/examples) folder for guidance
 
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
@@ -140,5 +164,31 @@ And now you're ready to run test kitchen. Test kitchen has a couple main command
 
 ## Development
 
+### Merging Policy
+Use [GitLab Flow](https://docs.gitlab.com/ee/topics/gitlab_flow.html#production-branch-with-gitlab-flow).
+
+* Create feature branches for features and fixes from default branch
+* Merge only from PR with review
+* After merging to default branch a release is drafted using a github action. Check the draft and publish if you and tests are happy
+
+### Pre-commit hooks
 Install and configure terraform [pre-commit hooks](https://github.com/antonbabenko/pre-commit-terraform)
-To run them: `pre-commit run -a`
+This repository has the following hooks, preonfigured. After intallation, you can run them using: `pre-commit run -a`
+Please make sure you run them before pushing to remote.
+
+| Hook name                                        | Description                                                                                                                |
+| ------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------- |
+| `terraform_fmt`                                  | Rewrites all Terraform configuration files to a canonical format.                                                          |
+| `terraform_docs`                                 | Inserts input and output documentation into `README.md`.                                                       |
+| `terraform_tflint`                               | Validates all Terraform configuration files with [TFLint](https://github.com/terraform-linters/tflint).                              |
+| `terraform_tfsec`                                | [TFSec](https://github.com/liamg/tfsec) static analysis of terraform templates to spot potential security issues.     |
+
+
+### CI
+This project has three workflows enabled:
+
+1. PR labeler: When openning a PR to defaukt branch, a label is given assigned automatically accourding to the name of your feature branch. The labeler follows the follows rules in [pr-labeler.yml](.github/pr-labeler.yml)
+
+2. Realease Drafter: When merging to master, a release is drafted using the [Release-Drafter Action](https://github.com/marketplace/actions/release-drafter)
+
+3. `Kitchen test` is run on every commit unless `[skip ci]` is added to commit message.
