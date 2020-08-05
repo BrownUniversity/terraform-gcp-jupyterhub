@@ -51,6 +51,8 @@ jobs:
       run: rm -rf examples/sample-jhub/.terraform
     - name: Remove Terraform File
       run: rm -rf examples/sample-jhub/terraform.tfstate.d
+    - name: Authorize service account
+      run: gcloud auth activate-service-account ${{ secrets.GCP_PF_SA }} --key-file=/tmp/credentials.json
     - name: Kitchen create
       run: kitchen create
     - name: Run Kitchen
