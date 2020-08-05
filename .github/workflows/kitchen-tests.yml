@@ -46,8 +46,10 @@ jobs:
         HELM_SECRETS: ${{ secrets.HELM_SECRETS}}
     - name: Remove Kitchen File
       run: rm -rf .kitchen
+    - name: Kitchen create
+      run: kitchen create
     - name: Run Kitchen
-      run: kitchen test
+      run: kitchen converge
       env:
         TF_VAR_billing_account: ${{ secrets.GCP_BURWOOD_BILLING_ACCOUNT }}
         TF_VAR_org_id: ${{ secrets.GCP_ORG_ID }}
@@ -57,3 +59,7 @@ jobs:
         TF_VAR_infoblox_host: ${{secrets.INFOBLOX_JHUB_HOST}}
         TF_VAR_helm_secrets_file: /tmp/helm_secrets.yaml
         GOOGLE_APPLICATION_CREDENTIALS: /tmp/credentials.json
+    - name: Kitchen verify
+      run: kitchen verify
+    - name: Kitchen destroy
+      run: kitchen destroy
