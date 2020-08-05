@@ -33,7 +33,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
       with:
-        clean: false #this is to avoid permissions of self-hosted runner
+        clean: false #this is to avoid permissions on self-hosted runner
     - name: Create Credential File
       run: |
         echo "$GCP_CREDENTIAL_JSON" | base64 -d > /tmp/credentials.json
