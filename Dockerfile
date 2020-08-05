@@ -18,7 +18,6 @@ RUN apk upgrade && \
     apk add --update \
     openssh ca-certificates bash jq \
     curl-dev \
-    curl \
     "ruby-dev=~$(cat .ruby-version)" \
     "ruby-full=~$(cat .ruby-version)" \
     build-base \

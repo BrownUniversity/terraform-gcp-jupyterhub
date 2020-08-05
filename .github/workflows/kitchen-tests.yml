@@ -16,6 +16,7 @@ jobs:
               - '.github/workflows/kitchen-tests.yml'
               - 'Dockerfile'
               - 'Gemfile*'
+              - '.ruby-version'
       - name: Build and Push to Docker Hub
         if: steps.filter.outputs.all == 'true' && !contains(github.event.commits[0].message, '[skip docker]')
         uses: docker/build-push-action@v1
