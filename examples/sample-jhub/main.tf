@@ -23,11 +23,11 @@ module "sample-jhub" {
   infoblox_username = var.infoblox_username
   infoblox_password = var.infoblox_password
   infoblox_host     = var.infoblox_host
-  record_hostname   = local.jhub_tenant
+  record_hostname   = module.sample-jhub.module.jhub_project.project_id
   record_domain     = local.jhub_domain
 
   # ---------------- CLUSTER VARIABLES -----------------------
-  regional                   = true
+  regional                   = false
   region                     = local.gcp_region
   gcp_zone                   = local.gcp_zone
   maintenance_start_time     = "03:00"
@@ -36,7 +36,7 @@ module "sample-jhub" {
 
   core_pool_machine_type       = "n1-highmem-4"
   core_pool_min_count          = 1
-  core_pool_max_count          = 10
+  core_pool_max_count          = 2
   core_pool_local_ssd_count    = 0
   core_pool_disk_size_gb       = 100
   core_pool_auto_repair        = true
@@ -46,7 +46,7 @@ module "sample-jhub" {
 
   user_pool_machine_type       = "n1-highmem-4"
   user_pool_min_count          = 0
-  user_pool_max_count          = 30
+  user_pool_max_count          = 2
   user_pool_local_ssd_count    = 0
   user_pool_disk_size_gb       = 100
   user_pool_auto_repair        = true

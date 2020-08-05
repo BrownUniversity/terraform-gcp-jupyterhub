@@ -11,7 +11,7 @@ locals {
 #   PROJECT
 # ------------------------------------------------------------
 module "jhub_project" {
-  source = "git@github.com:BrownUniversity/terraform-gcp-project.git"
+  source = "git::https://github.com/BrownUniversity/terraform-gcp-project.git?ref=v0.1.0"
 
   project_name               = var.project_name
   org_id                     = var.org_id
@@ -28,7 +28,7 @@ module "jhub_project" {
 #   VPC
 # ------------------------------------------------------------
 module "jhub_vpc" {
-  source = "git@github.com:BrownUniversity/terraform-gcp-vpc.git"
+  source = "git::https://github.com/BrownUniversity/terraform-gcp-vpc.git?ref=v0.1.0"
 
   project_id          = module.jhub_project.project_id
   network_name        = var.network_name
@@ -50,7 +50,7 @@ resource "google_compute_address" "static" {
 
 # Assign Brown-DNS via infoblox
 module "production_infoblox_record" {
-  source            = "git@github.com:BrownUniversity/terraform-infoblox-record-a.git"
+  source            = "git::https://github.com/BrownUniversity/terraform-infoblox-record-a.git?ref=v0.1.0"
   infoblox_username = var.infoblox_username
   infoblox_password = var.infoblox_password
   infoblox_host     = var.infoblox_host
@@ -61,7 +61,7 @@ module "production_infoblox_record" {
 }
 
 module "external_infoblox_record" {
-  source            = "git@github.com:BrownUniversity/terraform-infoblox-record-a.git"
+  source            = "git::https://github.com/BrownUniversity/terraform-infoblox-record-a.git?ref=v0.1.0"
   infoblox_username = var.infoblox_username
   infoblox_password = var.infoblox_password
   infoblox_host     = var.infoblox_host
@@ -74,7 +74,7 @@ module "external_infoblox_record" {
 
 # Create the cluster
 module "jhub_cluster" {
-  source                     = "git@github.com:BrownUniversity/terraform-gcp-cluster.git"
+  source                     = "git::https://github.com/BrownUniversity/terraform-gcp-cluster.git?ref=chore/pin-dependencies-improve-ci"
   cluster_name               = var.cluster_name
   project_id                 = module.jhub_project.project_id
   regional                   = var.regional

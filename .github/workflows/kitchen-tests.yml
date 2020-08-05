@@ -1,0 +1,48 @@
+name: kitchen-tests
+
+on: [push, workflow_dispatch]
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: dorny/paths-filter@v2.2.0
+        id: filter
+        with:
+          base: ${{ github.ref }}
+          filters: |
+            all:
+              - '.github/workflows/kitchen-tests.yml'
+              - 'Dockerfile'
+              - 'Gemfile*'
+      - name: Build and Push to Docker Hub
+        if: steps.filter.outputs.all == 'true' && !contains(github.event.commits[0].message, '[skip docker]')
+        uses: docker/build-push-action@v1
+        with:
+          username: ${{ secrets.CCV_DOCKERHUB_USER }}
+          password: ${{ secrets.CCV_DOCKERHUB_TOKEN }}
+          repository: brownccv/kitchen-terraform
+          tags: jhub
+  sample-jhub:
+    needs: [docker]
+    if: "!contains(github.event.commits[0].message, '[skip ci]')"
+    runs-on: self-hosted
+    container:
+      image: brownccv/kitchen-terraform:jhub
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        clean: false #this is to avoid permissions of self-hosted runner
+    - name: Create Credential File
+      run: |
+        echo "$GCP_CREDENTIAL_JSON" > /tmp/credentials.json
+      env:
+        GCP_CREDENTIAL_JSON: ${{ secrets.GCP_CREDENTIAL_JSON}}
+    - name: Run Kitchen
+      run: kitchen test
+      env:
+        TF_VAR_billing_account: ${{ secrets.GCP_BURWOOD_BILLING_ACCOUNT }}
+        TF_VAR_org_id: ${{ secrets.GCP_ORG_ID }}
+        TF_VAR_folder_id: ${{ secrets.GCP_CCV_CI_FOLDER_ID }}
+        GOOGLE_APPLICATION_CREDENTIALS: /tmp/credentials.json
