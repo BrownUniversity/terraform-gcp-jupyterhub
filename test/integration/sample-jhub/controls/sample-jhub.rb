@@ -1,7 +1,5 @@
 # copyright: 2018, The Authors
-
 title "Test basic availability of JupyterHub"
-require 'rspec/retry'
 
 jhub_url = attribute("jhub_url")
 
