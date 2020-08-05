@@ -1,4 +1,14 @@
-FROM hashicorp/terraform:0.12.29
+FROM gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
+
+#terraform
+ENV TERRAFORM_VERSION=0.12.29
+ENV TERRAFORM_URL="https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip"
+RUN curl -L ${TERRAFORM_URL} -o terraform_${TERRAFORM_VERSION}_linux_amd64.zip \
+    && unzip terraform_${TERRAFORM_VERSION}_linux_amd64.zip \
+    && mv terraform /usr/bin/terraform\
+    && chmod +x /usr/bin/terraform \
+    && rm -rf terraform*
+
 
 COPY .ruby-version .ruby-version
 
@@ -6,7 +16,7 @@ COPY .ruby-version .ruby-version
 # At the end, remove the apk cache
 RUN apk upgrade && \
     apk add --update \
-    bash \
+    openssh ca-certificates bash jq \
     curl-dev \
     curl \
     "ruby-dev=~$(cat .ruby-version)" \
@@ -15,10 +25,6 @@ RUN apk upgrade && \
     python3 && \
     rm -rf /var/cache/apk/*
 
-# Install Google Cloud SDK (latest version).
-RUN curl -sSL https://sdk.cloud.google.com | bash -s -- --disable-prompts
-RUN ~/google-cloud-sdk/bin/gcloud components update
-ENV PATH "~/google-cloud-sdk/bin:$PATH"
 
 RUN mkdir /usr/app
 WORKDIR /usr/app
@@ -27,7 +33,6 @@ COPY Gemfile* ./
 RUN gem install bundler && \
     bundle config set system 'true' && \
     bundle install
-
 
 ENTRYPOINT ["/bin/bash"]
 
