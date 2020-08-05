@@ -15,6 +15,11 @@ RUN apk upgrade && \
     python3 && \
     rm -rf /var/cache/apk/*
 
+# Install Google Cloud SDK (latest version).
+RUN curl -sSL https://sdk.cloud.google.com | bash -s -- --disable-prompts
+RUN ~/google-cloud-sdk/bin/gcloud components update
+ENV PATH "~/google-cloud-sdk/bin:$PATH"
+
 RUN mkdir /usr/app
 WORKDIR /usr/app
 
