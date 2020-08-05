@@ -1,7 +1,13 @@
+resource "random_integer" "tenant_id" {
+  min = 1
+  max = 50000
+}
+
+
 locals {
   gcp_region  = "us-east1"
   gcp_zone    = "us-east1-b"
-  jhub_tenant = "sample"
+  jhub_tenant = "sample-${random_integer.tenant_id.result}"
   jhub_domain = "jupyter.brown.edu"
 }
 
@@ -10,7 +16,7 @@ module "sample-jhub" {
 
   # ---------------- PROJECT VARIABLES -----------------------
   project_name      = "jhub-${local.jhub_tenant}"
-  random_project_id = true
+  random_project_id = false
 
 
   # The following variables need to be included in secrets.auto.tfvars
@@ -23,7 +29,7 @@ module "sample-jhub" {
   infoblox_username = var.infoblox_username
   infoblox_password = var.infoblox_password
   infoblox_host     = var.infoblox_host
-  record_hostname   = module.sample-jhub.module.jhub_project.project_id
+  record_hostname   = local.jhub_tenant
   record_domain     = local.jhub_domain
 
   # ---------------- CLUSTER VARIABLES -----------------------
