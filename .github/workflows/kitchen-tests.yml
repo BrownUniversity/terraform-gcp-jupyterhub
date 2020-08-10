@@ -1,0 +1,68 @@
+name: kitchen-tests
+
+on: [push, workflow_dispatch]
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: dorny/paths-filter@v2.2.0
+        id: filter
+        with:
+          base: ${{ github.ref }}
+          filters: |
+            all:
+              - '.github/workflows/kitchen-tests.yml'
+              - 'Dockerfile'
+              - 'Gemfile*'
+              - '.ruby-version'
+      - name: Build and Push to Docker Hub
+        if: steps.filter.outputs.all == 'true' && !contains(github.event.commits[0].message, '[skip docker]')
+        uses: docker/build-push-action@v1
+        with:
+          username: ${{ secrets.CCV_DOCKERHUB_USER }}
+          password: ${{ secrets.CCV_DOCKERHUB_TOKEN }}
+          repository: brownccv/kitchen-terraform
+          tags: jhub
+  sample-jhub:
+    needs: [docker]
+    if: "!contains(github.event.commits[0].message, '[skip ci]')"
+    runs-on: self-hosted
+    container:
+      image: brownccv/kitchen-terraform:jhub
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        clean: false #this is to avoid permissions on self-hosted runner
+    - name: Create Credential File
+      run: |
+        echo "$GCP_CREDENTIAL_JSON" | base64 -d > /tmp/credentials.json
+      env:
+        GCP_CREDENTIAL_JSON: ${{ secrets.GCP_CREDENTIAL_JSON}}
+    - name: Create HELM Secrets File
+      run: |
+        echo "$HELM_SECRETS" | base64 -d > /tmp/helm_secrets.yaml
+      env:
+        HELM_SECRETS: ${{ secrets.HELM_SECRETS}}
+    - name: Remove Kitchen File
+      run: rm -rf .kitchen
+    - name: Remove Terraform Folder
+      run: rm -rf examples/sample-jhub/.terraform
+    - name: Remove Terraform File
+      run: rm -rf examples/sample-jhub/terraform.tfstate.d
+    - name: Authorize service account
+      run: gcloud auth activate-service-account ${{ secrets.GCP_PF_SA }} --key-file=/tmp/credentials.json
+    - name: Run Kitchen
+      run: kitchen test
+      env:
+        TF_VAR_billing_account: ${{ secrets.GCP_BILLING_ACCOUNT }}
+        TF_VAR_org_id: ${{ secrets.GCP_ORG_ID }}
+        TF_VAR_folder_id: ${{ secrets.GCP_CCV_CI_FOLDER_ID }}
+        TF_VAR_infoblox_username: ${{ secrets.INFOBLOX_JHUB_USER }}
+        TF_VAR_infoblox_password: ${{ secrets.INFOBLOX_JHUB_PSWD }}
+        TF_VAR_infoblox_host: ${{secrets.INFOBLOX_JHUB_HOST}}
+        TF_VAR_helm_secrets_file: /tmp/helm_secrets.yaml
+        GOOGLE_APPLICATION_CREDENTIALS: /tmp/credentials.json
+
+      
