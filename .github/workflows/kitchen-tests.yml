@@ -37,7 +37,7 @@ jobs:
         clean: false #this is to avoid permissions on self-hosted runner
     - name: Create Credential File
       run: |
-      ls -la /tmp
+        ls -la /tmp
     # - name: Create Credential File
     #   run: |
     #     echo "$GCP_CREDENTIAL_JSON" | base64 -d > /tmp/credentials.json
