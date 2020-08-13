@@ -140,32 +140,38 @@ resource "null_resource" "cluster_credentials" {
   depends_on = [module.jhub_cluster]
 }
 
+
+
+# ------------------------------------------------------------
+#  TLS (if needed)
+# ------------------------------------------------------------
+resource "kubernetes_secret" "tls_secret" {
+  count = var.create_tls_secret ? 1 : 0
+
+  type  = "kubernetes.io/tls"
+
+  metadata {
+    name      = var.tls_secret_name
+    namespace = "jhub"
+  }
+
+  data = {
+    "tls.crt" = "${var.site_certificate}"
+    "tls.key" = "${var.site_certificate_key}"
+  }
+
+  depends_on = [null_resource.cluster_credentials]
+
+}
+
 # define after local-exec to create a dependency for the next module
 data "null_data_source" "context" {
   inputs = {
     location = var.regional ? var.region : var.gcp_zone
   }
 
-  depends_on = [null_resource.cluster_credentials]
+  depends_on = [kubernetes_secret.tls_secret]
 }
-
-# ------------------------------------------------------------
-#  TLS (if needed)
-# ------------------------------------------------------------
-# resource "kubernetes_secret" "tls-secret" {
-#   count = var.create_tls_secret ? 1 : 0
-
-#   type  = "kubernetes.io/tls"
-
-#   metadata {
-#     name      = var.tls_secret_name
-#   }
-
-#   data = {
-#     "tls.crt" = "${var.site_certificate}"
-#     "tls.key" = "${var.site_certificate_key}"
-#   }
-# }
 
 # ------------------------------------------------------------
 #  HELM
