@@ -393,6 +393,32 @@ variable "user_pool_oauth_scope" {
   default     = "https://www.googleapis.com/auth/cloud-platform"
 }
 
+
+# ---------------------------------------------------------------
+#  TLS VARIABLES
+# ---------------------------------------------------------------
+variable "create_tls_secret" {
+  description = "If set to true, user will be passing tls key and certificate to create a kubernetes secret, and use it in their helm chart"
+  type        = bool
+  default     = true
+}
+
+variable "tls_secret_name" {
+  description = "TLS secret name used in secret creation, it must match with what is used by user in helm chart"
+  type        = string
+  default     = "jupyterhub-tls"
+}
+
+variable "site_certificate" {
+  type        = string
+  description = "File containing the TLS certificate"
+}
+
+variable "site_certificate_key" {
+  type        = string
+  description = "File containing the TLS certificate key"
+}
+
 # ---------------------------------------------------------------
 #  HELM VARIABLES
 # ---------------------------------------------------------------
@@ -412,11 +438,6 @@ variable "helm_repository_url" {
 variable "helm_values_file" {
   type        = string
   description = "Relative path and file name. Example: values.yaml"
-}
-
-variable "helm_secrets_file" {
-  type        = string
-  description = "Relative path and file name. Example: secrets.yaml"
 }
 
 variable "jhub_helm_version" {

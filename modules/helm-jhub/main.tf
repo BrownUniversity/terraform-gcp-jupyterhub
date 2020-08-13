@@ -40,7 +40,6 @@ resource "helm_release" "jhub" {
   timeout    = var.helm_deploy_timeout
 
   values = [
-    "${file(var.helm_secrets_file)}",
     "${file(var.helm_values_file)}"
   ]
 

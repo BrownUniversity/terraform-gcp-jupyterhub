@@ -34,10 +34,6 @@ variable "helm_values_file" {
   description = "YAML file containing JupyterHub HELM values. Relative path and file name. Example: config.yaml"
 }
 
-variable "helm_secrets_file" {
-  type        = string
-  description = "YAML file containing JupyterHub HELM secret values. Relative path and file name. Example: config.yaml"
-}
 
 variable "jhub_helm_version" {
   type        = string

@@ -132,7 +132,6 @@ locals {
   gcloud_location = var.regional ? "--region ${var.region}" : "--zone ${var.gcp_zone}"
 }
 
-
 resource "null_resource" "cluster_credentials" {
   provisioner "local-exec" {
     command = "gcloud container clusters get-credentials ${var.cluster_name} ${local.gcloud_location} --project ${module.jhub_project.project_id}"
@@ -140,7 +139,6 @@ resource "null_resource" "cluster_credentials" {
 
   depends_on = [module.jhub_cluster]
 }
-
 
 # define after local-exec to create a dependency for the next module
 data "null_data_source" "context" {
@@ -151,17 +149,32 @@ data "null_data_source" "context" {
   depends_on = [null_resource.cluster_credentials]
 }
 
-# data "google_client_config" "default" {}
+# ------------------------------------------------------------
+#  TLS (if needed)
+# ------------------------------------------------------------
+# resource "kubernetes_secret" "tls-secret" {
+#   count = var.create_tls_secret ? 1 : 0
+
+#   type  = "kubernetes.io/tls"
+
+#   metadata {
+#     name      = var.tls_secret_name
+#   }
+
+#   data = {
+#     "tls.crt" = "${var.site_certificate}"
+#     "tls.key" = "${var.site_certificate_key}"
+#   }
+# }
 
 # ------------------------------------------------------------
-#  CONNECT KUBECTL
+#  HELM
 # ------------------------------------------------------------
 module "jhub_helm" {
   source = "./modules/helm-jhub"
 
   automount_service_account_token = var.automount_service_account_token
   helm_values_file                = var.helm_values_file
-  helm_secrets_file               = var.helm_secrets_file
   helm_repository_url             = var.helm_repository_url
   jhub_helm_version               = var.jhub_helm_version
   jhub_url                        = "${var.record_hostname}.${var.record_domain}"

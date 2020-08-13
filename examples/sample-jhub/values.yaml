@@ -28,3 +28,8 @@ singleuser:
     postStart:
       exec:
         command: ["/bin/sh", "-c", "chmod -f 600 /home/jovyan/.ssh/id_rsa || true;"]
+proxy:
+  https:
+    type: secret
+    secret:
+        name: jupyterhub-tls

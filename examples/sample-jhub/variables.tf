@@ -15,7 +15,3 @@ variable "infoblox_password" {
 
 variable "infoblox_host" {
 }
-
-variable "helm_secrets_file" {
-  default = "./secrets.yaml"
-}
