@@ -62,8 +62,8 @@ module "sample-jhub" {
 
   # ---------------- HELM/JHUB VARIABLES -----------------------
 
-  site_certificate = file("./secrets/tls.cer")
-  site_certificate_key = file("./secrets/tls.key")
+  site_certificate = file(var.site_certificate_file)
+  site_certificate_key = file(var.site_certificate_key_file)
 
   # ---------------- HELM/JHUB VARIABLES -----------------------
   jhub_helm_version   = "0.9.0"

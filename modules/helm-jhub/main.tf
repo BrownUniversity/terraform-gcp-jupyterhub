@@ -30,6 +30,27 @@ resource "random_id" "jhub_proxy_token" {
   byte_length = 32
 }
 
+# ------------------------------------------------------------
+#  TLS (if needed)
+# ------------------------------------------------------------
+resource "kubernetes_secret" "tls_secret" {
+  count = var.create_tls_secret ? 1 : 0
+
+  type  = "kubernetes.io/tls"
+
+  metadata {
+    name      = var.tls_secret_name
+    namespace = var.jhub_namespace
+  }
+
+  data = {
+    "tls.crt" = "${var.site_certificate}"
+    "tls.key" = "${var.site_certificate_key}"
+  }
+
+  depends_on = [kubernetes_namespace.jhub]
+}
+
 resource "helm_release" "jhub" {
 
   name       = "jhub"
@@ -58,7 +79,8 @@ resource "helm_release" "jhub" {
     value = "{${var.jhub_url}}"
   }
 
-  depends_on = [kubernetes_namespace.jhub]
+  #TO DO: if not using secret TLS this won't work
+  depends_on = [kubernetes_secret.tls_secret]
 }
 
 # ------------------------------------------------------------

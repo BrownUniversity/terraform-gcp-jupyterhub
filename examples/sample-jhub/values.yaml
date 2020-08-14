@@ -30,6 +30,13 @@ singleuser:
         command: ["/bin/sh", "-c", "chmod -f 600 /home/jovyan/.ssh/id_rsa || true;"]
 proxy:
   https:
+    enabled: true
     type: secret
     secret:
-        name: jupyterhub-tls
+      name: jupyterhub-tls
+      key: tls.key
+      crt: tls.crt
+
+# proxy:
+#   https:
+#     enabled: true

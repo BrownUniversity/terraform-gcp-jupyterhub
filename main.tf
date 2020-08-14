@@ -141,36 +141,13 @@ resource "null_resource" "cluster_credentials" {
 }
 
 
-
-# ------------------------------------------------------------
-#  TLS (if needed)
-# ------------------------------------------------------------
-resource "kubernetes_secret" "tls_secret" {
-  count = var.create_tls_secret ? 1 : 0
-
-  type  = "kubernetes.io/tls"
-
-  metadata {
-    name      = var.tls_secret_name
-    namespace = "jhub"
-  }
-
-  data = {
-    "tls.crt" = "${var.site_certificate}"
-    "tls.key" = "${var.site_certificate_key}"
-  }
-
-  depends_on = [null_resource.cluster_credentials]
-
-}
-
 # define after local-exec to create a dependency for the next module
 data "null_data_source" "context" {
   inputs = {
     location = var.regional ? var.region : var.gcp_zone
   }
 
-  depends_on = [kubernetes_secret.tls_secret]
+  depends_on = [null_resource.cluster_credentials]
 }
 
 # ------------------------------------------------------------
@@ -193,5 +170,9 @@ module "jhub_helm" {
   scale_up_name                   = var.scale_up_name
   scale_up_schedule               = var.scale_up_schedule
   scale_up_command                = var.scale_up_command
+  create_tls_secret = var.create_tls_secret
+  tls_secret_name = var.tls_secret_name
+  site_certificate = var.site_certificate
+  site_certificate_key = var.site_certificate_key
 
 }
