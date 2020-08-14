@@ -61,8 +61,8 @@ module "sample-jhub" {
   user_pool_initial_node_count = 1
 
   # ---------------- HELM/JHUB VARIABLES -----------------------
-
-  site_certificate = file(var.site_certificate_file)
+  create_tls_secret    = true
+  site_certificate     = file(var.site_certificate_file)
   site_certificate_key = file(var.site_certificate_key_file)
 
   # ---------------- HELM/JHUB VARIABLES -----------------------

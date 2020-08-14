@@ -170,9 +170,9 @@ module "jhub_helm" {
   scale_up_name                   = var.scale_up_name
   scale_up_schedule               = var.scale_up_schedule
   scale_up_command                = var.scale_up_command
-  create_tls_secret = var.create_tls_secret
-  tls_secret_name = var.tls_secret_name
-  site_certificate = var.site_certificate
-  site_certificate_key = var.site_certificate_key
+  create_tls_secret               = var.create_tls_secret
+  tls_secret_name                 = var.tls_secret_name
+  site_certificate                = var.site_certificate
+  site_certificate_key            = var.site_certificate_key
 
 }

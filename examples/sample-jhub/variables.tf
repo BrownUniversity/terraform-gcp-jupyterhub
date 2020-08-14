@@ -17,9 +17,9 @@ variable "infoblox_host" {
 }
 
 variable "site_certificate_file" {
-    default = "./secrets/tls.cer"
+  default = "./secrets/tls.cer"
 }
 
-variable "site_certificate_key_file"{
-    default = "./secrets/tls.key"
+variable "site_certificate_key_file" {
+  default = "./secrets/tls.key"
 }

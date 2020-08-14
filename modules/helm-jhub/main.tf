@@ -36,7 +36,7 @@ resource "random_id" "jhub_proxy_token" {
 resource "kubernetes_secret" "tls_secret" {
   count = var.create_tls_secret ? 1 : 0
 
-  type  = "kubernetes.io/tls"
+  type = "kubernetes.io/tls"
 
   metadata {
     name      = var.tls_secret_name
