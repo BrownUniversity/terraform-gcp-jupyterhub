@@ -79,6 +79,21 @@ resource "helm_release" "jhub" {
     value = "{${var.jhub_url}}"
   }
 
+  #Authentication
+  set {
+    name  = "auth.type"
+    value = var.auth_type
+  }
+
+  #Authentication secrets
+  dynamic "set_sensitive" {
+    for_each = var.auth_secretkeyvaluemap
+    content {
+      name  = set_sensitive.key
+      value = set_sensitive.value
+    }
+  }
+
   #TO DO: if not using secret TLS this won't work
   depends_on = [kubernetes_secret.tls_secret]
 }

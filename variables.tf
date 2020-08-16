@@ -128,6 +128,34 @@ variable range_name_services {
   default     = "kubernetes-services"
 }
 
+# --------------------------------------
+#   Infoblox
+# --------------------------------------
+variable "infoblox_username" {
+  description = "Username to authenticate with Infoblox server"
+  type        = string
+}
+
+variable "infoblox_password" {
+  description = "Password to authenticate with Infoblox server"
+  type        = string
+}
+
+variable "infoblox_host" {
+  description = "Infoblox host"
+  type        = string
+}
+
+variable "record_domain" {
+  description = "The domain on the record. hostaname.domain = FQDN"
+  type        = string
+}
+
+variable "record_hostname" {
+  description = "The domain on the record. hostaname.domain = FQDN"
+  type        = string
+}
+
 # ---------------------------------------------------------------
 #  GKE VARIABLES
 # ---------------------------------------------------------------
@@ -451,30 +479,18 @@ variable "helm_deploy_timeout" {
   default     = 1000
 }
 
-# INFOBLOX
-variable "infoblox_username" {
-  description = "Username to authenticate with Infoblox server"
+variable "auth_type" {
   type        = string
+  description = "Type OAuth e.g google"
+  default     = "dummy"
 }
 
-variable "infoblox_password" {
-  description = "Password to authenticate with Infoblox server"
-  type        = string
-}
-
-variable "infoblox_host" {
-  description = "Infoblox host"
-  type        = string
-}
-
-variable "record_domain" {
-  description = "The domain on the record. hostaname.domain = FQDN"
-  type        = string
-}
-
-variable "record_hostname" {
-  description = "The domain on the record. hostaname.domain = FQDN"
-  type        = string
+variable "auth_secretkeyvaluemap" {
+  type        = map
+  description = "Key Value Map for secret variables used by the authenticator"
+  default = {
+    "auth.dummy.password" = "123"
+  }
 }
 
 # --------------------------------------

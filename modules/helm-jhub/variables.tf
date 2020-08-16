@@ -82,6 +82,20 @@ variable "jhub_url" {
   description = "URL for the jupyter hub"
 }
 
+variable "auth_type" {
+  type        = string
+  description = "Type OAuth e.g google"
+  default     = "dummy"
+}
+
+variable "auth_secretkeyvaluemap" {
+  type        = map
+  description = "Key Value Map for secret variables used by the authenticator"
+  default = {
+    "auth.dummy.password" = "123"
+  }
+}
+
 # --------------------------------------
 #   Cron Jobs
 # --------------------------------------

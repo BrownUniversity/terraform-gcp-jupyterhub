@@ -35,7 +35,7 @@ code by adding a `module` configuration and setting its `source` parameter to UR
 | terraform | >= 0.12 |
 | google | >= 3.0 |
 | google-beta | >= 3.0 |
-| helm | ~> 1.0 |
+| helm | ~> 1.1 |
 | kubernetes | >= 1.4.0 |
 
 ## Providers
@@ -50,6 +50,8 @@ code by adding a `module` configuration and setting its `source` parameter to UR
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | activate\_apis | The list of apis to activate within the project | `list(string)` | `[]` | no |
+| auth\_secretkeyvaluemap | Key Value Map for secret variables used by the authenticator | `map` | <pre>{<br>  "auth.dummy.password": "123"<br>}</pre> | no |
+| auth\_type | Type OAuth e.g google | `string` | `"dummy"` | no |
 | auto\_create\_network | Auto create default network. | `bool` | `false` | no |
 | automount\_service\_account\_token | Enable automatin mounting of the service account token | `bool` | `true` | no |
 | billing\_account | Billing account id. | `string` | n/a | yes |
