@@ -174,5 +174,6 @@ module "jhub_helm" {
   tls_secret_name                 = var.tls_secret_name
   site_certificate                = var.site_certificate
   site_certificate_key            = var.site_certificate_key
-
+  auth_type                       = var.auth_type
+  auth_secretkeyvaluemap          = var.auth_secretkeyvaluemap
 }
