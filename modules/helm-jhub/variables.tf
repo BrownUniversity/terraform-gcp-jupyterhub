@@ -89,10 +89,10 @@ variable "auth_type" {
 }
 
 variable "auth_secretkeyvaluemap" {
-  type        = map
+  type        = map(string)
   description = "Key Value Map for secret variables used by the authenticator"
   default = {
-    "auth.dummy.password" = "123"
+    "auth.dummy.password" = "dummy_password"
   }
 }
 
