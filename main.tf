@@ -132,7 +132,6 @@ locals {
   gcloud_location = var.regional ? "--region ${var.region}" : "--zone ${var.gcp_zone}"
 }
 
-
 resource "null_resource" "cluster_credentials" {
   provisioner "local-exec" {
     command = "gcloud container clusters get-credentials ${var.cluster_name} ${local.gcloud_location} --project ${module.jhub_project.project_id}"
@@ -151,17 +150,14 @@ data "null_data_source" "context" {
   depends_on = [null_resource.cluster_credentials]
 }
 
-# data "google_client_config" "default" {}
-
 # ------------------------------------------------------------
-#  CONNECT KUBECTL
+#  HELM
 # ------------------------------------------------------------
 module "jhub_helm" {
   source = "./modules/helm-jhub"
 
   automount_service_account_token = var.automount_service_account_token
   helm_values_file                = var.helm_values_file
-  helm_secrets_file               = var.helm_secrets_file
   helm_repository_url             = var.helm_repository_url
   jhub_helm_version               = var.jhub_helm_version
   jhub_url                        = "${var.record_hostname}.${var.record_domain}"
@@ -174,5 +170,10 @@ module "jhub_helm" {
   scale_up_name                   = var.scale_up_name
   scale_up_schedule               = var.scale_up_schedule
   scale_up_command                = var.scale_up_command
-
+  create_tls_secret               = var.create_tls_secret
+  tls_secret_name                 = var.tls_secret_name
+  site_certificate                = var.site_certificate
+  site_certificate_key            = var.site_certificate_key
+  auth_type                       = var.auth_type
+  auth_secretkeyvaluemap          = var.auth_secretkeyvaluemap
 }

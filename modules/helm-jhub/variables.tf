@@ -1,4 +1,29 @@
 # ---------------------------------------------------------------
+#  TLS VARIABLES
+# ---------------------------------------------------------------
+variable "create_tls_secret" {
+  description = "If set to true, user will be passing tls key and certificate to create a kubernetes secret, and use it in their helm chart"
+  type        = bool
+  default     = true
+}
+
+variable "tls_secret_name" {
+  description = "TLS secret name used in secret creation, it must match with what is used by user in helm chart"
+  type        = string
+  default     = "jupyterhub-tls"
+}
+
+variable "site_certificate" {
+  type        = string
+  description = "File containing the TLS certificate"
+}
+
+variable "site_certificate_key" {
+  type        = string
+  description = "File containing the TLS certificate key"
+}
+
+# ---------------------------------------------------------------
 #  HELM VARIABLES
 # ---------------------------------------------------------------
 variable "kubernetes_context" {
@@ -34,10 +59,6 @@ variable "helm_values_file" {
   description = "YAML file containing JupyterHub HELM values. Relative path and file name. Example: config.yaml"
 }
 
-variable "helm_secrets_file" {
-  type        = string
-  description = "YAML file containing JupyterHub HELM secret values. Relative path and file name. Example: config.yaml"
-}
 
 variable "jhub_helm_version" {
   type        = string
@@ -59,6 +80,20 @@ variable "jhub_namespace" {
 variable "jhub_url" {
   type        = string
   description = "URL for the jupyter hub"
+}
+
+variable "auth_type" {
+  type        = string
+  description = "Type OAuth e.g google"
+  default     = "dummy"
+}
+
+variable "auth_secretkeyvaluemap" {
+  type        = map(string)
+  description = "Key Value Map for secret variables used by the authenticator"
+  default = {
+    "auth.dummy.password" = "dummy_password"
+  }
 }
 
 # --------------------------------------

@@ -16,6 +16,10 @@ variable "infoblox_password" {
 variable "infoblox_host" {
 }
 
-variable "helm_secrets_file" {
-  default = "./secrets.yaml"
+variable "site_certificate_file" {
+  default = "./secrets/tls.cer"
+}
+
+variable "site_certificate_key_file" {
+  default = "./secrets/tls.key"
 }

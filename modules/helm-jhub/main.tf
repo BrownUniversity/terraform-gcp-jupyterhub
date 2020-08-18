@@ -30,6 +30,31 @@ resource "random_id" "jhub_proxy_token" {
   byte_length = 32
 }
 
+# ------------------------------------------------------------
+#  TLS (if needed)
+# ------------------------------------------------------------
+resource "kubernetes_secret" "tls_secret" {
+  count = var.create_tls_secret ? 1 : 0
+
+  type = "kubernetes.io/tls"
+
+  metadata {
+    name      = var.tls_secret_name
+    namespace = var.jhub_namespace
+  }
+
+  data = {
+    "tls.crt" = "${var.site_certificate}"
+    "tls.key" = "${var.site_certificate_key}"
+  }
+
+  depends_on = [kubernetes_namespace.jhub]
+}
+
+locals {
+  helm_release_wait_condition = var.create_tls_secret ? kubernetes_secret.tls_secret[0].metadata[0].name : kubernetes_namespace.jhub.metadata[0].name
+}
+
 resource "helm_release" "jhub" {
 
   name       = "jhub"
@@ -40,7 +65,6 @@ resource "helm_release" "jhub" {
   timeout    = var.helm_deploy_timeout
 
   values = [
-    "${file(var.helm_secrets_file)}",
     "${file(var.helm_values_file)}"
   ]
 
@@ -59,7 +83,22 @@ resource "helm_release" "jhub" {
     value = "{${var.jhub_url}}"
   }
 
-  depends_on = [kubernetes_namespace.jhub]
+  #Authentication
+  set {
+    name  = "auth.type"
+    value = var.auth_type
+  }
+
+  #Authentication secrets
+  dynamic "set_sensitive" {
+    for_each = var.auth_secretkeyvaluemap
+    content {
+      name  = set_sensitive.key
+      value = set_sensitive.value
+    }
+  }
+
+  depends_on = [local.helm_release_wait_condition]
 }
 
 # ------------------------------------------------------------

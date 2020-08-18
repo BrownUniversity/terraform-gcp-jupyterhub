@@ -35,7 +35,7 @@ code by adding a `module` configuration and setting its `source` parameter to UR
 | terraform | >= 0.12 |
 | google | >= 3.0 |
 | google-beta | >= 3.0 |
-| helm | ~> 1.0 |
+| helm | ~> 1.1 |
 | kubernetes | >= 1.4.0 |
 
 ## Providers
@@ -50,6 +50,8 @@ code by adding a `module` configuration and setting its `source` parameter to UR
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | activate\_apis | The list of apis to activate within the project | `list(string)` | `[]` | no |
+| auth\_secretkeyvaluemap | Key Value Map for secret variables used by the authenticator | `map(string)` | <pre>{<br>  "auth.dummy.password": "dummy_password"<br>}</pre> | no |
+| auth\_type | Type OAuth e.g google | `string` | `"dummy"` | no |
 | auto\_create\_network | Auto create default network. | `bool` | `false` | no |
 | automount\_service\_account\_token | Enable automatin mounting of the service account token | `bool` | `true` | no |
 | billing\_account | Billing account id. | `string` | n/a | yes |
@@ -68,6 +70,7 @@ code by adding a `module` configuration and setting its `source` parameter to UR
 | core\_pool\_oauth\_scope | OAuth scope for core-component pool | `string` | `"https://www.googleapis.com/auth/cloud-platform"` | no |
 | core\_pool\_preemptible | Make core-component pool preemptible | `bool` | `false` | no |
 | create\_service\_account | Defines if service account specified to run nodes should be created. | `bool` | `false` | no |
+| create\_tls\_secret | If set to true, user will be passing tls key and certificate to create a kubernetes secret, and use it in their helm chart | `bool` | `true` | no |
 | default\_service\_account | Project default service account setting: can be one of delete, depriviledge, or keep. | `string` | `"delete"` | no |
 | description | VPC description | `string` | `"Deployed through Terraform."` | no |
 | disable\_dependent\_services | Whether services that are enabled and which depend on this service should also be disabled when this service is destroyed. | `string` | `"true"` | no |
@@ -76,7 +79,6 @@ code by adding a `module` configuration and setting its `source` parameter to UR
 | gcp\_zone | The GCP zone to deploy the runner into. | `string` | `"us-east1-b"` | no |
 | helm\_deploy\_timeout | Time for helm to wait for deployment of chart and downloading of docker image | `number` | `1000` | no |
 | helm\_repository\_url | URL for JupyterHub's Helm chart | `string` | `"https://jupyterhub.github.io/helm-chart/"` | no |
-| helm\_secrets\_file | Relative path and file name. Example: secrets.yaml | `string` | n/a | yes |
 | helm\_values\_file | Relative path and file name. Example: values.yaml | `string` | n/a | yes |
 | horizontal\_pod\_autoscaling | Enable horizontal pod autoscaling addon | `bool` | `true` | no |
 | http\_load\_balancing | Enable httpload balancer addon | `bool` | `false` | no |
@@ -111,12 +113,15 @@ code by adding a `module` configuration and setting its `source` parameter to UR
 | scale\_up\_command | Command for scale-up cron job | `list(string)` | <pre>[<br>  "kubectl",<br>  "scale",<br>  "--replicas=3",<br>  "statefulset/user-placeholder"<br>]</pre> | no |
 | scale\_up\_name | Name of scale-up cron job | `string` | `"scale-up"` | no |
 | scale\_up\_schedule | Schedule for scale-up cron job | `string` | `"1 6 * * 1-5"` | no |
+| site\_certificate | File containing the TLS certificate | `string` | n/a | yes |
+| site\_certificate\_key | File containing the TLS certificate key | `string` | n/a | yes |
 | skip\_provisioners | Flag to skip local-exec provisioners | `bool` | `false` | no |
 | subnet\_flow\_logs | Whether the subnet will record and send flow log data to logging | `string` | `"true"` | no |
 | subnet\_ip | Subnet IP CIDR. | `string` | `"10.0.0.0/17"` | no |
 | subnet\_name | Name of the subnet. | `string` | `"kubernetes-subnet"` | no |
 | subnet\_private\_access | Whether this subnet will have private Google access enabled | `string` | `"true"` | no |
 | subnetwork | The subnetwork to host the cluster in | `string` | `"kubernetes-subnet"` | no |
+| tls\_secret\_name | TLS secret name used in secret creation, it must match with what is used by user in helm chart | `string` | `"jupyterhub-tls"` | no |
 | user\_pool\_auto\_repair | Enable auto-repair of user pool | `bool` | `true` | no |
 | user\_pool\_auto\_upgrade | Enable auto-upgrade of user pool | `bool` | `true` | no |
 | user\_pool\_disk\_size\_gb | Size of disk for user pool | `number` | `100` | no |

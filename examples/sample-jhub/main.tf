@@ -61,10 +61,14 @@ module "sample-jhub" {
   user_pool_initial_node_count = 1
 
   # ---------------- HELM/JHUB VARIABLES -----------------------
+  create_tls_secret    = true
+  site_certificate     = file(var.site_certificate_file)
+  site_certificate_key = file(var.site_certificate_key_file)
+
+  # ---------------- HELM/JHUB VARIABLES -----------------------
   jhub_helm_version   = "0.9.0"
   helm_deploy_timeout = 1000
   helm_values_file    = "./values.yaml"
-  helm_secrets_file   = var.helm_secrets_file
 
   # ---------------- CRONJOB VARIABLES -----------------------
   scale_up_schedule   = "30 19 * * 4"

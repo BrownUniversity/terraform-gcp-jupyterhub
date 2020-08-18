@@ -128,6 +128,34 @@ variable range_name_services {
   default     = "kubernetes-services"
 }
 
+# --------------------------------------
+#   Infoblox
+# --------------------------------------
+variable "infoblox_username" {
+  description = "Username to authenticate with Infoblox server"
+  type        = string
+}
+
+variable "infoblox_password" {
+  description = "Password to authenticate with Infoblox server"
+  type        = string
+}
+
+variable "infoblox_host" {
+  description = "Infoblox host"
+  type        = string
+}
+
+variable "record_domain" {
+  description = "The domain on the record. hostaname.domain = FQDN"
+  type        = string
+}
+
+variable "record_hostname" {
+  description = "The domain on the record. hostaname.domain = FQDN"
+  type        = string
+}
+
 # ---------------------------------------------------------------
 #  GKE VARIABLES
 # ---------------------------------------------------------------
@@ -393,6 +421,32 @@ variable "user_pool_oauth_scope" {
   default     = "https://www.googleapis.com/auth/cloud-platform"
 }
 
+
+# ---------------------------------------------------------------
+#  TLS VARIABLES
+# ---------------------------------------------------------------
+variable "create_tls_secret" {
+  description = "If set to true, user will be passing tls key and certificate to create a kubernetes secret, and use it in their helm chart"
+  type        = bool
+  default     = true
+}
+
+variable "tls_secret_name" {
+  description = "TLS secret name used in secret creation, it must match with what is used by user in helm chart"
+  type        = string
+  default     = "jupyterhub-tls"
+}
+
+variable "site_certificate" {
+  type        = string
+  description = "File containing the TLS certificate"
+}
+
+variable "site_certificate_key" {
+  type        = string
+  description = "File containing the TLS certificate key"
+}
+
 # ---------------------------------------------------------------
 #  HELM VARIABLES
 # ---------------------------------------------------------------
@@ -414,11 +468,6 @@ variable "helm_values_file" {
   description = "Relative path and file name. Example: values.yaml"
 }
 
-variable "helm_secrets_file" {
-  type        = string
-  description = "Relative path and file name. Example: secrets.yaml"
-}
-
 variable "jhub_helm_version" {
   type        = string
   description = "Version of the JupyterHub Helm Chart Release"
@@ -430,30 +479,18 @@ variable "helm_deploy_timeout" {
   default     = 1000
 }
 
-# INFOBLOX
-variable "infoblox_username" {
-  description = "Username to authenticate with Infoblox server"
+variable "auth_type" {
   type        = string
+  description = "Type OAuth e.g google"
+  default     = "dummy"
 }
 
-variable "infoblox_password" {
-  description = "Password to authenticate with Infoblox server"
-  type        = string
-}
-
-variable "infoblox_host" {
-  description = "Infoblox host"
-  type        = string
-}
-
-variable "record_domain" {
-  description = "The domain on the record. hostaname.domain = FQDN"
-  type        = string
-}
-
-variable "record_hostname" {
-  description = "The domain on the record. hostaname.domain = FQDN"
-  type        = string
+variable "auth_secretkeyvaluemap" {
+  type        = map(string)
+  description = "Key Value Map for secret variables used by the authenticator"
+  default = {
+    "auth.dummy.password" = "dummy_password"
+  }
 }
 
 # --------------------------------------

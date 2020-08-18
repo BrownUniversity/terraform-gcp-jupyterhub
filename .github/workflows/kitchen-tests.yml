@@ -35,22 +35,24 @@ jobs:
     - uses: actions/checkout@v2
       with:
         clean: false #this is to avoid permissions on self-hosted runner
-    - name: Create Credential File
-      run: |
-        echo "$GCP_CREDENTIAL_JSON" | base64 -d > /tmp/credentials.json
-      env:
-        GCP_CREDENTIAL_JSON: ${{ secrets.GCP_CREDENTIAL_JSON}}
-    - name: Create HELM Secrets File
-      run: |
-        echo "$HELM_SECRETS" | base64 -d > /tmp/helm_secrets.yaml
-      env:
-        HELM_SECRETS: ${{ secrets.HELM_SECRETS}}
     - name: Remove Kitchen File
       run: rm -rf .kitchen
     - name: Remove Terraform Folder
       run: rm -rf examples/sample-jhub/.terraform
     - name: Remove Terraform File
       run: rm -rf examples/sample-jhub/terraform.tfstate.d
+    - name: Create Credential File
+      run: |
+        echo "$GCP_CREDENTIAL_JSON" | base64 -d > /tmp/credentials.json
+      env:
+        GCP_CREDENTIAL_JSON: ${{ secrets.GCP_CREDENTIAL_JSON}}
+    - name: Create TLS Files
+      run: |
+        echo "$JUPYTERHUB_TLS_CER" > /tmp/tls.cer
+        echo "$JUPYTERHUB_TLS_KEY" > /tmp/tls.key
+      env:
+        JUPYTERHUB_TLS_CER: ${{ secrets.JUPYTERHUB_TLS_CER }}
+        JUPYTERHUB_TLS_KEY: ${{ secrets.JUPYTERHUB_TLS_KEY }}
     - name: Authorize service account
       run: gcloud auth activate-service-account ${{ secrets.GCP_PF_SA }} --key-file=/tmp/credentials.json
     - name: Run Kitchen
@@ -62,7 +64,8 @@ jobs:
         TF_VAR_infoblox_username: ${{ secrets.INFOBLOX_JHUB_USER }}
         TF_VAR_infoblox_password: ${{ secrets.INFOBLOX_JHUB_PSWD }}
         TF_VAR_infoblox_host: ${{secrets.INFOBLOX_JHUB_HOST}}
-        TF_VAR_helm_secrets_file: /tmp/helm_secrets.yaml
+        TF_VAR_site_certificate_file: /tmp/tls.cer
+        TF_VAR_site_certificate_key_file: /tmp/tls.key
         GOOGLE_APPLICATION_CREDENTIALS: /tmp/credentials.json
 
       
