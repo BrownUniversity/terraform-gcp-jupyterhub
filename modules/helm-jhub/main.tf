@@ -51,6 +51,10 @@ resource "kubernetes_secret" "tls_secret" {
   depends_on = [kubernetes_namespace.jhub]
 }
 
+locals {
+  helm_release_wait_condition = var.create_tls_secret ? kubernetes_secret.tls_secret[0].metadata[0].name : kubernetes_namespace.jhub.metadata[0].name
+}
+
 resource "helm_release" "jhub" {
 
   name       = "jhub"
@@ -94,8 +98,7 @@ resource "helm_release" "jhub" {
     }
   }
 
-  #TO DO: if not using secret TLS this won't work
-  depends_on = [kubernetes_secret.tls_secret]
+  depends_on = [local.helm_release_wait_condition]
 }
 
 # ------------------------------------------------------------
