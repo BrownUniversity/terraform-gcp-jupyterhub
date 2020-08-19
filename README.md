@@ -138,7 +138,14 @@ code by adding a `module` configuration and setting its `source` parameter to UR
 
 ## Outputs
 
-No output.
+| Name | Description |
+|------|-------------|
+| cluster\_name | Cluster name |
+| location | n/a |
+| project\_id | Project ID |
+| project\_name | Project Name |
+| region | n/a |
+| zones | List of zones in which the cluster resides |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 
