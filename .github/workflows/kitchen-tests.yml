@@ -35,6 +35,13 @@ jobs:
     - uses: actions/checkout@v2
       with:
         clean: false #this is to avoid permissions on self-hosted runner
+    - name: Pre-check dirty dirs in self-hosted
+      run: |
+        ls -la 
+        ls -la examples/sample-jhub/
+        ls -la ~/.kube
+        la -la ~
+        mount
     - name: Remove Kitchen File
       run: rm -rf .kitchen
     - name: Remove Terraform Folder
@@ -67,5 +74,17 @@ jobs:
         TF_VAR_site_certificate_file: /tmp/tls.cer
         TF_VAR_site_certificate_key_file: /tmp/tls.key
         GOOGLE_APPLICATION_CREDENTIALS: /tmp/credentials.json
-
-      
+    - name: Remove Kitchen File
+      run: rm -rf .kitchen
+    - name: Remove Terraform Folder
+      run: rm -rf examples/sample-jhub/.terraform
+    - name: Remove Terraform File
+      run: rm -rf examples/sample-jhub/terraform.tfstate.d
+    - name: Remove Kubernetes context
+      run: rm ~/.kube/config
+    - name: Pre-check dirty dirs in self-hosted
+      run: |
+        ls -la 
+        ls -la examples/sample-jhub/
+        ls -la ~/.kube
+        ls -la ~
