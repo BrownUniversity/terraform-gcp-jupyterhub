@@ -42,7 +42,6 @@ jobs:
         ls -la ~/.kube
         ls -la ~
         ls -la /tmp
-        mount
     - name: Remove Kitchen File
       run: rm -rf .kitchen
     - name: Remove Terraform Folder
@@ -84,11 +83,7 @@ jobs:
       run: rm -rf examples/sample-jhub/.terraform
     - name: Remove Terraform File
       run: rm -rf examples/sample-jhub/terraform.tfstate.d
-    - name: Remove Kubernetes context
-      run: |
-        ls -la ~/.kube
-        rm ~/.kube/config
-    - name: Pre-check dirty dirs in self-hosted
+    - name: Post-check dirty dirs in self-hosted
       run: |
         ls -la 
         ls -la examples/sample-jhub/
