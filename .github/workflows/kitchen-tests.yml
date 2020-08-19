@@ -1,24 +1,13 @@
 name: kitchen-tests
 
-on: [push, workflow_dispatch]
+on: [workflow_dispatch]
 
 jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: dorny/paths-filter@v2.2.0
-        id: filter
-        with:
-          base: ${{ github.ref }}
-          filters: |
-            all:
-              - '.github/workflows/kitchen-tests.yml'
-              - 'Dockerfile'
-              - 'Gemfile*'
-              - '.ruby-version'
       - name: Build and Push to Docker Hub
-        if: steps.filter.outputs.all == 'true' && !contains(github.event.commits[0].message, '[skip docker]')
         uses: docker/build-push-action@v1
         with:
           username: ${{ secrets.CCV_DOCKERHUB_USER }}
@@ -27,7 +16,6 @@ jobs:
           tags: jhub
   sample-jhub:
     needs: [docker]
-    if: "!contains(github.event.commits[0].message, '[skip ci]')"
     runs-on: self-hosted
     container:
       image: brownccv/kitchen-terraform:jhub
