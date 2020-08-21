@@ -52,9 +52,10 @@ resource "kubernetes_secret" "tls_secret" {
 }
 
 locals {
-  helm_release_wait_condition = var.create_tls_secret ? kubernetes_secret.tls_secret[0].metadata[0].name : kubernetes_namespace.jhub.metadata[0].name
+  helm_release_wait_condition = length(kubernetes_secret.tls_secret) > 0 ? kubernetes_secret.tls_secret[0].metadata[0].name : kubernetes_namespace.jhub.metadata[0].name
 }
 
+ 
 resource "helm_release" "jhub" {
 
   name       = "jhub"

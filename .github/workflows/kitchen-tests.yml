@@ -77,3 +77,14 @@ jobs:
         ls -la examples/sample-jhub/
         ls -la ~/.kube
         ls -la ~
+  # Clean up dangling images in self-hosted runner to avoid filling up docker disk 
+  docker-cleanup:
+    # needs: [sample-jhub]
+    runs-on: self-hosted 
+    steps:
+    - name: Clean up docker images
+      run: |
+        docker images --filter=reference='brownccv/kitchen-terraform'
+        docker images --filter=reference='brownccv/kitchen-terraform' --filter "dangling=true" | grep -E "brownccv/kitchen-terraform" | awk '{ print $3 }' | xargs docker rmi || :
+        echo "After cleanup"
+        docker images --filter=reference='brownccv/kitchen-terraform'
