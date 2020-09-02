@@ -505,6 +505,7 @@ variable "auth_secretkeyvaluemap" {
   description = "Key Value Map for secret variables used by the authenticator"
   default = {
     "auth.dummy.password" = "dummy_password"
+    "auth.dummy2.password" = "dummy_password"
   }
 }
 
