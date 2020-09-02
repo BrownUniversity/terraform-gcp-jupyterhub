@@ -28,6 +28,13 @@ singleuser:
     postStart:
       exec:
         command: ["/bin/sh", "-c", "chmod -f 600 /home/jovyan/.ssh/id_rsa || true;"]
+  extraEnv:
+    CHOWN_HOME: "yes"
+    CHOWN_HOME_OPTS: '-R'
+    GRANT_SUDO: "yes"
+  uid: 0
+  fsGid: 0
+  cmd: "start-singleuser.sh"
   storage:
     extraVolumes:
       - name: jupyterhub-shared
