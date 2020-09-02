@@ -1,22 +1,28 @@
-# variable "kubernetes_context" {
-#   type        = string
-#   description = "Context of current kubernetes cluster"
-# }
-
-variable "use_shared_volume" {
-  type        = bool
-  description = "Whether to use a shared NFS volume"
-  default     = false
+variable "name" {
 }
 
-variable "shared_storage_capacity" {
-  type        = string
-  description = "Size of the shared volume"
-  default     = "10Gi"
+variable "volumes" {
+  type = map(number)
 }
 
-variable "jhub_namespace" {
-  type        = string
-  description = "Name of JupyterHub's kubernetes namespace"
-  default     = "jhub"
+variable "region" {
+#   default = "europe-west1"
+}
+
+variable "zone" {
+#   default = [
+#     "europe-west1-c",
+#     "europe-west1-d",
+#   ]
+}
+
+variable "namespace" {}
+
+variable "annotations" {
+  type    = map
+  default = {}
+}
+
+variable "project_id"{
+    
 }

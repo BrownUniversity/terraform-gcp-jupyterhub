@@ -111,6 +111,21 @@ variable "shared_storage_capacity" {
   default     = "10Gi"
 }
 
+variable "region" {
+  type        = string
+  description = "The region to host the cluster in"
+  default     = "us-east1"
+}
+
+variable "gcp_zone" {
+  type        = string
+  description = "The GCP zone to deploy the runner into."
+  default     = "us-east1-b"
+}
+
+variable "project_id"{
+    
+}
 
 # --------------------------------------
 #   Cron Jobs

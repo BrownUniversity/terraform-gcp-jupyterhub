@@ -180,4 +180,7 @@ module "jhub_helm" {
   #shared volume 
   use_shared_volume = var.use_shared_volume
   shared_storage_capacity = var.shared_storage_capacity
+  region = var.region
+  gcp_zone = var.gcp_zone
+  project_id = module.jhub_project.project_id
 }

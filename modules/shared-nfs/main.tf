@@ -1,152 +1,141 @@
-# provider "kubernetes" {
-#   config_context = var.kubernetes_context
-# }
+locals {
+  backend_storage_class_name = "kw-nfs-backend"
+  storage_class_name         = "kw-nfs"
+  total_size = length(flatten([
+    for e in values(var.volumes) : range(e)
+  ]))
+}
 
+resource "google_compute_disk" "disk" {
+  name          = "${var.name}-nfs"
+  type          = "pd-standard"
+  size          = local.total_size
+  zone          = var.zone
+  project       = var.project_id
+}
 
-resource "kubernetes_secret" "nfs-secret" {
-  count = var.use_shared_volume ? 1 : 0
+resource "kubernetes_persistent_volume" "nfs_disk" {
   metadata {
-    name = "nfs-secret"
-    namespace  = var.jhub_namespace
+    name = "${var.name}-nfs-backend"
+  }
+  spec {
+    access_modes = ["ReadWriteOnce"]
+    capacity = {
+      storage = "${local.total_size}G"
+    }
+    storage_class_name = local.backend_storage_class_name
+    persistent_volume_source {
+      gce_persistent_disk {
+        pd_name = google_compute_disk.disk.name
+        fs_type = "ext4"
+      }
+    }
   }
 }
 
-#service account for PODs, this service account is for Kubernetes, not Google
-resource "kubernetes_service_account" "nfs-sa" {
-  count = var.use_shared_volume ? 1 : 0
+resource "kubernetes_persistent_volume_claim" "nfs_disk" {
   metadata {
-    name = "nfs-sa"
-    namespace  = var.jhub_namespace
+    name      = "${var.name}-nfs-backend"
+    namespace = var.namespace
   }
-
-  secret {
-    name = kubernetes_secret.nfs-secret[count.index].metadata.0.name
-  }
-}
-
-
-# ------------------------------------------------------------
-# Volume Claim
-# ------------------------------------------------------------
-
-# Dummy name, because terrafor doesn't support empty string 
-# See https://github.com/hashicorp/terraform-provider-kubernetes/issues/102
-
-resource "kubernetes_storage_class" "jupyter-storage" {
-  count = var.use_shared_volume ? 1 : 0
-  metadata {
-    name = "jupyter-storage"
-  }
-
-  storage_provisioner = "kubernetes.io/gce-pd"
-
-  parameters = {
-    type = "pd-standard"
-  }
-}
-
-resource "kubernetes_persistent_volume_claim" "jupyterhub-storage-claim" {
-  count = var.use_shared_volume ? 1 : 0
-
-  metadata {
-    name = "jupyterhub-storage-claim"
-    namespace  = var.jhub_namespace
-  }
-
   spec {
     access_modes       = ["ReadWriteOnce"]
-    storage_class_name = kubernetes_storage_class.jupyter-storage[count.index].metadata.0.name
-
+    volume_name        = kubernetes_persistent_volume.nfs_disk.metadata[0].name
+    storage_class_name = local.backend_storage_class_name
     resources {
       requests = {
-        storage = var.shared_storage_capacity
+        storage = "${local.total_size}G"
       }
     }
   }
 }
 
-
-# ------------------------------------------------------------
-# NFS Server for presistant notebooks
-# ------------------------------------------------------------
-
-resource "kubernetes_pod" "jupyter-nfs" {
-  count = var.use_shared_volume ? 1 : 0
+resource "kubernetes_stateful_set" "nfs_server" {
   metadata {
-    name = "jupyter-nfs"
-    namespace  = var.jhub_namespace
-    labels = {
-      app = "jupyter-nfs"
-    }
+    name        = "${var.name}-nfs-server"
+    namespace   = var.namespace
+    annotations = var.annotations
   }
-
   spec {
-    service_account_name = kubernetes_service_account.nfs-sa[count.index].metadata.0.name
-
-    container {
-      image = "gcr.io/google-samples/nfs-server:1.1"
-      name  = "jupyter-nfs-server"
-
-      port {
-        name           = "nfs"
-        container_port = 2049
-      }
-
-      port {
-        name           = "mountd"
-        container_port = 20048
-      }
-
-      port {
-        name           = "rpcbind"
-        container_port = 111
-      }
-
-      volume_mount {
-        mount_path = "/exports"
-        name       = "nfs-export-volume"
-      }
-
-      security_context {
-        privileged = true
+    replicas = 1
+    selector {
+      match_labels = {
+        role = "${var.name}-nfs-server"
       }
     }
-
-    volume {
-      name = "nfs-export-volume"
-
-      persistent_volume_claim {
-        claim_name = kubernetes_persistent_volume_claim.jupyterhub-storage-claim[count.index].metadata.0.name
+    update_strategy {
+      type = "RollingUpdate"
+    }
+    template {
+      metadata {
+        labels = {
+          role = "${var.name}-nfs-server"
+        }
+      }
+      spec {
+        init_container {
+          name    = "mkdirs"
+          image   = "busybox:latest"
+          command = ["/bin/sh", "-c"]
+          args    = [join("; ", formatlist("mkdir -p /exports/${var.namespace}-%s", keys(var.volumes)))]
+          volume_mount {
+            mount_path = "/exports"
+            name       = "${var.name}-nfs-backend"
+          }
+        }
+        container {
+          name  = "${var.name}-nfs-server"
+          image = "k8s.gcr.io/volume-nfs:0.8"
+          port {
+            name           = "nfs"
+            container_port = 2049
+          }
+          port {
+            name           = "mountd"
+            container_port = 20048
+          }
+          port {
+            name           = "rpcbind"
+            container_port = 111
+          }
+          security_context {
+            privileged = true # TODO test with false
+          }
+          volume_mount {
+            mount_path = "/exports"
+            name       = "${var.name}-nfs-backend"
+          }
+        }
+        volume {
+          name = "${var.name}-nfs-backend"
+          persistent_volume_claim {
+            claim_name = kubernetes_persistent_volume_claim.nfs_disk.metadata[0].name
+          }
+        }
       }
     }
+    service_name = ""
   }
 }
 
-
-## NFS Server Service
-resource "kubernetes_service" "jupyter-nfs" {
-  count = var.use_shared_volume ? 1 : 0
-
+resource "kubernetes_service" "nfs_server" {
   metadata {
-    name = "jupyter-nfs"
-    namespace  = var.jhub_namespace
+    name        = "${var.name}-nfs-server"
+    namespace   = var.namespace
+    annotations = var.annotations
   }
-
   spec {
     selector = {
-      app = kubernetes_pod.jupyter-nfs[count.index].metadata.0.labels.app
+      role = "${var.name}-nfs-server"
     }
-
     port {
       name = "nfs"
       port = 2049
     }
-
     port {
       name = "mountd"
       port = 20048
     }
-
     port {
       name = "rpcbind"
       port = 111
@@ -154,42 +143,40 @@ resource "kubernetes_service" "jupyter-nfs" {
   }
 }
 
-## NFS Server as persistent volume
-resource "kubernetes_persistent_volume" "nfs-volume" {
-  count = var.use_shared_volume ? 1 : 0
+resource "kubernetes_persistent_volume" "nfs" {
+  for_each = var.volumes
   metadata {
-    name = "nfs-volume"
+    name = "${var.namespace}-${each.key}"
   }
-
   spec {
+    access_modes       = ["ReadWriteMany"]
+    storage_class_name = local.storage_class_name
     capacity = {
-      storage = var.shared_storage_capacity
+      storage = "${each.value}G"
     }
-
-    access_modes = ["ReadWriteMany"]
-
     persistent_volume_source {
       nfs {
-        path   = "/exports"
-        server = kubernetes_service.jupyter-nfs[count.index].metadata.0.name
+        path   = "/exports/${var.namespace}-${each.key}"
+        server = kubernetes_service.nfs_server.spec[0].cluster_ip
       }
     }
   }
 }
 
-#resource "kubernetes_persistent_volume_claim" "nfs-volume" {
-#  metadata {
-#    name = "nfs-volume"
-#  }
-#
-#  spec {
-#    access_modes = ["ReadWriteMany"]
-#    volume_name = kubernetes_persistent_volume.nfs-volume.metadata.0.name
-##    storage_class_name = """"
-#    resources {
-#      requests {
-#        storage = "5Gi"
-#      }
-#    }
-#  }
-#}
+resource "kubernetes_persistent_volume_claim" "nfs" {
+  for_each = var.volumes
+  metadata {
+    name      = each.key
+    namespace = var.namespace
+  }
+  spec {
+    access_modes       = ["ReadWriteMany"]
+    volume_name        = "${var.namespace}-${each.key}"
+    storage_class_name = local.storage_class_name
+    resources {
+      requests = {
+        storage = "${each.value}G"
+      }
+    }
+  }
+}
