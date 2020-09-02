@@ -9,11 +9,11 @@ locals {
 resource "google_compute_disk" "disk" {
   count = var.use_shared_volume ? 1 : 0
 
-  name          = "${var.name}-nfs"
-  type          = "pd-standard"
-  size          = local.total_size
-  zone          = var.zone
-  project       = var.project_id
+  name    = "${var.name}-nfs"
+  type    = "pd-standard"
+  size    = local.total_size
+  zone    = var.zone
+  project = var.project_id
 }
 
 resource "kubernetes_persistent_volume" "nfs_disk" {
@@ -30,7 +30,7 @@ resource "kubernetes_persistent_volume" "nfs_disk" {
     storage_class_name = local.backend_storage_class_name
     persistent_volume_source {
       gce_persistent_disk {
-        pd_name = google_compute_disk.disk.name
+        pd_name = google_compute_disk.disk[count.index].name
         fs_type = "ext4"
       }
     }
@@ -46,7 +46,7 @@ resource "kubernetes_persistent_volume_claim" "nfs_disk" {
   }
   spec {
     access_modes       = ["ReadWriteOnce"]
-    volume_name        = kubernetes_persistent_volume.nfs_disk.metadata[0].name
+    volume_name        = kubernetes_persistent_volume.nfs_disk[count.index].metadata[0].name
     storage_class_name = local.backend_storage_class_name
     resources {
       requests = {
@@ -117,7 +117,7 @@ resource "kubernetes_stateful_set" "nfs_server" {
         volume {
           name = "${var.name}-nfs-backend"
           persistent_volume_claim {
-            claim_name = kubernetes_persistent_volume_claim.nfs_disk.metadata[0].name
+            claim_name = kubernetes_persistent_volume_claim.nfs_disk[count.index].metadata[0].name
           }
         }
       }
@@ -126,7 +126,7 @@ resource "kubernetes_stateful_set" "nfs_server" {
   }
 }
 
-resource "kubernetes_service" "nfs_server" {  
+resource "kubernetes_service" "nfs_server" {
   count = var.use_shared_volume ? 1 : 0
 
   metadata {
@@ -154,8 +154,6 @@ resource "kubernetes_service" "nfs_server" {
 }
 
 resource "kubernetes_persistent_volume" "nfs" {
-  count = var.use_shared_volume ? 1 : 0
-
   for_each = var.volumes
   metadata {
     name = "${var.namespace}-${each.key}"
@@ -169,15 +167,13 @@ resource "kubernetes_persistent_volume" "nfs" {
     persistent_volume_source {
       nfs {
         path   = "/exports/${var.namespace}-${each.key}"
-        server = kubernetes_service.nfs_server.spec[0].cluster_ip
+        server = kubernetes_service.nfs_server[0].spec[0].cluster_ip
       }
     }
   }
 }
 
 resource "kubernetes_persistent_volume_claim" "nfs" {
-  count = var.use_shared_volume ? 1 : 0
-
   for_each = var.volumes
   metadata {
     name      = each.key

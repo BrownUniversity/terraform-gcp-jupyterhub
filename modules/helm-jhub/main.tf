@@ -51,24 +51,20 @@ resource "kubernetes_secret" "tls_secret" {
   depends_on = [kubernetes_namespace.jhub]
 }
 
-# module "shared-nfs" {
-#   source                       = "../shared-nfs"
-#   use_shared_volume            = var.use_shared_volume
-#   shared_storage_capacity      = var.shared_storage_capacity
-#   jhub_namespace               = var.jhub_namespace
-# }
-
+locals {
+  nfs_volumes = var.use_shared_volume ? { "nfs-volume" = var.shared_storage_capacity } : {}
+}
 
 module "shared-nfs" {
-  source    = "../shared-nfs"
-  name      = "nfs-volume"
-  namespace = var.jhub_namespace
-  zone      = var.gcp_zone
-  region    = var.region
-  project_id = var.project_id
-  volumes = {
-    "nfs-volume" = 2
-  }
+  #When we upgrade to terraform v0.13, the count should live here instead of residing inside every resource in the nfs module
+  #count = var.use_shared_volume ? 1 : 0
+  source            = "../shared-nfs"
+  name              = "shared-storage"
+  use_shared_volume = var.use_shared_volume
+  namespace         = var.jhub_namespace
+  zone              = var.gcp_zone
+  project_id        = var.project_id
+  volumes           = local.nfs_volumes
 }
 
 locals {
@@ -124,13 +120,16 @@ resource "helm_release" "jhub" {
     }
   }
 
-#   dynamic "set" {
-#     for_each = var.use_shared_volume == false ? {} : local.share_volume_helm
-#     content {
-#       name  = set.key
-#       value = set.value
-#     }
-#   }
+  # This is to set the NFS-shared related variables 
+  # Syntax didn't work out, but we should revisit as having it in the Helm values file doesn't
+  # allow us to set the name according to the variables
+  #   dynamic "set" {
+  #     for_each = var.use_shared_volume == false ? {} : local.share_volume_helm
+  #     content {
+  #       name  = set.key
+  #       value = set.value
+  #     }
+  #   }
 
   depends_on = [local.helm_release_wait_condition]
 }

@@ -432,9 +432,9 @@ variable "use_shared_volume" {
 }
 
 variable "shared_storage_capacity" {
-  type        = string
+  type        = number
   description = "Size of the shared volume"
-  default     = "10Gi"
+  default     = 5
 }
 
 # ---------------------------------------------------------------
@@ -504,7 +504,7 @@ variable "auth_secretkeyvaluemap" {
   type        = map(string)
   description = "Key Value Map for secret variables used by the authenticator"
   default = {
-    "auth.dummy.password" = "dummy_password"
+    "auth.dummy.password"  = "dummy_password"
     "auth.dummy2.password" = "dummy_password"
   }
 }

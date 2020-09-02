@@ -50,7 +50,7 @@ code by adding a `module` configuration and setting its `source` parameter to UR
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | activate\_apis | The list of apis to activate within the project | `list(string)` | `[]` | no |
-| auth\_secretkeyvaluemap | Key Value Map for secret variables used by the authenticator | `map(string)` | <pre>{<br>  "auth.dummy.password": "dummy_password"<br>}</pre> | no |
+| auth\_secretkeyvaluemap | Key Value Map for secret variables used by the authenticator | `map(string)` | <pre>{<br>  "auth.dummy.password": "dummy_password",<br>  "auth.dummy2.password": "dummy_password"<br>}</pre> | no |
 | auth\_type | Type OAuth e.g google | `string` | `"dummy"` | no |
 | auto\_create\_network | Auto create default network. | `bool` | `false` | no |
 | automount\_service\_account\_token | Enable automatin mounting of the service account token | `bool` | `true` | no |
@@ -113,7 +113,7 @@ code by adding a `module` configuration and setting its `source` parameter to UR
 | scale\_up\_command | Command for scale-up cron job | `list(string)` | <pre>[<br>  "kubectl",<br>  "scale",<br>  "--replicas=3",<br>  "statefulset/user-placeholder"<br>]</pre> | no |
 | scale\_up\_name | Name of scale-up cron job | `string` | `"scale-up"` | no |
 | scale\_up\_schedule | Schedule for scale-up cron job | `string` | `"1 6 * * 1-5"` | no |
-| shared\_storage\_capacity | Size of the shared volume | `string` | `"10Gi"` | no |
+| shared\_storage\_capacity | Size of the shared volume | `number` | `5` | no |
 | site\_certificate | File containing the TLS certificate | `string` | n/a | yes |
 | site\_certificate\_key | File containing the TLS certificate key | `string` | n/a | yes |
 | skip\_provisioners | Flag to skip local-exec provisioners | `bool` | `false` | no |
@@ -123,7 +123,7 @@ code by adding a `module` configuration and setting its `source` parameter to UR
 | subnet\_private\_access | Whether this subnet will have private Google access enabled | `string` | `"true"` | no |
 | subnetwork | The subnetwork to host the cluster in | `string` | `"kubernetes-subnet"` | no |
 | tls\_secret\_name | TLS secret name used in secret creation, it must match with what is used by user in helm chart | `string` | `"jupyterhub-tls"` | no |
-| use\_share\_volume | Whether to use a shared NFS volume | `bool` | `false` | no |
+| use\_shared\_volume | Whether to use a shared NFS volume | `bool` | `false` | no |
 | user\_pool\_auto\_repair | Enable auto-repair of user pool | `bool` | `true` | no |
 | user\_pool\_auto\_upgrade | Enable auto-upgrade of user pool | `bool` | `true` | no |
 | user\_pool\_disk\_size\_gb | Size of disk for user pool | `number` | `100` | no |

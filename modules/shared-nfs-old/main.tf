@@ -6,8 +6,8 @@
 resource "kubernetes_secret" "nfs-secret" {
   count = var.use_shared_volume ? 1 : 0
   metadata {
-    name = "nfs-secret"
-    namespace  = var.jhub_namespace
+    name      = "nfs-secret"
+    namespace = var.jhub_namespace
   }
 }
 
@@ -15,8 +15,8 @@ resource "kubernetes_secret" "nfs-secret" {
 resource "kubernetes_service_account" "nfs-sa" {
   count = var.use_shared_volume ? 1 : 0
   metadata {
-    name = "nfs-sa"
-    namespace  = var.jhub_namespace
+    name      = "nfs-sa"
+    namespace = var.jhub_namespace
   }
 
   secret {
@@ -49,8 +49,8 @@ resource "kubernetes_persistent_volume_claim" "jupyterhub-storage-claim" {
   count = var.use_shared_volume ? 1 : 0
 
   metadata {
-    name = "jupyterhub-storage-claim"
-    namespace  = var.jhub_namespace
+    name      = "jupyterhub-storage-claim"
+    namespace = var.jhub_namespace
   }
 
   spec {
@@ -73,8 +73,8 @@ resource "kubernetes_persistent_volume_claim" "jupyterhub-storage-claim" {
 resource "kubernetes_pod" "jupyter-nfs" {
   count = var.use_shared_volume ? 1 : 0
   metadata {
-    name = "jupyter-nfs"
-    namespace  = var.jhub_namespace
+    name      = "jupyter-nfs"
+    namespace = var.jhub_namespace
     labels = {
       app = "jupyter-nfs"
     }
@@ -128,8 +128,8 @@ resource "kubernetes_service" "jupyter-nfs" {
   count = var.use_shared_volume ? 1 : 0
 
   metadata {
-    name = "jupyter-nfs"
-    namespace  = var.jhub_namespace
+    name      = "jupyter-nfs"
+    namespace = var.jhub_namespace
   }
 
   spec {

@@ -106,9 +106,9 @@ variable "use_shared_volume" {
 }
 
 variable "shared_storage_capacity" {
-  type        = string
+  type        = number
   description = "Size of the shared volume"
-  default     = "10Gi"
+  default     = 5
 }
 
 variable "region" {
@@ -123,8 +123,8 @@ variable "gcp_zone" {
   default     = "us-east1-b"
 }
 
-variable "project_id"{
-    
+variable "project_id" {
+
 }
 
 # --------------------------------------
