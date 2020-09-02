@@ -425,7 +425,7 @@ variable "user_pool_oauth_scope" {
 # ---------------------------------------------------------------
 #  SHARE NFS VARIABLES
 # ---------------------------------------------------------------
-variable "use_share_volume" {
+variable "use_shared_volume" {
   type        = bool
   description = "Whether to use a shared NFS volume"
   default     = false

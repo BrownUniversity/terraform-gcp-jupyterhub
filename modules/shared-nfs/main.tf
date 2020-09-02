@@ -1,8 +1,13 @@
+# provider "kubernetes" {
+#   config_context = var.kubernetes_context
+# }
+
 
 resource "kubernetes_secret" "nfs-secret" {
   count = var.use_shared_volume ? 1 : 0
   metadata {
     name = "nfs-secret"
+    namespace  = var.jhub_namespace
   }
 }
 
@@ -11,10 +16,11 @@ resource "kubernetes_service_account" "nfs-sa" {
   count = var.use_shared_volume ? 1 : 0
   metadata {
     name = "nfs-sa"
+    namespace  = var.jhub_namespace
   }
 
   secret {
-    name = kubernetes_secret.nfs-secret.metadata.0.name
+    name = kubernetes_secret.nfs-secret[count.index].metadata.0.name
   }
 }
 
@@ -34,7 +40,7 @@ resource "kubernetes_storage_class" "jupyter-storage" {
 
   storage_provisioner = "kubernetes.io/gce-pd"
 
-  parameters {
+  parameters = {
     type = "pd-standard"
   }
 }
@@ -44,14 +50,15 @@ resource "kubernetes_persistent_volume_claim" "jupyterhub-storage-claim" {
 
   metadata {
     name = "jupyterhub-storage-claim"
+    namespace  = var.jhub_namespace
   }
 
   spec {
     access_modes       = ["ReadWriteOnce"]
-    storage_class_name = kubernetes_storage_class.jupyter-storage.metadata.0.name
+    storage_class_name = kubernetes_storage_class.jupyter-storage[count.index].metadata.0.name
 
     resources {
-      requests {
+      requests = {
         storage = var.shared_storage_capacity
       }
     }
@@ -67,14 +74,14 @@ resource "kubernetes_pod" "jupyter-nfs" {
   count = var.use_shared_volume ? 1 : 0
   metadata {
     name = "jupyter-nfs"
-
-    labels {
+    namespace  = var.jhub_namespace
+    labels = {
       app = "jupyter-nfs"
     }
   }
 
   spec {
-    service_account_name = kubernetes_service_account.nfs-sa.metadata.0.name
+    service_account_name = kubernetes_service_account.nfs-sa[count.index].metadata.0.name
 
     container {
       image = "gcr.io/google-samples/nfs-server:1.1"
@@ -109,7 +116,7 @@ resource "kubernetes_pod" "jupyter-nfs" {
       name = "nfs-export-volume"
 
       persistent_volume_claim {
-        claim_name = kubernetes_persistent_volume_claim.jupyterhub-storage-claim.metadata.0.name
+        claim_name = kubernetes_persistent_volume_claim.jupyterhub-storage-claim[count.index].metadata.0.name
       }
     }
   }
@@ -118,13 +125,16 @@ resource "kubernetes_pod" "jupyter-nfs" {
 
 ## NFS Server Service
 resource "kubernetes_service" "jupyter-nfs" {
+  count = var.use_shared_volume ? 1 : 0
+
   metadata {
     name = "jupyter-nfs"
+    namespace  = var.jhub_namespace
   }
 
   spec {
-    selector {
-      app = kubernetes_pod.jupyter-nfs.metadata.0.labels.app
+    selector = {
+      app = kubernetes_pod.jupyter-nfs[count.index].metadata.0.labels.app
     }
 
     port {
@@ -146,12 +156,13 @@ resource "kubernetes_service" "jupyter-nfs" {
 
 ## NFS Server as persistent volume
 resource "kubernetes_persistent_volume" "nfs-volume" {
+  count = var.use_shared_volume ? 1 : 0
   metadata {
     name = "nfs-volume"
   }
 
   spec {
-    capacity {
+    capacity = {
       storage = var.shared_storage_capacity
     }
 
@@ -160,7 +171,7 @@ resource "kubernetes_persistent_volume" "nfs-volume" {
     persistent_volume_source {
       nfs {
         path   = "/exports"
-        server = kubernetes_service.jupyter-nfs.metadata.0.name
+        server = kubernetes_service.jupyter-nfs[count.index].metadata.0.name
       }
     }
   }

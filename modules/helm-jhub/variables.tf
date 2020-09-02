@@ -99,16 +99,16 @@ variable "auth_secretkeyvaluemap" {
 # ---------------------------------------------------------------
 #  SHARE NFS VARIABLES
 # ---------------------------------------------------------------
-variable "use_share_volume" {
+variable "use_shared_volume" {
   type        = bool
   description = "Whether to use a shared NFS volume"
   default     = false
 }
 
-variable "shared_volume_name" {
+variable "shared_storage_capacity" {
   type        = string
-  description = "Name of the NFS shared volume"
-  default     = ""
+  description = "Size of the shared volume"
+  default     = "10Gi"
 }
 
 

@@ -150,12 +150,6 @@ data "null_data_source" "context" {
   depends_on = [null_resource.cluster_credentials]
 }
 
-module "shared-nfs" {
-  source                  = "./modules/shared-nfs"
-  use_shared_volume       = var.use_shared_volume
-  shared_storage_capacity = var.shared_storage_capacity
-}
-
 # ------------------------------------------------------------
 #  HELM
 # ------------------------------------------------------------
@@ -185,5 +179,5 @@ module "jhub_helm" {
 
   #shared volume 
   use_shared_volume = var.use_shared_volume
-  share_volume_name = module.shared-nfs.name
+  shared_storage_capacity = var.shared_storage_capacity
 }

@@ -60,10 +60,14 @@ module "sample-jhub" {
   user_pool_preemptible        = false
   user_pool_initial_node_count = 1
 
-  # ---------------- HELM/JHUB VARIABLES -----------------------
+  # ---------------- TLS -----------------------
   create_tls_secret    = true
   site_certificate     = file(var.site_certificate_file)
   site_certificate_key = file(var.site_certificate_key_file)
+
+  # ---------------- NFS -----------------------
+  use_shared_volume = true
+  shared_storage_capacity = "2Gi"
 
   # ---------------- HELM/JHUB VARIABLES -----------------------
   jhub_helm_version   = "0.9.0"
