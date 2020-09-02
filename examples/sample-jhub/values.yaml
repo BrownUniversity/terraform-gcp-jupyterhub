@@ -28,6 +28,7 @@ singleuser:
     postStart:
       exec:
         command: ["/bin/sh", "-c", "chmod -f 600 /home/jovyan/.ssh/id_rsa || true;"]
+  #----Needed for shared NFS Volume
   extraEnv:
     CHOWN_HOME: "yes"
     CHOWN_HOME_OPTS: '-R'
@@ -45,6 +46,7 @@ singleuser:
     extraVolumeMounts:
       - name: jupyterhub-shared
         mountPath: /home/jovyan/shared
+  #----End of shared NFS Volume
 proxy:
   https:
     enabled: true
