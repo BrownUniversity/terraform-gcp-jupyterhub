@@ -423,6 +423,21 @@ variable "user_pool_oauth_scope" {
 
 
 # ---------------------------------------------------------------
+#  SHARE NFS VARIABLES
+# ---------------------------------------------------------------
+variable "use_share_volume" {
+  type        = bool
+  description = "Whether to use a shared NFS volume"
+  default     = false
+}
+
+variable "shared_storage_capacity" {
+  type        = string
+  description = "Size of the shared volume"
+  default     = "10Gi"
+}
+
+# ---------------------------------------------------------------
 #  TLS VARIABLES
 # ---------------------------------------------------------------
 variable "create_tls_secret" {

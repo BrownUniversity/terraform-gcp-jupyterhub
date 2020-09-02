@@ -96,6 +96,22 @@ variable "auth_secretkeyvaluemap" {
   }
 }
 
+# ---------------------------------------------------------------
+#  SHARE NFS VARIABLES
+# ---------------------------------------------------------------
+variable "use_share_volume" {
+  type        = bool
+  description = "Whether to use a shared NFS volume"
+  default     = false
+}
+
+variable "shared_volume_name" {
+  type        = string
+  description = "Name of the NFS shared volume"
+  default     = ""
+}
+
+
 # --------------------------------------
 #   Cron Jobs
 # --------------------------------------

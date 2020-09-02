@@ -53,9 +53,14 @@ resource "kubernetes_secret" "tls_secret" {
 
 locals {
   helm_release_wait_condition = length(kubernetes_secret.tls_secret) > 0 ? kubernetes_secret.tls_secret[0].metadata[0].name : kubernetes_namespace.jhub.metadata[0].name
+  share_volume_helm = {
+    "singleuser.storage.extraVolumes[0].name"                                 = "nfs-shared"
+    "singleuser.storage.extraVolumes[0].persistentVolumeClaim.claimName"      = var.shared_claim_name
+    "singleuser.storage.extraVolumeMounts[0].name"                            = "nfs-shared"
+    "singleuser.storage.extraVolumeMounts[0].persistentVolumeClaim.claimName" = "/home/jovyan/shared/"
+  }
 }
 
- 
 resource "helm_release" "jhub" {
 
   name       = "jhub"
@@ -96,6 +101,14 @@ resource "helm_release" "jhub" {
     content {
       name  = set_sensitive.key
       value = set_sensitive.value
+    }
+  }
+
+  dynamic "set" {
+    for_each = var.use_shared_volume == false ? [] : local.share_volume_helm
+    content {
+      name  = set.key
+      value = set.value
     }
   }
 

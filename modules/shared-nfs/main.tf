@@ -1,5 +1,6 @@
 
 resource "kubernetes_secret" "nfs-secret" {
+  count = var.use_shared_volume ? 1 : 0
   metadata {
     name = "nfs-secret"
   }
@@ -7,12 +8,13 @@ resource "kubernetes_secret" "nfs-secret" {
 
 #service account for PODs, this service account is for Kubernetes, not Google
 resource "kubernetes_service_account" "nfs-sa" {
+  count = var.use_shared_volume ? 1 : 0
   metadata {
     name = "nfs-sa"
   }
 
   secret {
-    name = "${kubernetes_secret.nfs-secret.metadata.0.name}"
+    name = kubernetes_secret.nfs-secret.metadata.0.name
   }
 }
 
@@ -25,6 +27,7 @@ resource "kubernetes_service_account" "nfs-sa" {
 # See https://github.com/hashicorp/terraform-provider-kubernetes/issues/102
 
 resource "kubernetes_storage_class" "jupyter-storage" {
+  count = var.use_shared_volume ? 1 : 0
   metadata {
     name = "jupyter-storage"
   }
@@ -37,13 +40,15 @@ resource "kubernetes_storage_class" "jupyter-storage" {
 }
 
 resource "kubernetes_persistent_volume_claim" "jupyterhub-storage-claim" {
+  count = var.use_shared_volume ? 1 : 0
+
   metadata {
     name = "jupyterhub-storage-claim"
   }
 
   spec {
     access_modes       = ["ReadWriteOnce"]
-    storage_class_name = "${kubernetes_storage_class.jupyter-storage.metadata.0.name}"
+    storage_class_name = kubernetes_storage_class.jupyter-storage.metadata.0.name
 
     resources {
       requests {
@@ -59,6 +64,7 @@ resource "kubernetes_persistent_volume_claim" "jupyterhub-storage-claim" {
 # ------------------------------------------------------------
 
 resource "kubernetes_pod" "jupyter-nfs" {
+  count = var.use_shared_volume ? 1 : 0
   metadata {
     name = "jupyter-nfs"
 
@@ -68,7 +74,7 @@ resource "kubernetes_pod" "jupyter-nfs" {
   }
 
   spec {
-    service_account_name = "${kubernetes_service_account.nfs-sa.metadata.0.name}"
+    service_account_name = kubernetes_service_account.nfs-sa.metadata.0.name
 
     container {
       image = "gcr.io/google-samples/nfs-server:1.1"
@@ -103,7 +109,7 @@ resource "kubernetes_pod" "jupyter-nfs" {
       name = "nfs-export-volume"
 
       persistent_volume_claim {
-        claim_name = "${kubernetes_persistent_volume_claim.jupyterhub-storage-claim.metadata.0.name}"
+        claim_name = kubernetes_persistent_volume_claim.jupyterhub-storage-claim.metadata.0.name
       }
     }
   }
@@ -118,7 +124,7 @@ resource "kubernetes_service" "jupyter-nfs" {
 
   spec {
     selector {
-      app = "${kubernetes_pod.jupyter-nfs.metadata.0.labels.app}"
+      app = kubernetes_pod.jupyter-nfs.metadata.0.labels.app
     }
 
     port {
@@ -154,7 +160,7 @@ resource "kubernetes_persistent_volume" "nfs-volume" {
     persistent_volume_source {
       nfs {
         path   = "/exports"
-        server = "${kubernetes_service.jupyter-nfs.metadata.0.name}"
+        server = kubernetes_service.jupyter-nfs.metadata.0.name
       }
     }
   }
@@ -167,7 +173,7 @@ resource "kubernetes_persistent_volume" "nfs-volume" {
 #
 #  spec {
 #    access_modes = ["ReadWriteMany"]
-#    volume_name = "${kubernetes_persistent_volume.nfs-volume.metadata.0.name}"
+#    volume_name = kubernetes_persistent_volume.nfs-volume.metadata.0.name
 ##    storage_class_name = """"
 #    resources {
 #      requests {

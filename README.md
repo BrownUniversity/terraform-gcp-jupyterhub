@@ -113,6 +113,7 @@ code by adding a `module` configuration and setting its `source` parameter to UR
 | scale\_up\_command | Command for scale-up cron job | `list(string)` | <pre>[<br>  "kubectl",<br>  "scale",<br>  "--replicas=3",<br>  "statefulset/user-placeholder"<br>]</pre> | no |
 | scale\_up\_name | Name of scale-up cron job | `string` | `"scale-up"` | no |
 | scale\_up\_schedule | Schedule for scale-up cron job | `string` | `"1 6 * * 1-5"` | no |
+| shared\_storage\_capacity | Size of the shared volume | `string` | `"10Gi"` | no |
 | site\_certificate | File containing the TLS certificate | `string` | n/a | yes |
 | site\_certificate\_key | File containing the TLS certificate key | `string` | n/a | yes |
 | skip\_provisioners | Flag to skip local-exec provisioners | `bool` | `false` | no |
@@ -122,6 +123,7 @@ code by adding a `module` configuration and setting its `source` parameter to UR
 | subnet\_private\_access | Whether this subnet will have private Google access enabled | `string` | `"true"` | no |
 | subnetwork | The subnetwork to host the cluster in | `string` | `"kubernetes-subnet"` | no |
 | tls\_secret\_name | TLS secret name used in secret creation, it must match with what is used by user in helm chart | `string` | `"jupyterhub-tls"` | no |
+| use\_share\_volume | Whether to use a shared NFS volume | `bool` | `false` | no |
 | user\_pool\_auto\_repair | Enable auto-repair of user pool | `bool` | `true` | no |
 | user\_pool\_auto\_upgrade | Enable auto-upgrade of user pool | `bool` | `true` | no |
 | user\_pool\_disk\_size\_gb | Size of disk for user pool | `number` | `100` | no |
