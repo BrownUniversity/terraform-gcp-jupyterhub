@@ -28,6 +28,25 @@ singleuser:
     postStart:
       exec:
         command: ["/bin/sh", "-c", "chmod -f 600 /home/jovyan/.ssh/id_rsa || true;"]
+  #----Needed for shared NFS Volume
+  extraEnv:
+    CHOWN_HOME: "yes"
+    CHOWN_HOME_OPTS: '-R'
+    # GRANT_SUDO: "yes"
+    CHOWN_EXTRA: "/home/jovyan/shared"
+    CHOWN_EXTRA_OPTS: '-R'
+  uid: 0
+  fsGid: 0
+  cmd: "start-singleuser.sh"
+  storage:
+    extraVolumes:
+      - name: jupyterhub-shared
+        persistentVolumeClaim:
+          claimName: nfs-volume
+    extraVolumeMounts:
+      - name: jupyterhub-shared
+        mountPath: /home/jovyan/shared
+  #----End of shared NFS Volume
 proxy:
   https:
     enabled: true
