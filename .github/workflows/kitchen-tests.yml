@@ -3,19 +3,19 @@ name: kitchen-tests
 on: [workflow_dispatch]
 
 jobs:
-  docker:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Build and Push to Docker Hub
-        uses: docker/build-push-action@v1
-        with:
-          username: ${{ secrets.CCV_DOCKERHUB_USER }}
-          password: ${{ secrets.CCV_DOCKERHUB_TOKEN }}
-          repository: brownccv/kitchen-terraform
-          tags: jhub
+  # docker:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - name: Build and Push to Docker Hub
+  #       uses: docker/build-push-action@v1
+  #       with:
+  #         username: ${{ secrets.CCV_DOCKERHUB_USER }}
+  #         password: ${{ secrets.CCV_DOCKERHUB_TOKEN }}
+  #         repository: brownccv/kitchen-terraform
+  #         tags: jhub
   test:
-    needs: [docker]
+    # needs: [docker]
     runs-on: self-hosted
     container:
       image: brownccv/kitchen-terraform:jhub
@@ -26,12 +26,13 @@ jobs:
     - name: Pre-check dirty dirs in self-hosted
       run: |
         ls -la .kitchen
-    # - name: Remove Kitchen File
-      # run: rm -rf .kitchen
+        ls -la examples/sample-jhub
+    - name: Remove Kitchen File
+      run: rm -rf .kitchen
     - name: Remove Terraform Folder
       run: rm -rf examples/sample-jhub/.terraform
     - name: Remove Terraform File
-      run: rm -rf examples/sample-jhub/terraform.tfstate.d
+      run: rm -rf examples/sample-jhub/terraform.tfstate*
     - name: Create Credential File
       run: |
         echo "$GCP_CREDENTIAL_JSON" | base64 -d > /tmp/credentials.json
@@ -68,7 +69,7 @@ jobs:
     - name: Remove Terraform Folder
       run: rm -rf examples/sample-jhub/.terraform
     - name: Remove Terraform File
-      run: rm -rf examples/sample-jhub/terraform.tfstate.d
+      run: rm -rf examples/sample-jhub/terraform.tfstate*
     - name: Post-check dirty dirs in self-hosted
       run: |
         ls -la 
@@ -93,7 +94,7 @@ jobs:
   #   - name: Remove Terraform Folder
   #     run: rm -rf examples/sample-jhub-nfs/.terraform
   #   - name: Remove Terraform File
-  #     run: rm -rf examples/sample-jhub-nfs/terraform.tfstate.d
+  #     run: rm -rf examples/sample-jhub-nfs/terraform.tfstate*
   #   - name: Create Credential File
   #     run: |
   #       echo "$GCP_CREDENTIAL_JSON" | base64 -d > /tmp/credentials.json
@@ -128,7 +129,7 @@ jobs:
   #   - name: Remove Terraform Folder
   #     run: rm -rf examples/sample-jhub-nfs/.terraform
   #   - name: Remove Terraform File
-  #     run: rm -rf examples/sample-jhub-nfs/terraform.tfstate.d
+  #     run: rm -rf examples/sample-jhub-nfs/terraform.tfstate*
   #   - name: Post-check dirty dirs in self-hosted
   #     run: |
   #       ls -la 
