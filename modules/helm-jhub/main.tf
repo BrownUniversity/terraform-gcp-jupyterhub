@@ -40,7 +40,7 @@ resource "kubernetes_secret" "tls_secret" {
 
   metadata {
     name      = var.tls_secret_name
-    namespace = var.jhub_namespace
+    namespace = kubernetes_namespace.jhub.metadata[0].name
   }
 
   data = {
@@ -48,7 +48,6 @@ resource "kubernetes_secret" "tls_secret" {
     "tls.key" = "${var.site_certificate_key}"
   }
 
-  depends_on = [kubernetes_namespace.jhub]
 }
 
 locals {
@@ -61,7 +60,7 @@ module "shared-nfs" {
   source            = "../shared-nfs"
   name              = "shared-storage"
   use_shared_volume = var.use_shared_volume
-  namespace         = var.jhub_namespace
+  namespace         = kubernetes_namespace.jhub.metadata[0].name
   zone              = var.gcp_zone
   project_id        = var.project_id
   volumes           = local.nfs_volumes
@@ -131,7 +130,7 @@ resource "helm_release" "jhub" {
   #     }
   #   }
 
-  depends_on = [local.helm_release_wait_condition]
+  depends_on = [local.helm_release_wait_condition, module.shared-nfs]
 }
 
 # ------------------------------------------------------------
