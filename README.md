@@ -74,6 +74,7 @@ code by adding a `module` configuration and setting its `source` parameter to UR
 | default\_service\_account | Project default service account setting: can be one of delete, depriviledge, or keep. | `string` | `"delete"` | no |
 | description | VPC description | `string` | `"Deployed through Terraform."` | no |
 | disable\_dependent\_services | Whether services that are enabled and which depend on this service should also be disabled when this service is destroyed. | `string` | `"true"` | no |
+| dns\_manager | Service used to manage your DNS | `string` | `"infoblox"` | no |
 | enable\_private\_nodes | (Beta) Whether nodes have internal IP addresses only | `bool` | `false` | no |
 | folder\_id | The ID of a folder to host this project | `any` | n/a | yes |
 | gcp\_zone | The GCP zone to deploy the runner into. | `string` | `"us-east1-b"` | no |
@@ -143,6 +144,7 @@ code by adding a `module` configuration and setting its `source` parameter to UR
 | Name | Description |
 |------|-------------|
 | cluster\_name | Cluster name |
+| hub\_ip | Static IP assigned to the Jupyter Hub |
 | location | n/a |
 | project\_id | Project ID |
 | project\_name | Project Name |

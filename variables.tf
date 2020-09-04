@@ -1,55 +1,55 @@
 # ---------------------------------------------------------------
 #  PROJECT VARIABLES
 # ---------------------------------------------------------------
-variable org_id {
+variable "org_id" {
   type        = number
   description = "Organization id."
 }
 
-variable billing_account {
+variable "billing_account" {
   type        = string
   description = "Billing account id."
 }
 
-variable project_name {
+variable "project_name" {
   type        = string
   description = "Name of the project."
 }
 
-variable random_project_id {
+variable "random_project_id" {
   type        = bool
   description = "Enable random number to the end of the project."
   default     = true
 }
 
-variable auto_create_network {
+variable "auto_create_network" {
   type        = bool
   description = "Auto create default network."
   default     = false
 }
 
-variable activate_apis {
+variable "activate_apis" {
   type        = list(string)
   description = "The list of apis to activate within the project	"
   default     = []
 }
 
-variable folder_id {
+variable "folder_id" {
   description = "The ID of a folder to host this project"
 }
 
-variable default_service_account {
+variable "default_service_account" {
   type        = string
   description = "Project default service account setting: can be one of delete, depriviledge, or keep."
   default     = "delete"
 }
-variable disable_dependent_services {
+variable "disable_dependent_services" {
   type        = string
   description = "Whether services that are enabled and which depend on this service should also be disabled when this service is destroyed."
   default     = "true"
 }
 
-variable labels {
+variable "labels" {
   type        = map(string)
   description = "Map of labels for project."
   default = {
@@ -62,43 +62,43 @@ variable labels {
 #  VPC VARIABLES
 # ---------------------------------------------------------------
 
-variable network_name {
+variable "network_name" {
   type        = string
   description = "Name of the VPC."
   default     = "kubernetes-vpc"
 }
 
-variable routing_mode {
+variable "routing_mode" {
   type        = string
   description = "Routing mode. GLOBAL or REGIONAL"
   default     = "GLOBAL"
 }
 
-variable subnet_name {
+variable "subnet_name" {
   type        = string
   description = "Name of the subnet."
   default     = "kubernetes-subnet"
 }
 
-variable subnet_ip {
+variable "subnet_ip" {
   type        = string
   description = "Subnet IP CIDR."
   default     = "10.0.0.0/17"
 }
 
-variable subnet_private_access {
+variable "subnet_private_access" {
   type        = string
   description = "Whether this subnet will have private Google access enabled"
   default     = "true"
 }
 
-variable subnet_flow_logs {
+variable "subnet_flow_logs" {
   type        = string
   description = "Whether the subnet will record and send flow log data to logging"
   default     = "true"
 }
 
-variable description {
+variable "description" {
   type        = string
   description = "VPC description"
   default     = "Deployed through Terraform."
@@ -116,13 +116,13 @@ variable "ip_range_services" {
   default     = "192.168.64.0/18"
 }
 
-variable range_name_pods {
+variable "range_name_pods" {
   type        = string
   description = "The range name for pods"
   default     = "kubernetes-pods"
 }
 
-variable range_name_services {
+variable "range_name_services" {
   type        = string
   description = "The range name for services"
   default     = "kubernetes-services"
@@ -131,6 +131,12 @@ variable range_name_services {
 # --------------------------------------
 #   Infoblox
 # --------------------------------------
+variable "dns_manager" {
+  description = "Service used to manage your DNS"
+  type        = string
+  default     = "infoblox"
+}
+
 variable "infoblox_username" {
   description = "Username to authenticate with Infoblox server"
   type        = string
