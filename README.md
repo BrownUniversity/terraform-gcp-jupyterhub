@@ -2,7 +2,17 @@
 
 ![kitchen-tests](https://github.com/BrownUniversity/terraform-gcp-jupyterhub/workflows/kitchen-tests/badge.svg)
 
-This repository defines a [Terraform module](https://www.terraform.io/docs/modules/usage.html), which you can use in your code by adding a `module` configuration and setting its `source` parameter to URL of this folder.  See the [examples](/examples) folder for guidance
+This repository defines a [Terraform module](https://www.terraform.io/docs/modules/usage.html), which you can use in your code by adding a `module` configuration and setting its `source` parameter to URL of this folder.  This module builds a Kubernetes-based JupyterHub in Google Cloud as used by Brown University. 
+
+In general this module of JupyterHub is configured as follows:
+
+* Two pools: one for the core components, one for user pods
+* Authentication (Google OAuth has been tested, other arepossible), dummy authenticator is the default.
+* We currently use Infoblox to configure our DNS, we will be making that optional in the future.
+* We provide scale-up and scale-down cronjobs that can change the number of replicas to have nodes be warm for users during class-time.
+* Optional shared nfs volume (for shared data, for instance).
+
+For general terraform examples see the[examples](/examples) folder. In practice we deploy one hub per class at Brown. Since most of the deployments are very simplicat, we use Terragrunt to keep configurations concise. While our deployment repository is not public at this moment, we hope to provide and example soon. 
 
 # Contents:
 
