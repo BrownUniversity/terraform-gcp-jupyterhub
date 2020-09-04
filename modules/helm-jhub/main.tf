@@ -89,7 +89,7 @@ resource "helm_release" "jhub" {
     "${file(var.helm_values_file)}"
   ]
 
-  set {
+  set_sensitive {
     name  = "proxy.secretToken"
     value = random_id.jhub_proxy_token.hex
   }
