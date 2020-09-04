@@ -25,14 +25,15 @@ jobs:
         clean: false #this is to avoid permissions on self-hosted runner
     - name: Pre-check dirty dirs in self-hosted
       run: |
+        ls -la ~
         ls -la .kitchen
         ls -la examples/sample-jhub
+        ls -la examples/sample-jhub-nfs
     - name: Remove Kitchen File
-      run: rm -rf .kitchen
-    - name: Remove Terraform Folder
-      run: rm -rf examples/sample-jhub/.terraform
-    - name: Remove Terraform File
-      run: rm -rf examples/sample-jhub/terraform.tfstate*
+      run: |
+        rm -rf .kitchen
+        rm -rf examples/*/.terraform
+        rm -rf examples/*/terraform.tfstate*
     - name: Create Credential File
       run: |
         echo "$GCP_CREDENTIAL_JSON" | base64 -d > /tmp/credentials.json
@@ -62,19 +63,16 @@ jobs:
         TF_VAR_site_certificate_key_file: /tmp/tls.key
         GOOGLE_APPLICATION_CREDENTIALS: /tmp/credentials.json
         KUBECONFIG: /tmp/kube_config
-    - name: Remove Kitchen File
+    - name: Clean kitchen and terraform files
       run: |
-        rm -rf .kitchen/sample-jhub-terraform.yml
-        rm -rf .kitchen/logs/sample-jhub-terraform.log
-    - name: Remove Terraform Folder
-      run: rm -rf examples/sample-jhub/.terraform
-    - name: Remove Terraform File
-      run: rm -rf examples/sample-jhub/terraform.tfstate*
+        rm -rf .kitchen
+        rm -rf examples/*/.terraform
+        rm -rf examples/*/terraform.tfstate*
     - name: Post-check dirty dirs in self-hosted
       run: |
-        ls -la 
-        ls -la examples/sample-jhub/
-        ls -la ~/.kube
+        ls -la .kitchen
+        ls -la examples/sample-jhub
+        ls -la examples/sample-jhub-nfs
         ls -la ~
   
   # test-nfs:
