@@ -25,13 +25,9 @@ jobs:
         clean: false #this is to avoid permissions on self-hosted runner
     - name: Pre-check dirty dirs in self-hosted
       run: |
-        ls -la 
-        ls -la examples/sample-jhub/
-        ls -la ~/.kube
-        ls -la ~
-        ls -la /tmp
-    - name: Remove Kitchen File
-      run: rm -rf .kitchen
+        ls -la .kitchen
+    # - name: Remove Kitchen File
+      # run: rm -rf .kitchen
     - name: Remove Terraform Folder
       run: rm -rf examples/sample-jhub/.terraform
     - name: Remove Terraform File
@@ -53,7 +49,7 @@ jobs:
       env:
         KUBECONFIG: /tmp/kube_config
     - name: Run Kitchen
-      run: kitchen test
+      run: kitchen test sample-jhub
       env:
         TF_VAR_billing_account: ${{ secrets.GCP_BILLING_ACCOUNT }}
         TF_VAR_org_id: ${{ secrets.GCP_ORG_ID }}
@@ -65,8 +61,8 @@ jobs:
         TF_VAR_site_certificate_key_file: /tmp/tls.key
         GOOGLE_APPLICATION_CREDENTIALS: /tmp/credentials.json
         KUBECONFIG: /tmp/kube_config
-    - name: Remove Kitchen File
-      run: rm -rf .kitchen
+    # - name: Remove Kitchen File
+    #   run: rm -rf .kitchen
     - name: Remove Terraform Folder
       run: rm -rf examples/sample-jhub/.terraform
     - name: Remove Terraform File
@@ -77,9 +73,69 @@ jobs:
         ls -la examples/sample-jhub/
         ls -la ~/.kube
         ls -la ~
+  
+  test-nfs:
+    needs: [docker]
+    runs-on: self-hosted
+    container:
+      image: brownccv/kitchen-terraform:jhub
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        clean: false #this is to avoid permissions on self-hosted runner
+    - name: Pre-check dirty dirs in self-hosted
+      run: |
+        ls -la .kitchen
+    # - name: Remove Kitchen File
+    #   run: rm -rf .kitchen
+    - name: Remove Terraform Folder
+      run: rm -rf examples/sample-jhub-nfs/.terraform
+    - name: Remove Terraform File
+      run: rm -rf examples/sample-jhub-nfs/terraform.tfstate.d
+    - name: Create Credential File
+      run: |
+        echo "$GCP_CREDENTIAL_JSON" | base64 -d > /tmp/credentials.json
+      env:
+        GCP_CREDENTIAL_JSON: ${{ secrets.GCP_CREDENTIAL_JSON}}
+    - name: Create TLS Files
+      run: |
+        echo "$JUPYTERHUB_TLS_CER" > /tmp/tls.cer
+        echo "$JUPYTERHUB_TLS_KEY" > /tmp/tls.key
+      env:
+        JUPYTERHUB_TLS_CER: ${{ secrets.JUPYTERHUB_TLS_CER }}
+        JUPYTERHUB_TLS_KEY: ${{ secrets.JUPYTERHUB_TLS_KEY }}
+    - name: Authorize service account
+      run: gcloud auth activate-service-account ${{ secrets.GCP_PF_SA }} --key-file=/tmp/credentials.json
+      env:
+        KUBECONFIG: /tmp/kube_config
+    - name: Run Kitchen
+      run: kitchen test sample-jhub-nfs
+      env:
+        TF_VAR_billing_account: ${{ secrets.GCP_BILLING_ACCOUNT }}
+        TF_VAR_org_id: ${{ secrets.GCP_ORG_ID }}
+        TF_VAR_folder_id: ${{ secrets.GCP_CCV_CI_FOLDER_ID }}
+        TF_VAR_infoblox_username: ${{ secrets.INFOBLOX_JHUB_USER }}
+        TF_VAR_infoblox_password: ${{ secrets.INFOBLOX_JHUB_PSWD }}
+        TF_VAR_infoblox_host: ${{secrets.INFOBLOX_JHUB_HOST}}
+        TF_VAR_site_certificate_file: /tmp/tls.cer
+        TF_VAR_site_certificate_key_file: /tmp/tls.key
+        GOOGLE_APPLICATION_CREDENTIALS: /tmp/credentials.json
+        KUBECONFIG: /tmp/kube_config
+    # - name: Remove Kitchen File
+    #   run: rm -rf .kitchen
+    - name: Remove Terraform Folder
+      run: rm -rf examples/sample-jhub-nfs/.terraform
+    - name: Remove Terraform File
+      run: rm -rf examples/sample-jhub-nfs/terraform.tfstate.d
+    - name: Post-check dirty dirs in self-hosted
+      run: |
+        ls -la 
+        ls -la examples/sample-jhub-nfs/
+        ls -la ~/.kube
+        ls -la ~
   # Clean up dangling images in self-hosted runner to avoid filling up docker disk 
   docker-cleanup:
-    needs: [test]
+    needs: [test, test-nfs]
     runs-on: self-hosted 
     steps:
     - name: Clean up docker images

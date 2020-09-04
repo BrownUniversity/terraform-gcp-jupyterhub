@@ -1,4 +1,4 @@
-name: sample-jhub
+name: sample-jhub-nfs
 title: JupyterHub InSpec Profile
 maintainer: Brown CIS
 copyright: Brown University
