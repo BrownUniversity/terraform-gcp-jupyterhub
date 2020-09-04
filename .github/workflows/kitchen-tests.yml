@@ -3,19 +3,19 @@ name: kitchen-tests
 on: [workflow_dispatch]
 
 jobs:
-  # docker:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - name: Build and Push to Docker Hub
-  #       uses: docker/build-push-action@v1
-  #       with:
-  #         username: ${{ secrets.CCV_DOCKERHUB_USER }}
-  #         password: ${{ secrets.CCV_DOCKERHUB_TOKEN }}
-  #         repository: brownccv/kitchen-terraform
-  #         tags: jhub
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build and Push to Docker Hub
+        uses: docker/build-push-action@v1
+        with:
+          username: ${{ secrets.CCV_DOCKERHUB_USER }}
+          password: ${{ secrets.CCV_DOCKERHUB_TOKEN }}
+          repository: brownccv/kitchen-terraform
+          tags: jhub
   test:
-    # needs: [docker]
+    needs: [docker]
     runs-on: self-hosted
     container:
       image: brownccv/kitchen-terraform:jhub
