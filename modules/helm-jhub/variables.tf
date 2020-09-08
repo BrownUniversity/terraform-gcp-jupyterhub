@@ -124,7 +124,8 @@ variable "gcp_zone" {
 }
 
 variable "project_id" {
-
+  type        = string
+  description = "GCP Project ID"
 }
 
 # --------------------------------------

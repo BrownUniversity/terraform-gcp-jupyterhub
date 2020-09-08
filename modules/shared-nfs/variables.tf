@@ -29,7 +29,7 @@ variable "namespace" {
 }
 
 variable "annotations" {
-  type        = map
+  type        = map(string)
   description = "Annotations for NFS Server"
   default     = {}
 }
