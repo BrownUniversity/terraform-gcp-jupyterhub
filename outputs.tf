@@ -8,6 +8,11 @@ output "project_id" {
   value       = module.jhub_project.project_id
 }
 
+output "hub_ip" {
+  description = "Static IP assigned to the Jupyter Hub"
+  value       = google_compute_address.static.address
+}
+
 # ---------------------------------------------------------------
 #  GKE Outputs
 # ---------------------------------------------------------------
@@ -29,4 +34,6 @@ output "zones" {
   description = "List of zones in which the cluster resides"
   value       = module.jhub_cluster.zones
 }
+
+
 

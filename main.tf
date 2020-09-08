@@ -176,4 +176,10 @@ module "jhub_helm" {
   site_certificate_key            = var.site_certificate_key
   auth_type                       = var.auth_type
   auth_secretkeyvaluemap          = var.auth_secretkeyvaluemap
+
+  #shared volume 
+  use_shared_volume       = var.use_shared_volume
+  shared_storage_capacity = var.shared_storage_capacity
+  gcp_zone                = var.gcp_zone
+  project_id              = module.jhub_project.project_id
 }

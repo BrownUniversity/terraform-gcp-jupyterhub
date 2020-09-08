@@ -2,7 +2,17 @@
 
 ![kitchen-tests](https://github.com/BrownUniversity/terraform-gcp-jupyterhub/workflows/kitchen-tests/badge.svg)
 
-This repository defines a [Terraform module](https://www.terraform.io/docs/modules/usage.html), which you can use in your code by adding a `module` configuration and setting its `source` parameter to URL of this folder.  See the [examples](/examples) folder for guidance
+This repository defines a [Terraform module](https://www.terraform.io/docs/modules/usage.html), which you can use in your code by adding a `module` configuration and setting its `source` parameter to URL of this folder.  This module builds a Kubernetes-based JupyterHub in Google Cloud as used by Brown University. 
+
+In general this module of JupyterHub is configured as follows:
+
+* Two pools: one for the core components, one for user pods
+* Authentication (Google OAuth has been tested, other arepossible), dummy authenticator is the default.
+* We currently use Infoblox to configure our DNS, we will be making that optional in the future.
+* We provide scale-up and scale-down cronjobs that can change the number of replicas to have nodes be warm for users during class-time.
+* Optional shared nfs volume (for shared data, for instance).
+
+For general terraform examples see the[examples](/examples) folder. In practice we deploy one hub per class at Brown. Since most of the deployments are very simplicat, we use Terragrunt to keep configurations concise. While our deployment repository is not public at this moment, we hope to provide and example soon. 
 
 # Contents:
 
@@ -50,7 +60,7 @@ code by adding a `module` configuration and setting its `source` parameter to UR
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | activate\_apis | The list of apis to activate within the project | `list(string)` | `[]` | no |
-| auth\_secretkeyvaluemap | Key Value Map for secret variables used by the authenticator | `map(string)` | <pre>{<br>  "auth.dummy.password": "dummy_password"<br>}</pre> | no |
+| auth\_secretkeyvaluemap | Key Value Map for secret variables used by the authenticator | `map(string)` | <pre>{<br>  "auth.dummy.password": "dummy_password",<br>  "auth.dummy2.password": "dummy_password"<br>}</pre> | no |
 | auth\_type | Type OAuth e.g google | `string` | `"dummy"` | no |
 | auto\_create\_network | Auto create default network. | `bool` | `false` | no |
 | automount\_service\_account\_token | Enable automatin mounting of the service account token | `bool` | `true` | no |
@@ -74,6 +84,7 @@ code by adding a `module` configuration and setting its `source` parameter to UR
 | default\_service\_account | Project default service account setting: can be one of delete, depriviledge, or keep. | `string` | `"delete"` | no |
 | description | VPC description | `string` | `"Deployed through Terraform."` | no |
 | disable\_dependent\_services | Whether services that are enabled and which depend on this service should also be disabled when this service is destroyed. | `string` | `"true"` | no |
+| dns\_manager | Service used to manage your DNS | `string` | `"infoblox"` | no |
 | enable\_private\_nodes | (Beta) Whether nodes have internal IP addresses only | `bool` | `false` | no |
 | folder\_id | The ID of a folder to host this project | `any` | n/a | yes |
 | gcp\_zone | The GCP zone to deploy the runner into. | `string` | `"us-east1-b"` | no |
@@ -113,6 +124,7 @@ code by adding a `module` configuration and setting its `source` parameter to UR
 | scale\_up\_command | Command for scale-up cron job | `list(string)` | <pre>[<br>  "kubectl",<br>  "scale",<br>  "--replicas=3",<br>  "statefulset/user-placeholder"<br>]</pre> | no |
 | scale\_up\_name | Name of scale-up cron job | `string` | `"scale-up"` | no |
 | scale\_up\_schedule | Schedule for scale-up cron job | `string` | `"1 6 * * 1-5"` | no |
+| shared\_storage\_capacity | Size of the shared volume | `number` | `5` | no |
 | site\_certificate | File containing the TLS certificate | `string` | n/a | yes |
 | site\_certificate\_key | File containing the TLS certificate key | `string` | n/a | yes |
 | skip\_provisioners | Flag to skip local-exec provisioners | `bool` | `false` | no |
@@ -122,6 +134,7 @@ code by adding a `module` configuration and setting its `source` parameter to UR
 | subnet\_private\_access | Whether this subnet will have private Google access enabled | `string` | `"true"` | no |
 | subnetwork | The subnetwork to host the cluster in | `string` | `"kubernetes-subnet"` | no |
 | tls\_secret\_name | TLS secret name used in secret creation, it must match with what is used by user in helm chart | `string` | `"jupyterhub-tls"` | no |
+| use\_shared\_volume | Whether to use a shared NFS volume | `bool` | `false` | no |
 | user\_pool\_auto\_repair | Enable auto-repair of user pool | `bool` | `true` | no |
 | user\_pool\_auto\_upgrade | Enable auto-upgrade of user pool | `bool` | `true` | no |
 | user\_pool\_disk\_size\_gb | Size of disk for user pool | `number` | `100` | no |
@@ -141,6 +154,7 @@ code by adding a `module` configuration and setting its `source` parameter to UR
 | Name | Description |
 |------|-------------|
 | cluster\_name | Cluster name |
+| hub\_ip | Static IP assigned to the Jupyter Hub |
 | location | n/a |
 | project\_id | Project ID |
 | project\_name | Project Name |

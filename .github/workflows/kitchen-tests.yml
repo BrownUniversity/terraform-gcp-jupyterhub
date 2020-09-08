@@ -14,7 +14,7 @@ jobs:
           password: ${{ secrets.CCV_DOCKERHUB_TOKEN }}
           repository: brownccv/kitchen-terraform
           tags: jhub
-  sample-jhub:
+  test:
     needs: [docker]
     runs-on: self-hosted
     container:
@@ -25,17 +25,15 @@ jobs:
         clean: false #this is to avoid permissions on self-hosted runner
     - name: Pre-check dirty dirs in self-hosted
       run: |
-        ls -la 
-        ls -la examples/sample-jhub/
-        ls -la ~/.kube
         ls -la ~
-        ls -la /tmp
+        ls -la .
+        ls -la examples/sample-jhub
+        ls -la examples/sample-jhub-nfs
     - name: Remove Kitchen File
-      run: rm -rf .kitchen
-    - name: Remove Terraform Folder
-      run: rm -rf examples/sample-jhub/.terraform
-    - name: Remove Terraform File
-      run: rm -rf examples/sample-jhub/terraform.tfstate.d
+      run: |
+        rm -rf .kitchen
+        rm -rf examples/*/.terraform
+        rm -rf examples/*/terraform.tfstate*
     - name: Create Credential File
       run: |
         echo "$GCP_CREDENTIAL_JSON" | base64 -d > /tmp/credentials.json
@@ -65,21 +63,21 @@ jobs:
         TF_VAR_site_certificate_key_file: /tmp/tls.key
         GOOGLE_APPLICATION_CREDENTIALS: /tmp/credentials.json
         KUBECONFIG: /tmp/kube_config
-    - name: Remove Kitchen File
-      run: rm -rf .kitchen
-    - name: Remove Terraform Folder
-      run: rm -rf examples/sample-jhub/.terraform
-    - name: Remove Terraform File
-      run: rm -rf examples/sample-jhub/terraform.tfstate.d
+    - name: Clean kitchen and terraform files
+      run: |
+        rm -rf .kitchen
+        rm -rf examples/*/.terraform
+        rm -rf examples/*/terraform.tfstate*
     - name: Post-check dirty dirs in self-hosted
       run: |
-        ls -la 
-        ls -la examples/sample-jhub/
-        ls -la ~/.kube
+        ls -la .
+        ls -la examples/sample-jhub
+        ls -la examples/sample-jhub-nfs
         ls -la ~
+  
   # Clean up dangling images in self-hosted runner to avoid filling up docker disk 
   docker-cleanup:
-    # needs: [sample-jhub]
+    needs: [test]
     runs-on: self-hosted 
     steps:
     - name: Clean up docker images

@@ -66,7 +66,7 @@ module "sample-jhub" {
   site_certificate_key = file(var.site_certificate_key_file)
 
   # ---------------- NFS -----------------------
-  use_shared_volume       = false
+  use_shared_volume       = true
   shared_storage_capacity = 2
 
   # ---------------- HELM/JHUB VARIABLES -----------------------

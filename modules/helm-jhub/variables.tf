@@ -96,6 +96,38 @@ variable "auth_secretkeyvaluemap" {
   }
 }
 
+# ---------------------------------------------------------------
+#  SHARE NFS VARIABLES
+# ---------------------------------------------------------------
+variable "use_shared_volume" {
+  type        = bool
+  description = "Whether to use a shared NFS volume"
+  default     = false
+}
+
+variable "shared_storage_capacity" {
+  type        = number
+  description = "Size of the shared volume"
+  default     = 5
+}
+
+variable "region" {
+  type        = string
+  description = "The region to host the cluster in"
+  default     = "us-east1"
+}
+
+variable "gcp_zone" {
+  type        = string
+  description = "The GCP zone to deploy the runner into."
+  default     = "us-east1-b"
+}
+
+variable "project_id" {
+  type        = string
+  description = "GCP Project ID"
+}
+
 # --------------------------------------
 #   Cron Jobs
 # --------------------------------------

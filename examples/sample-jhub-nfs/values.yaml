@@ -1,0 +1,61 @@
+prePuller:
+  continuous:
+    enabled: true
+scheduling:
+  userScheduler:
+    enabled: true
+  podPriority:
+    enabled: true
+  userPlaceholder:
+    enabled: true
+    replicas: 4
+  userPods:
+    nodeAffinity:
+      matchNodePurpose: require
+singleuser: 
+  memory:
+    limit: 3G
+    guarantee: 1G
+  cpu:
+    limit: 2
+    guarantee: 1
+  image:
+    name: gcr.io/jupyterhub-docker-images/jupyterhub-scipy
+    tag: phys1600-spring2020
+    pullPolicy: Always
+  defaultUrl: "/lab"
+  lifecycleHooks:
+    postStart:
+      exec:
+        command: ["/bin/sh", "-c", "chmod -f 600 /home/jovyan/.ssh/id_rsa || true;"]
+  #----Needed for shared NFS Volume
+  extraEnv:
+    CHOWN_HOME: "yes"
+    CHOWN_HOME_OPTS: '-R'
+    # GRANT_SUDO: "yes"
+    CHOWN_EXTRA: "/home/jovyan/shared"
+    CHOWN_EXTRA_OPTS: '-R'
+  uid: 0
+  fsGid: 0
+  cmd: "start-singleuser.sh"
+  storage:
+    extraVolumes:
+      - name: jupyterhub-shared
+        persistentVolumeClaim:
+          claimName: nfs-volume
+    extraVolumeMounts:
+      - name: jupyterhub-shared
+        mountPath: /home/jovyan/shared
+  #----End of shared NFS Volume
+proxy:
+  https:
+    enabled: true
+    type: secret
+    secret:
+      name: jupyterhub-tls
+      key: tls.key
+      crt: tls.crt
+
+# proxy:
+#   https:
+#     enabled: true
