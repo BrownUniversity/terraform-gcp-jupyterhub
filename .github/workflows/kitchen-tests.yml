@@ -11,6 +11,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          path: chore-update-versions
 
       - name: Build Image
         if: steps.filter.outputs.all == 'true' && !contains(github.event.commits[0].message, '[skip docker]')
