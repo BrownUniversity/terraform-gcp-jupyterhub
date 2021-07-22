@@ -26,11 +26,8 @@ module "sample-jhub" {
 
   # ---------------- INFOBLOX VARIABLES -----------------------
   # The following variables need to be included in secrets.auto.tfvars
-  infoblox_username = var.infoblox_username
-  infoblox_password = var.infoblox_password
-  infoblox_host     = var.infoblox_host
-  record_hostname   = local.jhub_tenant
-  record_domain     = local.jhub_domain
+  record_hostname = local.jhub_tenant
+  record_domain   = local.jhub_domain
 
   # ---------------- CLUSTER VARIABLES -----------------------
   regional                   = false

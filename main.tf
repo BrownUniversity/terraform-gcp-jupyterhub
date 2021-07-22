@@ -11,7 +11,7 @@ locals {
 #   PROJECT
 # ------------------------------------------------------------
 module "jhub_project" {
-  source = "git::https://github.com/BrownUniversity/terraform-gcp-project.git?ref=v0.1.0"
+  source = "git::https://github.com/BrownUniversity/terraform-gcp-project.git?ref=v0.1.3"
 
   project_name               = var.project_name
   org_id                     = var.org_id
@@ -28,7 +28,7 @@ module "jhub_project" {
 #   VPC
 # ------------------------------------------------------------
 module "jhub_vpc" {
-  source = "git::https://github.com/BrownUniversity/terraform-gcp-vpc.git?ref=v0.1.0"
+  source = "git::https://github.com/BrownUniversity/terraform-gcp-vpc.git?ref=v0.1.1"
 
   project_id          = module.jhub_project.project_id
   network_name        = var.network_name
@@ -50,31 +50,25 @@ resource "google_compute_address" "static" {
 
 # Assign Brown-DNS via infoblox
 module "production_infoblox_record" {
-  source            = "git::https://github.com/BrownUniversity/terraform-infoblox-record-a.git?ref=v0.1.0"
-  infoblox_username = var.infoblox_username
-  infoblox_password = var.infoblox_password
-  infoblox_host     = var.infoblox_host
-  record_ip         = google_compute_address.static.address
-  record_hostname   = var.record_hostname
-  record_domain     = var.record_domain
-  record_dns_view   = "production"
+  source          = "git::https://github.com/BrownUniversity/terraform-infoblox-record-a.git?ref=feat/bump-versions"
+  record_ip       = google_compute_address.static.address
+  record_hostname = var.record_hostname
+  record_domain   = var.record_domain
+  record_dns_view = "production"
 }
 
 module "external_infoblox_record" {
-  source            = "git::https://github.com/BrownUniversity/terraform-infoblox-record-a.git?ref=v0.1.0"
-  infoblox_username = var.infoblox_username
-  infoblox_password = var.infoblox_password
-  infoblox_host     = var.infoblox_host
-  record_ip         = google_compute_address.static.address
-  record_hostname   = var.record_hostname
-  record_domain     = var.record_domain
-  record_dns_view   = "external"
+  source          = "git::https://github.com/BrownUniversity/terraform-infoblox-record-a.git?ref=feat/bump-versions"
+  record_ip       = google_compute_address.static.address
+  record_hostname = var.record_hostname
+  record_domain   = var.record_domain
+  record_dns_view = "external"
 }
 
 
 # Create the cluster
 module "jhub_cluster" {
-  source                     = "git::https://github.com/BrownUniversity/terraform-gcp-cluster.git?ref=v0.1.0"
+  source                     = "git::https://github.com/BrownUniversity/terraform-gcp-cluster.git?ref=main"
   cluster_name               = var.cluster_name
   project_id                 = module.jhub_project.project_id
   regional                   = var.regional

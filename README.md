@@ -31,6 +31,8 @@ This module depends on you having GCP credentials of some kind. The module looks
 ```
 GOOGLE_APPLICATION_CREDENTIALS=/path/to/file.json
 ```
+
+
 ## How to use this module
 
 This repository defines a [Terraform module](https://www.terraform.io/docs/modules/usage.html), which you can use in your
@@ -178,7 +180,22 @@ Then install the prerequisites for test kitchen.
 bundle install
 ```
 
-You'll need to add some common credentials and secret variables
+You'll need to add some common credentials and secret variables. For Brown users we recommend using `lastpass-cli` to source your secrets into environment variables (ask for access to creds)., ie
+
+```
+export INFOBLOX_USERNAME=$(lpass show infoblox —-username)
+export INFOBLOX_PASSWORD=$(lpass show infoblox —-password)
+export INFOBLOX_SERVER=$(lpass show infoblox --url | awk -F/ '{print $3}')
+```
+
+The following envs are required
+
+```
+INFOBLOX_USERNAME
+INFORBOX_PASSWORD
+INFOBLOX_SERVER
+```
+
 
 And now you're ready to run test kitchen. Test kitchen has a couple main commands:
 
@@ -218,3 +235,27 @@ This project has three workflows enabled:
 2. Realease Drafter: When merging to master, a release is drafted using the [Release-Drafter Action](https://github.com/marketplace/actions/release-drafter)
 
 3. `Kitchen test` is run on every commit unless `[skip ci]` is added to commit message.
+
+### Maintenance/Upgrades
+
+We aim to upgrade this package at least once a year.
+
+#### Update Ruby Version
+To install/upgrade the version of Ruby we use `rbenv`. For instance to install and update to `2.7.3`:
+
+```
+rbenv install -v 2.7.3
+rbenv local 2.7.3
+```
+
+This will update the `.ruby-version` file if necessary
+
+#### Gemfile
+
+Look at the Gemfile and the output of `bundle outdated` to decide what to update. Usually I update the versions in the Gemfile directly, then type `bundle update`
+
+### Update the version of Terraform
+
+Use `tfenv` to manage your versions of terraform. You can update the version in the `.terraform-version` file and run `tfenv install` and `tf use` to install and use the version specified in the file.
+
+You should also update the version of terraform specified in the `versions.tf` file
