@@ -464,12 +464,6 @@ variable "automount_service_account_token" {
   default     = true
 }
 
-variable "helm_repository_url" {
-  type        = string
-  description = "URL for JupyterHub's Helm chart"
-  default     = "https://jupyterhub.github.io/helm-chart/"
-}
-
 variable "helm_values_file" {
   type        = string
   description = "Relative path and file name. Example: values.yaml"
@@ -496,8 +490,7 @@ variable "auth_secretkeyvaluemap" {
   type        = map(string)
   description = "Key Value Map for secret variables used by the authenticator"
   default = {
-    "auth.dummy.password"  = "dummy_password"
-    "auth.dummy2.password" = "dummy_password"
+    "hub.config.DummyAuthenticator.password" = "dummy_password"
   }
 }
 
