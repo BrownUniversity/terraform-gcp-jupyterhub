@@ -26,10 +26,34 @@ For general terraform examples see the[examples](/examples) folder. In practice 
 
 ## Getting Started
 
-This module depends on you having GCP credentials of some kind. The module looks for a credential file in JSON format. You should export the following:
+If developing locally, this module depends on you having GCP credentials of some kind. The module looks for a credential file in JSON format. You should export the following:
 
 ```
 GOOGLE_APPLICATION_CREDENTIALS=/path/to/file.json
+```
+
+If the credentials are set correctly, the basic gcloud infrastructure is successfully created
+
+Additionally make sure that `gcloud init` is using the appropriate service account. This is necessary because this module performs a `local exec` to get the cluster credentials. You also need to make sure that  `KUBECONFIG` or `KUBE_CONFIG_PATH` path is set. A typical error seen when the  context is not set correctly is
+
+```
+Error: error installing: Post "http://localhost/apis/apps/v1/namespaces/kube-system/deployments": dial tcp [::1]:80: connect: connection refused
+```
+
+Finally, this module also configures records in infoblox and therefore you'll need credentials to the server. For Brown users we recommend using `lastpass-cli` to source your secrets into environment variables (ask for access to creds)., ie
+
+```
+export INFOBLOX_USERNAME=$(lpass show infoblox --username)
+export INFOBLOX_PASSWORD=$(lpass show infoblox --password)
+export INFOBLOX_SERVER=$(lpass show infoblox --url | awk -F/ '{print $3}')
+```
+
+The following envs are required
+
+```
+INFOBLOX_USERNAME
+INFORBOX_PASSWORD
+INFOBLOX_SERVER
 ```
 
 
@@ -180,22 +204,7 @@ Then install the prerequisites for test kitchen.
 bundle install
 ```
 
-You'll need to add some common credentials and secret variables. For Brown users we recommend using `lastpass-cli` to source your secrets into environment variables (ask for access to creds)., ie
-
-```
-export INFOBLOX_USERNAME=$(lpass show infoblox —-username)
-export INFOBLOX_PASSWORD=$(lpass show infoblox —-password)
-export INFOBLOX_SERVER=$(lpass show infoblox --url | awk -F/ '{print $3}')
-```
-
-The following envs are required
-
-```
-INFOBLOX_USERNAME
-INFORBOX_PASSWORD
-INFOBLOX_SERVER
-```
-
+You'll need to add some common credentials and secret variables. 
 
 And now you're ready to run test kitchen. Test kitchen has a couple main commands:
 
