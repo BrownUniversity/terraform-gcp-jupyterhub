@@ -79,6 +79,7 @@ jobs:
         TF_VAR_site_certificate_key_file: /tmp/tls.key
         GOOGLE_APPLICATION_CREDENTIALS: /tmp/credentials.json
         KUBECONFIG: /tmp/kube_config
+        KUBE_CONFIG_PATH: /tmp/kube_config
     - name: Clean kitchen and terraform files
       run: |
         rm -rf .kitchen

@@ -68,17 +68,17 @@ code by adding a `module` configuration and setting its `source` parameter to UR
 
 | Name | Version |
 |------|---------|
-| terraform | >= 0.12 |
-| google | >= 3.0 |
-| google-beta | >= 3.0 |
-| helm | ~> 1.1 |
-| kubernetes | >= 1.4.0 |
+| terraform | >= 1.0 |
+| google | >= 3.0, <4.0.0 |
+| google-beta | >= 3.0, <4.0.0 |
+| helm | >= 2.2 |
+| kubernetes | >= 2.3 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| google | >= 3.0 |
+| google | >= 3.0, <4.0.0 |
 | null | n/a |
 
 ## Inputs
@@ -86,7 +86,7 @@ code by adding a `module` configuration and setting its `source` parameter to UR
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | activate\_apis | The list of apis to activate within the project | `list(string)` | `[]` | no |
-| auth\_secretkeyvaluemap | Key Value Map for secret variables used by the authenticator | `map(string)` | <pre>{<br>  "auth.dummy.password": "dummy_password",<br>  "auth.dummy2.password": "dummy_password"<br>}</pre> | no |
+| auth\_secretkeyvaluemap | Key Value Map for secret variables used by the authenticator | `map(string)` | <pre>{<br>  "hub.config.DummyAuthenticator.password": "dummy_password"<br>}</pre> | no |
 | auth\_type | Type OAuth e.g google | `string` | `"dummy"` | no |
 | auto\_create\_network | Auto create default network. | `bool` | `false` | no |
 | automount\_service\_account\_token | Enable automatin mounting of the service account token | `bool` | `true` | no |
@@ -115,13 +115,9 @@ code by adding a `module` configuration and setting its `source` parameter to UR
 | folder\_id | The ID of a folder to host this project | `any` | n/a | yes |
 | gcp\_zone | The GCP zone to deploy the runner into. | `string` | `"us-east1-b"` | no |
 | helm\_deploy\_timeout | Time for helm to wait for deployment of chart and downloading of docker image | `number` | `1000` | no |
-| helm\_repository\_url | URL for JupyterHub's Helm chart | `string` | `"https://jupyterhub.github.io/helm-chart/"` | no |
 | helm\_values\_file | Relative path and file name. Example: values.yaml | `string` | n/a | yes |
 | horizontal\_pod\_autoscaling | Enable horizontal pod autoscaling addon | `bool` | `true` | no |
 | http\_load\_balancing | Enable httpload balancer addon | `bool` | `false` | no |
-| infoblox\_host | Infoblox host | `string` | n/a | yes |
-| infoblox\_password | Password to authenticate with Infoblox server | `string` | n/a | yes |
-| infoblox\_username | Username to authenticate with Infoblox server | `string` | n/a | yes |
 | ip\_range\_pods | The secondary ip range to use for pods | `string` | `"192.168.0.0/18"` | no |
 | ip\_range\_services | The secondary ip range to use for pods | `string` | `"192.168.64.0/18"` | no |
 | jhub\_helm\_version | Version of the JupyterHub Helm Chart Release | `string` | n/a | yes |
@@ -239,9 +235,9 @@ Please make sure you run them before pushing to remote.
 ### CI
 This project has three workflows enabled:
 
-1. PR labeler: When openning a PR to defaukt branch, a label is given assigned automatically accourding to the name of your feature branch. The labeler follows the follows rules in [pr-labeler.yml](.github/pr-labeler.yml)
+1. PR labeler: When opening a PR to the main branch, a label is given assigned automatically according to the name of your feature branch. The labeler follows the follows rules in [pr-labeler.yml](.github/pr-labeler.yml)
 
-2. Realease Drafter: When merging to master, a release is drafted using the [Release-Drafter Action](https://github.com/marketplace/actions/release-drafter)
+2. Release Drafter: When merging to master, a release is drafted using the [Release-Drafter Action](https://github.com/marketplace/actions/release-drafter)
 
 3. `Kitchen test` is run on every commit unless `[skip ci]` is added to commit message.
 
