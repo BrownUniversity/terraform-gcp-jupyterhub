@@ -48,7 +48,7 @@ export INFOBLOX_PASSWORD=$(lpass show infoblox --password)
 export INFOBLOX_SERVER=$(lpass show infoblox --url | awk -F/ '{print $3}')
 ```
 
-The following envs are required
+The following environment variables are required
 
 ```
 INFOBLOX_USERNAME
