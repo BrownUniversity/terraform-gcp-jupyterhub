@@ -1,7 +1,7 @@
 FROM gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
 
 #terraform
-ENV TERRAFORM_VERSION=0.12.29
+ENV TERRAFORM_VERSION=1.0.0
 ENV TERRAFORM_URL="https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip"
 RUN curl -L ${TERRAFORM_URL} -o terraform_${TERRAFORM_VERSION}_linux_amd64.zip \
     && unzip terraform_${TERRAFORM_VERSION}_linux_amd64.zip \

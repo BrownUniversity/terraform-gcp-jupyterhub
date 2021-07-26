@@ -6,7 +6,6 @@ provider "kubernetes" {
 }
 
 provider "helm" {
-  version = "~> 1.0"
   kubernetes {
     config_context = var.kubernetes_context
   }
@@ -15,11 +14,6 @@ provider "helm" {
 # ------------------------------------------------------------
 #   JHUB Helm deployment
 # ------------------------------------------------------------
-data "helm_repository" "jhub" {
-  name = var.helm_repository_name
-  url  = var.helm_repository_url
-}
-
 resource "kubernetes_namespace" "jhub" {
   metadata {
     name = var.jhub_namespace
@@ -79,8 +73,8 @@ locals {
 resource "helm_release" "jhub" {
 
   name       = "jhub"
-  repository = data.helm_repository.jhub.metadata[0].name
-  chart      = "jupyterhub/jupyterhub"
+  repository = "https://jupyterhub.github.io/helm-chart"
+  chart      = "jupyterhub"
   version    = var.jhub_helm_version
   namespace  = var.jhub_namespace
   timeout    = var.helm_deploy_timeout
@@ -106,7 +100,7 @@ resource "helm_release" "jhub" {
 
   #Authentication
   set {
-    name  = "auth.type"
+    name  = "hub.config.JupyterHub.authenticator_class"
     value = var.auth_type
   }
 

@@ -26,11 +26,37 @@ For general terraform examples see the[examples](/examples) folder. In practice 
 
 ## Getting Started
 
-This module depends on you having GCP credentials of some kind. The module looks for a credential file in JSON format. You should export the following:
+If developing locally, this module depends on you having GCP credentials of some kind. The module looks for a credential file in JSON format. You should export the following:
 
 ```
 GOOGLE_APPLICATION_CREDENTIALS=/path/to/file.json
 ```
+
+If the credentials are set correctly, the basic gcloud infrastructure is successfully created
+
+Additionally make sure that `gcloud init` is using the appropriate service account. This is necessary because this module performs a `local exec` to get the cluster credentials. You also need to make sure that  `KUBECONFIG` or `KUBE_CONFIG_PATH` path is set. A typical error seen when the  context is not set correctly is
+
+```
+Error: error installing: Post "http://localhost/apis/apps/v1/namespaces/kube-system/deployments": dial tcp [::1]:80: connect: connection refused
+```
+
+Finally, this module also configures records in infoblox and therefore you'll need credentials to the server. For Brown users we recommend using `lastpass-cli` to source your secrets into environment variables (ask for access to creds)., ie
+
+```
+export INFOBLOX_USERNAME=$(lpass show infoblox --username)
+export INFOBLOX_PASSWORD=$(lpass show infoblox --password)
+export INFOBLOX_SERVER=$(lpass show infoblox --url | awk -F/ '{print $3}')
+```
+
+The following envs are required
+
+```
+INFOBLOX_USERNAME
+INFORBOX_PASSWORD
+INFOBLOX_SERVER
+```
+
+
 ## How to use this module
 
 This repository defines a [Terraform module](https://www.terraform.io/docs/modules/usage.html), which you can use in your
@@ -42,17 +68,17 @@ code by adding a `module` configuration and setting its `source` parameter to UR
 
 | Name | Version |
 |------|---------|
-| terraform | >= 0.12 |
-| google | >= 3.0 |
-| google-beta | >= 3.0 |
-| helm | ~> 1.1 |
-| kubernetes | >= 1.4.0 |
+| terraform | >= 1.0 |
+| google | >= 3.0, <4.0.0 |
+| google-beta | >= 3.0, <4.0.0 |
+| helm | >= 2.2 |
+| kubernetes | >= 2.3 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| google | >= 3.0 |
+| google | >= 3.0, <4.0.0 |
 | null | n/a |
 
 ## Inputs
@@ -60,7 +86,7 @@ code by adding a `module` configuration and setting its `source` parameter to UR
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | activate\_apis | The list of apis to activate within the project | `list(string)` | `[]` | no |
-| auth\_secretkeyvaluemap | Key Value Map for secret variables used by the authenticator | `map(string)` | <pre>{<br>  "auth.dummy.password": "dummy_password",<br>  "auth.dummy2.password": "dummy_password"<br>}</pre> | no |
+| auth\_secretkeyvaluemap | Key Value Map for secret variables used by the authenticator | `map(string)` | <pre>{<br>  "hub.config.DummyAuthenticator.password": "dummy_password"<br>}</pre> | no |
 | auth\_type | Type OAuth e.g google | `string` | `"dummy"` | no |
 | auto\_create\_network | Auto create default network. | `bool` | `false` | no |
 | automount\_service\_account\_token | Enable automatin mounting of the service account token | `bool` | `true` | no |
@@ -89,13 +115,9 @@ code by adding a `module` configuration and setting its `source` parameter to UR
 | folder\_id | The ID of a folder to host this project | `any` | n/a | yes |
 | gcp\_zone | The GCP zone to deploy the runner into. | `string` | `"us-east1-b"` | no |
 | helm\_deploy\_timeout | Time for helm to wait for deployment of chart and downloading of docker image | `number` | `1000` | no |
-| helm\_repository\_url | URL for JupyterHub's Helm chart | `string` | `"https://jupyterhub.github.io/helm-chart/"` | no |
 | helm\_values\_file | Relative path and file name. Example: values.yaml | `string` | n/a | yes |
 | horizontal\_pod\_autoscaling | Enable horizontal pod autoscaling addon | `bool` | `true` | no |
 | http\_load\_balancing | Enable httpload balancer addon | `bool` | `false` | no |
-| infoblox\_host | Infoblox host | `string` | n/a | yes |
-| infoblox\_password | Password to authenticate with Infoblox server | `string` | n/a | yes |
-| infoblox\_username | Username to authenticate with Infoblox server | `string` | n/a | yes |
 | ip\_range\_pods | The secondary ip range to use for pods | `string` | `"192.168.0.0/18"` | no |
 | ip\_range\_services | The secondary ip range to use for pods | `string` | `"192.168.64.0/18"` | no |
 | jhub\_helm\_version | Version of the JupyterHub Helm Chart Release | `string` | n/a | yes |
@@ -178,7 +200,7 @@ Then install the prerequisites for test kitchen.
 bundle install
 ```
 
-You'll need to add some common credentials and secret variables
+You'll need to add some common credentials and secret variables. 
 
 And now you're ready to run test kitchen. Test kitchen has a couple main commands:
 
@@ -213,8 +235,32 @@ Please make sure you run them before pushing to remote.
 ### CI
 This project has three workflows enabled:
 
-1. PR labeler: When openning a PR to defaukt branch, a label is given assigned automatically accourding to the name of your feature branch. The labeler follows the follows rules in [pr-labeler.yml](.github/pr-labeler.yml)
+1. PR labeler: When opening a PR to the main branch, a label is given assigned automatically according to the name of your feature branch. The labeler follows the follows rules in [pr-labeler.yml](.github/pr-labeler.yml)
 
-2. Realease Drafter: When merging to master, a release is drafted using the [Release-Drafter Action](https://github.com/marketplace/actions/release-drafter)
+2. Release Drafter: When merging to master, a release is drafted using the [Release-Drafter Action](https://github.com/marketplace/actions/release-drafter)
 
 3. `Kitchen test` is run on every commit unless `[skip ci]` is added to commit message.
+
+### Maintenance/Upgrades
+
+We aim to upgrade this package at least once a year.
+
+#### Update Ruby Version
+To install/upgrade the version of Ruby we use `rbenv`. For instance to install and update to `2.7.3`:
+
+```
+rbenv install -v 2.7.3
+rbenv local 2.7.3
+```
+
+This will update the `.ruby-version` file if necessary
+
+#### Gemfile
+
+Look at the Gemfile and the output of `bundle outdated` to decide what to update. Usually I update the versions in the Gemfile directly, then type `bundle update`
+
+### Update the version of Terraform
+
+Use `tfenv` to manage your versions of terraform. You can update the version in the `.terraform-version` file and run `tfenv install` and `tf use` to install and use the version specified in the file.
+
+You should also update the version of terraform specified in the `versions.tf` file
