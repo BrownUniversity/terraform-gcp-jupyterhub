@@ -50,7 +50,7 @@ resource "google_compute_address" "static" {
 
 # Assign Brown-DNS via infoblox
 module "production_infoblox_record" {
-  source          = "git::https://github.com/BrownUniversity/terraform-infoblox-record-a.git?ref=feat/bump-versions"
+  source          = "git::https://github.com/BrownUniversity/terraform-infoblox-record-a.git?ref=v0.1.2"
   record_ip       = google_compute_address.static.address
   record_hostname = var.record_hostname
   record_domain   = var.record_domain
@@ -58,7 +58,7 @@ module "production_infoblox_record" {
 }
 
 module "external_infoblox_record" {
-  source          = "git::https://github.com/BrownUniversity/terraform-infoblox-record-a.git?ref=feat/bump-versions"
+  source          = "git::https://github.com/BrownUniversity/terraform-infoblox-record-a.git?ref=v0.1.2"
   record_ip       = google_compute_address.static.address
   record_hostname = var.record_hostname
   record_domain   = var.record_domain
@@ -68,7 +68,7 @@ module "external_infoblox_record" {
 
 # Create the cluster
 module "jhub_cluster" {
-  source                     = "git::https://github.com/BrownUniversity/terraform-gcp-cluster.git?ref=main"
+  source                     = "git::https://github.com/BrownUniversity/terraform-gcp-cluster.git?ref=v0.1.1"
   cluster_name               = var.cluster_name
   project_id                 = module.jhub_project.project_id
   regional                   = var.regional
