@@ -25,6 +25,22 @@ module "jhub_project" {
 }
 
 # ------------------------------------------------------------
+#   LOGGING
+# ------------------------------------------------------------
+module "gcp-log-export" {
+  source                 = "git:https://github.com/BrownUniversity/terraform-gcp-sumologic-modules.git?ref=v0.0.1"
+  project_id             = module.project.project_id
+  sumologic_collector_id = var.sumologic_collector_id
+  name                   = var.project_name
+  parent_categories      = ["jhub"]
+  category               = var.project_name
+  gcp_filters = {
+    gke     = "resource.type=\"gke_cluster\" OR resource.type=\"k8s_cluster\" OR resource.type=\"k8s_node\" OR resource.type=\"k8s_pod\"",
+    project = "resource.type=\"project\""
+  }
+}
+
+# ------------------------------------------------------------
 #   VPC
 # ------------------------------------------------------------
 module "jhub_vpc" {
@@ -170,7 +186,7 @@ module "jhub_helm" {
   auth_type                       = var.auth_type
   auth_secretkeyvaluemap          = var.auth_secretkeyvaluemap
 
-  #shared volume 
+  #shared volume
   use_shared_volume       = var.use_shared_volume
   shared_storage_capacity = var.shared_storage_capacity
   gcp_zone                = var.gcp_zone
