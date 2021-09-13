@@ -27,9 +27,9 @@ module "jhub_project" {
 # ------------------------------------------------------------
 #   LOGGING
 # ------------------------------------------------------------
-module "gcp-log-export" {
-  source                 = "git:https://github.com/BrownUniversity/terraform-gcp-sumologic-modules.git?ref=v0.0.1"
-  project_id             = module.project.project_id
+module "gcp_log_export" {
+  source                 = "git::https://github.com/BrownUniversity/terraform-gcp-sumologic-modules.git?ref=v0.0.2"
+  project_id             = module.jhub_project.project_id
   sumologic_collector_id = var.sumologic_collector_id
   name                   = var.project_name
   parent_categories      = ["jhub"]

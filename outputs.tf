@@ -38,17 +38,3 @@ output "zones" {
 # ---------------------------------------------------------------
 #  Logging Outputs
 # ---------------------------------------------------------------
-
-output "sumologic_source_name" {
-  description = "Name of the source created in sumologic for the hub"
-  value       = module.gcp-log-export.sumologic_source_name
-}
-
-output "sumologic_endpoint" {
-  description = "URL used by the GCP log sink to push logs to"
-  value       = module.gcp-log-export.sumologic_endpoint
-}
-
-
-
-

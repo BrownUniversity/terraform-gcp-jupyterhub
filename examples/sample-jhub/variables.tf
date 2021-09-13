@@ -14,3 +14,5 @@ variable "site_certificate_file" {
 variable "site_certificate_key_file" {
   default = "./secrets/tls.key"
 }
+
+variable "sumologic_collector_id" {}
