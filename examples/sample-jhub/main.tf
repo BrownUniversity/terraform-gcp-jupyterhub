@@ -29,6 +29,10 @@ module "sample-jhub" {
   record_hostname = local.jhub_tenant
   record_domain   = local.jhub_domain
 
+  # ---------------- SUMOLOGIC VARIABLES -----------------------
+  # The following variables need to be included in secrets.auto.tfvars
+  sumologic_collector_id = var.sumologic_collector_id
+
   # ---------------- CLUSTER VARIABLES -----------------------
   regional                   = false
   region                     = local.gcp_region

@@ -59,6 +59,15 @@ variable "labels" {
 }
 
 # ---------------------------------------------------------------
+#  LOGGING VARIABLES
+# ---------------------------------------------------------------
+
+variable "sumologic_collector_id" {
+  description = "ID of the hosted collector at sumologic that will recieve messages for the new source"
+  type        = string
+}
+
+# ---------------------------------------------------------------
 #  VPC VARIABLES
 # ---------------------------------------------------------------
 
