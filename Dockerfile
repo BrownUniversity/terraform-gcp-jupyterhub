@@ -1,4 +1,4 @@
-FROM gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
+FROM gcr.io/google.com/cloudsdktool/cloud-sdk:357.0.0-alpine
 
 #terraform
 ENV TERRAFORM_VERSION=1.0.0
