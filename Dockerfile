@@ -18,8 +18,8 @@ RUN apk upgrade && \
     apk add --update \
     openssh ca-certificates bash jq \
     curl-dev \
-    "ruby-dev=~$(cat .ruby-version)" \
-    "ruby-full=~$(cat .ruby-version)" \
+    "ruby-dev=$(cat .ruby-version)" \
+    "ruby-full=$(cat .ruby-version)" \
     build-base \
     python3 && \
     rm -rf /var/cache/apk/*
