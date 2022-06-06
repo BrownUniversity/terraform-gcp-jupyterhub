@@ -1,4 +1,4 @@
-FROM gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
+FROM gcr.io/google.com/cloudsdktool/cloud-sdk:349.0.0-alpine
 
 #terraform
 ENV TERRAFORM_VERSION=1.0.0
@@ -18,8 +18,8 @@ RUN apk upgrade && \
     apk add --update \
     openssh ca-certificates bash jq \
     curl-dev \
-    "ruby-dev=~$(cat .ruby-version)" \
-    "ruby-full=~$(cat .ruby-version)" \
+    "ruby-dev=$(cat .ruby-version)" \
+    "ruby-full=$(cat .ruby-version)" \
     build-base \
     python3 && \
     rm -rf /var/cache/apk/*
