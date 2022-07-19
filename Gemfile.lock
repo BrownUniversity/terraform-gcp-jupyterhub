@@ -1,4 +1,7 @@
 GEM
+  specs:
+
+GEM
   remote: https://rubygems.org/
   specs:
     activesupport (6.1.4)
@@ -613,4 +616,4 @@ DEPENDENCIES
   kitchen-terraform (~> 5.8)!
 
 BUNDLED WITH
-   2.1.4
+   2.3.18
