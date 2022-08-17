@@ -59,7 +59,7 @@ jobs:
           tags: |
             type=ref,event=branch
             type=ref,event=pr
-            type=semver,patter={{major}}.{{minor}}
+            type=semver,pattern={{major}}.{{minor}}
 
       - id: save_full_image_id
         run: echo "::set-output name=full_image_id::${{ fromJSON(steps.meta.outputs.json).tags[0] }}"
@@ -76,7 +76,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:buildcache
           cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:buildcache
-          
+
   test:
     needs: [docker]
     runs-on: self-hosted
