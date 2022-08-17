@@ -18,16 +18,19 @@ version-resolver:
   major:
     labels:
       - 'major'
+      - 'breaking'
   minor:
     labels:
       - 'minor'
+      - 'feature'
   patch:
     labels:
       - 'patch'
+      - 'chore'
+      - 'fix'
   default: patch
   exclude-labels:
     - 'skip-changelog'
 template: |
   ## Changes
-
   $CHANGES

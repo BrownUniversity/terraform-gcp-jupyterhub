@@ -50,7 +50,7 @@ locals {
 
 module "shared-nfs" {
   #When we upgrade to terraform v0.13, the count should live here instead of residing inside every resource in the nfs module
-  #count = var.use_shared_volume ? 1 : 0
+  count             = var.use_shared_volume ? 1 : 0
   source            = "../shared-nfs"
   name              = "shared-storage"
   use_shared_volume = var.use_shared_volume
@@ -71,7 +71,6 @@ locals {
 }
 
 resource "helm_release" "jhub" {
-
   name       = "jhub"
   repository = "https://jupyterhub.github.io/helm-chart"
   chart      = "jupyterhub"
@@ -132,7 +131,6 @@ resource "helm_release" "jhub" {
 # ------------------------------------------------------------
 
 resource "kubernetes_cluster_role_binding" "cronjob" {
-
   metadata {
     name = "default-clusterrolebinding"
   }

@@ -11,7 +11,7 @@ locals {
 #   PROJECT
 # ------------------------------------------------------------
 module "jhub_project" {
-  source = "git::https://github.com/BrownUniversity/terraform-gcp-project.git?ref=v0.1.3"
+  source = "git::https://github.com/BrownUniversity/terraform-gcp-project.git?ref=v0.1.4"
 
   project_name               = var.project_name
   org_id                     = var.org_id
@@ -28,7 +28,7 @@ module "jhub_project" {
 #   VPC
 # ------------------------------------------------------------
 module "jhub_vpc" {
-  source = "git::https://github.com/BrownUniversity/terraform-gcp-vpc.git?ref=v0.1.1"
+  source = "git::https://github.com/BrownUniversity/terraform-gcp-vpc.git?ref=v0.1.2"
 
   project_id          = module.jhub_project.project_id
   network_name        = var.network_name
@@ -50,7 +50,7 @@ resource "google_compute_address" "static" {
 
 # Assign Brown-DNS via infoblox
 module "production_infoblox_record" {
-  source          = "git::https://github.com/BrownUniversity/terraform-infoblox-record-a.git?ref=v0.1.2"
+  source          = "git::https://github.com/BrownUniversity/terraform-infoblox-record-a.git?ref=v0.1.3"
   record_ip       = google_compute_address.static.address
   record_hostname = var.record_hostname
   record_domain   = var.record_domain
@@ -58,7 +58,7 @@ module "production_infoblox_record" {
 }
 
 module "external_infoblox_record" {
-  source          = "git::https://github.com/BrownUniversity/terraform-infoblox-record-a.git?ref=v0.1.2"
+  source          = "git::https://github.com/BrownUniversity/terraform-infoblox-record-a.git?ref=v0.1.3"
   record_ip       = google_compute_address.static.address
   record_hostname = var.record_hostname
   record_domain   = var.record_domain
@@ -68,7 +68,7 @@ module "external_infoblox_record" {
 
 # Create the cluster
 module "jhub_cluster" {
-  source                     = "git::https://github.com/BrownUniversity/terraform-gcp-cluster.git?ref=v0.1.3"
+  source                     = "git::https://github.com/BrownUniversity/terraform-gcp-cluster.git?ref=chore-up-version"
   cluster_name               = var.cluster_name
   project_id                 = module.jhub_project.project_id
   regional                   = var.regional
