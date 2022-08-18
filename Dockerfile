@@ -40,7 +40,7 @@ RUN apk upgrade && \
 RUN mkdir /usr/app
 WORKDIR /usr/app
 
-COPY Gemfile* ./
+COPY Gemfile ./
 RUN gem install bundler && \
     bundle config set system 'true' && \
     bundle install
