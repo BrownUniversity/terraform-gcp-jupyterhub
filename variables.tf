@@ -298,7 +298,7 @@ variable "core_pool_disk_type" {
 variable "core_pool_image_type" {
   type        = string
   description = "Type of image core-component pool"
-  default     = "COS"
+  default     = "COS_CONTAINERD"
 }
 
 variable "core_pool_auto_repair" {
@@ -380,7 +380,7 @@ variable "user_pool_disk_type" {
 variable "user_pool_image_type" {
   type        = string
   description = "Type of image user pool"
-  default     = "COS"
+  default     = "COS_CONTAINERD"
 }
 
 variable "user_pool_auto_repair" {
