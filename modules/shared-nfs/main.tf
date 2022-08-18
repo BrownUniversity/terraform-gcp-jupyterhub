@@ -7,6 +7,7 @@ locals {
 }
 
 resource "google_compute_disk" "disk" {
+  count = var.use_shared_volume ? 1 : 0
   name    = "${var.name}-nfs"
   type    = "pd-standard"
   size    = local.total_size
@@ -122,6 +123,7 @@ resource "kubernetes_stateful_set" "nfs_server" {
 }
 
 resource "kubernetes_service" "nfs_server" {
+  count = var.use_shared_volume ? 1 : 0
   metadata {
     name        = "${var.name}-nfs-server"
     namespace   = var.namespace
