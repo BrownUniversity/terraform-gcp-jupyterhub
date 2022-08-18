@@ -126,9 +126,9 @@ jobs:
         JUPYTERHUB_TLS_KEY: ${{ secrets.JUPYTERHUB_TLS_KEY }}
     - name: Authorize service account
       run: gcloud auth activate-service-account ${{ secrets.GCP_PF_SA }} --key-file=/tmp/credentials.json
-      env:
-        KUBECONFIG: /tmp/kube_config
-        KUBE_CONFIG_PATH: /tmp/kube_config
+      # env:
+      #   KUBECONFIG: /tmp/kube_config
+      #   KUBE_CONFIG_PATH: /tmp/kube_config
     - name: Run Kitchen
       run: kitchen test
       env:
@@ -141,8 +141,8 @@ jobs:
         TF_VAR_site_certificate_file: /tmp/tls.cer
         TF_VAR_site_certificate_key_file: /tmp/tls.key
         GOOGLE_APPLICATION_CREDENTIALS: /tmp/credentials.json
-        KUBECONFIG: /tmp/kube_config
-        KUBE_CONFIG_PATH: /tmp/kube_config
+        # KUBECONFIG: /tmp/kube_config
+        # KUBE_CONFIG_PATH: /tmp/kube_config
     - name: Clean kitchen and terraform files
       run: |
         rm -rf .kitchen
