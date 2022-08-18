@@ -124,9 +124,6 @@ jobs:
       env:
         JUPYTERHUB_TLS_CER: ${{ secrets.JUPYTERHUB_TLS_CER }}
         JUPYTERHUB_TLS_KEY: ${{ secrets.JUPYTERHUB_TLS_KEY }}
-    - name: Create /tmp/kube_config
-      run: |
-        mkdir -p /tmp/kube_config
     - name: Authorize service account
       run: gcloud auth activate-service-account ${{ secrets.GCP_PF_SA }} --key-file=/tmp/credentials.json
       env:
