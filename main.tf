@@ -135,6 +135,9 @@ resource "null_resource" "cluster_credentials" {
     command = <<-EOT
       gcloud container clusters get-credentials ${var.cluster_name} ${local.gcloud_location2} --project ${module.jhub_project.project_id}
       kubectl config view
+      cp ${KUBECONFIG} ${path.root}/kubeconfig
+      echo ${path.root}
+      ls -la ${path.root}/kubeconfig
     EOT
   }
 

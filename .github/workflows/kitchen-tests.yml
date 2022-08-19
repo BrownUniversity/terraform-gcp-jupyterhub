@@ -15,7 +15,8 @@ env:
   IMAGE_NAME: brownuniversity/terraform-gcp-jupyterhub
   USE_GKE_GCLOUD_AUTH_PLUGIN: true
   GOOGLE_APPLICATION_CREDENTIALS: /tmp/credentials.json
-  KUBE_CONFIG_PATH: ~/.kube/config
+  KUBECONFIG: ~/.kube/config
+  # KUBE_CONFIG_PATH: ~/.kube/config
   
 jobs:
   docker:
