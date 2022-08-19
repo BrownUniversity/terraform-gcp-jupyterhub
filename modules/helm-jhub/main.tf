@@ -2,7 +2,6 @@
 #   PROVIDER BLOCK
 # ------------------------------------------------------------
 provider "kubernetes" {
-  load_config_file       = false
   cluster_ca_certificate = var.cluster_ca_certificate
   host                   = var.host
   token                  = var.token
@@ -10,7 +9,6 @@ provider "kubernetes" {
 
 provider "helm" {
   kubernetes {
-    load_config_file       = false
     cluster_ca_certificate = var.cluster_ca_certificate
     host                   = var.host
     token                  = var.token
