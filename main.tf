@@ -123,7 +123,7 @@ module "jhub_cluster" {
 # ------------------------------------------------------------
 
 locals {
-  gcloud_location = var.regional ? "--region ${var.region}" : "--zone ${var.gcp_zone}"
+  gcloud_location = var.regional ? "${var.region}" : "${var.gcp_zone}"
 }
 
 # resource "null_resource" "cluster_credentials" {
