@@ -129,6 +129,7 @@ jobs:
         gcloud auth activate-service-account ${{ secrets.GCP_PF_SA }} --key-file=/tmp/credentials.json
         gcloud container clusters get-credentials default --zone us-east1-b --project jhub-sample-36204-a9b9
         kubectl config view
+        ls -la /tmp
       #   KUBECONFIG: /tmp/kube_config
       #   KUBE_CONFIG_PATH: /tmp/kube_config
     # - name: Run Kitchen
