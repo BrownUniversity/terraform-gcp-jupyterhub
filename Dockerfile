@@ -13,7 +13,9 @@ FROM gcr.io/google.com/cloudsdktool/cloud-sdk:398.0.0-alpine
 
 # Install new plugin required for gke 1.25
 # See https://cloud.google.com/blog/products/containers-kubernetes/kubectl-auth-changes-in-gke
-RUN gcloud components install gke-gcloud-auth-plugin
+RUN gcloud components install gke-gcloud-auth-plugin 
+
+RUN gcloud components install kubectl
 
 #terraform
 ENV TERRAFORM_VERSION=1.2.5
