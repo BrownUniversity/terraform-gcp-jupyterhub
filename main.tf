@@ -128,7 +128,10 @@ locals {
 
 resource "null_resource" "cluster_credentials" {
   provisioner "local-exec" {
-    command = "gcloud container clusters get-credentials ${var.cluster_name} ${local.gcloud_location} --project ${module.jhub_project.project_id}"
+    command = <<-EOT
+      gcloud container clusters get-credentials ${var.cluster_name} ${local.gcloud_location} --project ${module.jhub_project.project_id}
+      cat ~/.kube/config
+    EOT
   }
 
   depends_on = [module.jhub_cluster]
