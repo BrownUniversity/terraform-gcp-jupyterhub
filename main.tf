@@ -154,6 +154,16 @@ resource "local_file" "kubeconfig" {
   filename = "${path.module}/kubeconfig"
 }
 
+locals {
+   kubecontext = "gke_${module.jhub_project.project_id}_${data.null_data_source.context.outputs["location"]}_${var.cluster_name}"
+ }
+
+resource "null_resource" "set-context" {
+  provisioner "local-exec" {
+    command = "kubectl config use-context ${var.local.kubecontext}"
+  }
+  depends_on = [module.jhub_cluster]
+}
 
 # define after local-exec to create a dependency for the next module
 data "null_data_source" "context" {
