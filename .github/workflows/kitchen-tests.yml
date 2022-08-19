@@ -91,6 +91,7 @@ jobs:
     - name: Pre-check dirty dirs in self-hosted ~
       run: |
         ls -la ~
+        ls -
     - name: Pre-check dirty dirs in self-hosted .
       run: |
         ls -la .
@@ -106,6 +107,7 @@ jobs:
         rm -rf .terraform
         rm -rf examples/*/.terraform
         rm -rf examples/*/terraform.tfstate*
+        rm -f ~/.kube/config
     - name: Post-check dirty dirs in self-hosted
       run: |
         ls -la ~
@@ -150,6 +152,7 @@ jobs:
         rm -rf .kitchen
         rm -rf examples/*/.terraform
         rm -rf examples/*/terraform.tfstate*
+        rm -f ~/.kube/config
     - name: Post-check dirty dirs in self-hosted
       run: |
         ls -la .
