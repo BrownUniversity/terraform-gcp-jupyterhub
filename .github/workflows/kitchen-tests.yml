@@ -132,32 +132,32 @@ jobs:
         ls -la /tmp
       #   KUBECONFIG: /tmp/kube_config
       #   KUBE_CONFIG_PATH: /tmp/kube_config
-    # - name: Run Kitchen
-    #   run: kitchen test
-    #   env:
-    #     TF_VAR_billing_account: ${{ secrets.GCP_BILLING_ACCOUNT }}
-    #     TF_VAR_org_id: ${{ secrets.GCP_ORG_ID }}
-    #     TF_VAR_folder_id: ${{ secrets.GCP_CCV_CI_FOLDER_ID }}
-    #     INFOBLOX_USERNAME: ${{ secrets.INFOBLOX_JHUB_USER }}
-    #     INFOBLOX_PASSWORD: ${{ secrets.INFOBLOX_JHUB_PSWD }}
-    #     INFOBLOX_SERVER: ${{secrets.INFOBLOX_JHUB_HOST}}
-    #     TF_VAR_site_certificate_file: /tmp/tls.cer
-    #     TF_VAR_site_certificate_key_file: /tmp/tls.key
-    #     USE_GKE_GCLOUD_AUTH_PLUGIN: true
-    #     # KUBECONFIG: /tmp/kube_config
-    #     # KUBE_CONFIG_PATH: /tmp/kube_config
-    # - name: Clean kitchen and terraform files
-    #   run: |
-    #     rm -rf .kitchen
-    #     rm -rf examples/*/.terraform
-    #     rm -rf examples/*/terraform.tfstate*
-    #     rm -f ~/.kube/config
-    # - name: Post-check dirty dirs in self-hosted
-    #   run: |
-    #     ls -la .
-    #     ls -la examples/sample-jhub
-    #     ls -la examples/sample-jhub-nfs
-    #     ls -la ~
+    - name: Run Kitchen
+      run: kitchen test
+      env:
+        TF_VAR_billing_account: ${{ secrets.GCP_BILLING_ACCOUNT }}
+        TF_VAR_org_id: ${{ secrets.GCP_ORG_ID }}
+        TF_VAR_folder_id: ${{ secrets.GCP_CCV_CI_FOLDER_ID }}
+        INFOBLOX_USERNAME: ${{ secrets.INFOBLOX_JHUB_USER }}
+        INFOBLOX_PASSWORD: ${{ secrets.INFOBLOX_JHUB_PSWD }}
+        INFOBLOX_SERVER: ${{secrets.INFOBLOX_JHUB_HOST}}
+        TF_VAR_site_certificate_file: /tmp/tls.cer
+        TF_VAR_site_certificate_key_file: /tmp/tls.key
+        USE_GKE_GCLOUD_AUTH_PLUGIN: true
+        # KUBECONFIG: /tmp/kube_config
+        # KUBE_CONFIG_PATH: /tmp/kube_config
+    - name: Clean kitchen and terraform files
+      run: |
+        rm -rf .kitchen
+        rm -rf examples/*/.terraform
+        rm -rf examples/*/terraform.tfstate*
+        rm -f ~/.kube/config
+    - name: Post-check dirty dirs in self-hosted
+      run: |
+        ls -la .
+        ls -la examples/sample-jhub
+        ls -la examples/sample-jhub-nfs
+        ls -la ~
   
   # Clean up dangling images in self-hosted runner to avoid filling up docker disk 
   docker-cleanup:
