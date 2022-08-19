@@ -2,17 +2,17 @@
 #   PROVIDER BLOCK
 # ------------------------------------------------------------
 provider "kubernetes" {
-  cluster_ca_certificate = var.cluster_ca_certificate
-  host                   = var.host
-  token                  = var.token
+  # cluster_ca_certificate = var.cluster_ca_certificate
+  # host                   = var.host
+  # token                  = var.token
   config_context = var.kubernetes_context
 }
 
 provider "helm" {
   kubernetes {
-    cluster_ca_certificate = var.cluster_ca_certificate
-    host                   = var.host
-    token                  = var.token
+    # cluster_ca_certificate = var.cluster_ca_certificate
+    # host                   = var.host
+    # token                  = var.token
     config_context = var.kubernetes_context
   }
 }
