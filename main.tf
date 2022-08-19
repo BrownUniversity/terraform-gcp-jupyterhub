@@ -152,10 +152,10 @@ module "gke_auth" {
   cluster_name = var.cluster_name
 }
 
-resource "local_file" "kubeconfig" {
-  content  = module.gke_auth.kubeconfig_raw
-  filename = "${path.module}/kubeconfig"
-}
+# resource "local_file" "kubeconfig" {
+#   content  = module.gke_auth.kubeconfig_raw
+#   filename = "${path.module}/kubeconfig"
+# }
 
 locals {
    kubecontext = "gke_${module.jhub_project.project_id}_${data.null_data_source.context.outputs["location"]}_${var.cluster_name}"
