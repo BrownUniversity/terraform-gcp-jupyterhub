@@ -13,6 +13,10 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: brownuniversity/terraform-gcp-jupyterhub
+  KUBECONFIG: /tmp/kube_config
+  KUBE_CONFIG_PATH: /tmp/kube_config
+  USE_GKE_GCLOUD_AUTH_PLUGIN: true
+  GOOGLE_APPLICATION_CREDENTIALS: /tmp/credentials.json
 
 jobs:
   docker:
@@ -121,38 +125,38 @@ jobs:
         JUPYTERHUB_TLS_CER: ${{ secrets.JUPYTERHUB_TLS_CER }}
         JUPYTERHUB_TLS_KEY: ${{ secrets.JUPYTERHUB_TLS_KEY }}
     - name: Authorize service account
-      run: gcloud auth activate-service-account ${{ secrets.GCP_PF_SA }} --key-file=/tmp/credentials.json
-      env:
-        USE_GKE_GCLOUD_AUTH_PLUGIN: true
+      run: | 
+        gcloud auth activate-service-account ${{ secrets.GCP_PF_SA }} --key-file=/tmp/credentials.json
+        gcloud container clusters get-credentials default --zone us-east1-b --project jhub-sample-36204-a9b9
+        kubectl config view
       #   KUBECONFIG: /tmp/kube_config
       #   KUBE_CONFIG_PATH: /tmp/kube_config
-    - name: Run Kitchen
-      run: kitchen test
-      env:
-        TF_VAR_billing_account: ${{ secrets.GCP_BILLING_ACCOUNT }}
-        TF_VAR_org_id: ${{ secrets.GCP_ORG_ID }}
-        TF_VAR_folder_id: ${{ secrets.GCP_CCV_CI_FOLDER_ID }}
-        INFOBLOX_USERNAME: ${{ secrets.INFOBLOX_JHUB_USER }}
-        INFOBLOX_PASSWORD: ${{ secrets.INFOBLOX_JHUB_PSWD }}
-        INFOBLOX_SERVER: ${{secrets.INFOBLOX_JHUB_HOST}}
-        TF_VAR_site_certificate_file: /tmp/tls.cer
-        TF_VAR_site_certificate_key_file: /tmp/tls.key
-        GOOGLE_APPLICATION_CREDENTIALS: /tmp/credentials.json
-        USE_GKE_GCLOUD_AUTH_PLUGIN: true
-        # KUBECONFIG: /tmp/kube_config
-        # KUBE_CONFIG_PATH: /tmp/kube_config
-    - name: Clean kitchen and terraform files
-      run: |
-        rm -rf .kitchen
-        rm -rf examples/*/.terraform
-        rm -rf examples/*/terraform.tfstate*
-        rm -f ~/.kube/config
-    - name: Post-check dirty dirs in self-hosted
-      run: |
-        ls -la .
-        ls -la examples/sample-jhub
-        ls -la examples/sample-jhub-nfs
-        ls -la ~
+    # - name: Run Kitchen
+    #   run: kitchen test
+    #   env:
+    #     TF_VAR_billing_account: ${{ secrets.GCP_BILLING_ACCOUNT }}
+    #     TF_VAR_org_id: ${{ secrets.GCP_ORG_ID }}
+    #     TF_VAR_folder_id: ${{ secrets.GCP_CCV_CI_FOLDER_ID }}
+    #     INFOBLOX_USERNAME: ${{ secrets.INFOBLOX_JHUB_USER }}
+    #     INFOBLOX_PASSWORD: ${{ secrets.INFOBLOX_JHUB_PSWD }}
+    #     INFOBLOX_SERVER: ${{secrets.INFOBLOX_JHUB_HOST}}
+    #     TF_VAR_site_certificate_file: /tmp/tls.cer
+    #     TF_VAR_site_certificate_key_file: /tmp/tls.key
+    #     USE_GKE_GCLOUD_AUTH_PLUGIN: true
+    #     # KUBECONFIG: /tmp/kube_config
+    #     # KUBE_CONFIG_PATH: /tmp/kube_config
+    # - name: Clean kitchen and terraform files
+    #   run: |
+    #     rm -rf .kitchen
+    #     rm -rf examples/*/.terraform
+    #     rm -rf examples/*/terraform.tfstate*
+    #     rm -f ~/.kube/config
+    # - name: Post-check dirty dirs in self-hosted
+    #   run: |
+    #     ls -la .
+    #     ls -la examples/sample-jhub
+    #     ls -la examples/sample-jhub-nfs
+    #     ls -la ~
   
   # Clean up dangling images in self-hosted runner to avoid filling up docker disk 
   docker-cleanup:
