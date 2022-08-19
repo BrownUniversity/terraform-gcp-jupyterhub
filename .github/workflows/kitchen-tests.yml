@@ -13,8 +13,6 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: brownuniversity/terraform-gcp-jupyterhub
-  KUBECONFIG: /tmp/kube_config
-  KUBE_CONFIG_PATH: /tmp/kube_config
   USE_GKE_GCLOUD_AUTH_PLUGIN: true
   GOOGLE_APPLICATION_CREDENTIALS: /tmp/credentials.json
 
