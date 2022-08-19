@@ -79,14 +79,15 @@ code by adding a `module` configuration and setting its `source` parameter to UR
 | Name | Version |
 |------|---------|
 | <a name="provider_google"></a> [google](#provider\_google) | >= 4.31.0, <5.0.0 |
-| <a name="provider_null"></a> [null](#provider\_null) | n/a |
+| <a name="provider_local"></a> [local](#provider\_local) | n/a |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_external_infoblox_record"></a> [external\_infoblox\_record](#module\_external\_infoblox\_record) | git::https://github.com/BrownUniversity/terraform-infoblox-record-a.git | v0.1.3 |
-| <a name="module_jhub_cluster"></a> [jhub\_cluster](#module\_jhub\_cluster) | git::https://github.com/BrownUniversity/terraform-gcp-cluster.git | chore-up-version |
+| <a name="module_gke_auth"></a> [gke\_auth](#module\_gke\_auth) | terraform-google-modules/kubernetes-engine/google//modules/auth | n/a |
+| <a name="module_jhub_cluster"></a> [jhub\_cluster](#module\_jhub\_cluster) | git::https://github.com/BrownUniversity/terraform-gcp-cluster.git | chore-up-versions |
 | <a name="module_jhub_helm"></a> [jhub\_helm](#module\_jhub\_helm) | ./modules/helm-jhub | n/a |
 | <a name="module_jhub_project"></a> [jhub\_project](#module\_jhub\_project) | git::https://github.com/BrownUniversity/terraform-gcp-project.git | v0.1.4 |
 | <a name="module_jhub_vpc"></a> [jhub\_vpc](#module\_jhub\_vpc) | git::https://github.com/BrownUniversity/terraform-gcp-vpc.git | v0.1.2 |
@@ -97,8 +98,7 @@ code by adding a `module` configuration and setting its `source` parameter to UR
 | Name | Type |
 |------|------|
 | [google_compute_address.static](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_address) | resource |
-| [null_resource.cluster_credentials](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
-| [null_data_source.context](https://registry.terraform.io/providers/hashicorp/null/latest/docs/data-sources/data_source) | data source |
+| [local_file.kubeconfig](https://registry.terraform.io/providers/hashicorp/local/latest/docs/resources/file) | resource |
 
 ## Inputs
 
@@ -115,7 +115,7 @@ code by adding a `module` configuration and setting its `source` parameter to UR
 | <a name="input_core_pool_auto_upgrade"></a> [core\_pool\_auto\_upgrade](#input\_core\_pool\_auto\_upgrade) | Enable auto-upgrade of core-component pool | `bool` | `true` | no |
 | <a name="input_core_pool_disk_size_gb"></a> [core\_pool\_disk\_size\_gb](#input\_core\_pool\_disk\_size\_gb) | Size of disk for core-component pool | `number` | `100` | no |
 | <a name="input_core_pool_disk_type"></a> [core\_pool\_disk\_type](#input\_core\_pool\_disk\_type) | Type of disk core-component pool | `string` | `"pd-standard"` | no |
-| <a name="input_core_pool_image_type"></a> [core\_pool\_image\_type](#input\_core\_pool\_image\_type) | Type of image core-component pool | `string` | `"COS"` | no |
+| <a name="input_core_pool_image_type"></a> [core\_pool\_image\_type](#input\_core\_pool\_image\_type) | Type of image core-component pool | `string` | `"COS_CONTAINERD"` | no |
 | <a name="input_core_pool_initial_node_count"></a> [core\_pool\_initial\_node\_count](#input\_core\_pool\_initial\_node\_count) | Number of initial nodes in core-component pool | `number` | `1` | no |
 | <a name="input_core_pool_local_ssd_count"></a> [core\_pool\_local\_ssd\_count](#input\_core\_pool\_local\_ssd\_count) | Number of SSDs core-component pool | `number` | `0` | no |
 | <a name="input_core_pool_machine_type"></a> [core\_pool\_machine\_type](#input\_core\_pool\_machine\_type) | Machine type for the core-component pool | `string` | `"n1-highmem-4"` | no |
@@ -180,7 +180,7 @@ code by adding a `module` configuration and setting its `source` parameter to UR
 | <a name="input_user_pool_auto_upgrade"></a> [user\_pool\_auto\_upgrade](#input\_user\_pool\_auto\_upgrade) | Enable auto-upgrade of user pool | `bool` | `true` | no |
 | <a name="input_user_pool_disk_size_gb"></a> [user\_pool\_disk\_size\_gb](#input\_user\_pool\_disk\_size\_gb) | Size of disk for user pool | `number` | `100` | no |
 | <a name="input_user_pool_disk_type"></a> [user\_pool\_disk\_type](#input\_user\_pool\_disk\_type) | Type of disk user pool | `string` | `"pd-standard"` | no |
-| <a name="input_user_pool_image_type"></a> [user\_pool\_image\_type](#input\_user\_pool\_image\_type) | Type of image user pool | `string` | `"COS"` | no |
+| <a name="input_user_pool_image_type"></a> [user\_pool\_image\_type](#input\_user\_pool\_image\_type) | Type of image user pool | `string` | `"COS_CONTAINERD"` | no |
 | <a name="input_user_pool_initial_node_count"></a> [user\_pool\_initial\_node\_count](#input\_user\_pool\_initial\_node\_count) | Number of initial nodes in user pool | `number` | `1` | no |
 | <a name="input_user_pool_local_ssd_count"></a> [user\_pool\_local\_ssd\_count](#input\_user\_pool\_local\_ssd\_count) | Number of SSDs user pool | `number` | `0` | no |
 | <a name="input_user_pool_machine_type"></a> [user\_pool\_machine\_type](#input\_user\_pool\_machine\_type) | Machine type for the user pool | `string` | `"n1-highmem-4"` | no |

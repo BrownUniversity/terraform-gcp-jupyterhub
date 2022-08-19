@@ -2,13 +2,18 @@
 #   PROVIDER BLOCK
 # ------------------------------------------------------------
 provider "kubernetes" {
-  # config_path    = sourced from $KUBE_CONFIG_PATH
-  config_context = var.kubernetes_context
+  load_config_file       = false
+  cluster_ca_certificate = var.cluster_ca_certificate
+  host                   = var.host
+  token                  = var.token
 }
 
 provider "helm" {
   kubernetes {
-    config_context = var.kubernetes_context
+    load_config_file       = false
+    cluster_ca_certificate = var.cluster_ca_certificate
+    host                   = var.host
+    token                  = var.token
   }
 }
 

@@ -7,7 +7,7 @@ locals {
 }
 
 resource "google_compute_disk" "disk" {
-  count = var.use_shared_volume ? 1 : 0
+  count   = var.use_shared_volume ? 1 : 0
   name    = "${var.name}-nfs"
   type    = "pd-standard"
   size    = local.total_size

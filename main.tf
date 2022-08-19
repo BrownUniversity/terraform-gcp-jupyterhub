@@ -126,26 +126,39 @@ locals {
   gcloud_location = var.regional ? "--region ${var.region}" : "--zone ${var.gcp_zone}"
 }
 
-resource "null_resource" "cluster_credentials" {
-  provisioner "local-exec" {
-    command = <<-EOT
-      gcloud container clusters get-credentials ${var.cluster_name} ${local.gcloud_location} --project ${module.jhub_project.project_id}
-      kubectl config view
-    EOT
-  }
+# resource "null_resource" "cluster_credentials" {
+#   provisioner "local-exec" {
+#     command = <<-EOT
+#       gcloud container clusters get-credentials ${var.cluster_name} ${local.gcloud_location} --project ${module.jhub_project.project_id}
+#       kubectl config view
+#     EOT
+#   }
 
-  depends_on = [module.jhub_cluster]
+#   depends_on = [module.jhub_cluster]
+# }
+
+module "gke_auth" {
+  source       = "terraform-google-modules/kubernetes-engine/google//modules/auth"
+  depends_on   = [module.jhub_cluster]
+  project_id   = module.jhub_project.project_id
+  location     = local.gcloud_location
+  cluster_name = var.cluster_name
+}
+
+resource "local_file" "kubeconfig" {
+  content  = module.gke_auth.kubeconfig_raw
+  filename = "${path.module}/kubeconfig"
 }
 
 
-# define after local-exec to create a dependency for the next module
-data "null_data_source" "context" {
-  inputs = {
-    location = var.regional ? var.region : var.gcp_zone
-  }
+# # define after local-exec to create a dependency for the next module
+# data "null_data_source" "context" {
+#   inputs = {
+#     location = var.regional ? var.region : var.gcp_zone
+#   }
 
-  depends_on = [null_resource.cluster_credentials]
-}
+#   depends_on = [null_resource.cluster_credentials]
+# }
 
 # ------------------------------------------------------------
 #  HELM
@@ -153,13 +166,16 @@ data "null_data_source" "context" {
 module "jhub_helm" {
   source = "./modules/helm-jhub"
 
+  cluster_ca_certificate          = module.gke_auth.cluster_ca_certificate
+  host                            = module.gke_auth.host
+  token                           = module.gke_auth.token
   automount_service_account_token = var.automount_service_account_token
   helm_values_file                = var.helm_values_file
   jhub_helm_version               = var.jhub_helm_version
   jhub_url                        = "${var.record_hostname}.${var.record_domain}"
   helm_deploy_timeout             = var.helm_deploy_timeout
   static_ip                       = google_compute_address.static.address
-  kubernetes_context              = "gke_${module.jhub_project.project_id}_${data.null_data_source.context.outputs["location"]}_${var.cluster_name}"
+  kubernetes_context              = "gke_${module.jhub_project.project_id}_${local.gcloud_location}_${var.cluster_name}"
   scale_down_name                 = var.scale_down_name
   scale_down_schedule             = var.scale_down_schedule
   scale_down_command              = var.scale_down_command

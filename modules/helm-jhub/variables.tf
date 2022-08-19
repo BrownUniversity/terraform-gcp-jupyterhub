@@ -1,3 +1,17 @@
+variable "cluster_ca_certificate" {
+  sensitive   = true
+  description = "The cluster_ca_certificate value for use with the kubernetes provider."
+}
+
+variable "host" {
+  description = "The host value for use with the kubernetes provider."
+}
+
+variable "token" {
+  sensitive   = true
+  description = "The token value for use with the kubernetes provider."
+}
+
 # ---------------------------------------------------------------
 #  TLS VARIABLES
 # ---------------------------------------------------------------
