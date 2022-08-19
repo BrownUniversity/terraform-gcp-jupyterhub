@@ -106,6 +106,7 @@ jobs:
         rm -rf examples/*/.terraform
         rm -rf examples/*/terraform.tfstate*
         rm -f ~/.kube/config
+        ls -la ~/.kube || :
     - name: Post-check dirty dirs in self-hosted
       run: |
         ls -la ~
@@ -127,7 +128,6 @@ jobs:
     - name: Authorize service account
       run: | 
         gcloud auth activate-service-account ${{ secrets.GCP_PF_SA }} --key-file=/tmp/credentials.json
-        gcloud container clusters get-credentials default --zone us-east1-b --project jhub-sample-36204-a9b9
         kubectl config view
         ls -la /tmp
       #   KUBECONFIG: /tmp/kube_config
@@ -152,6 +152,7 @@ jobs:
         rm -rf examples/*/.terraform
         rm -rf examples/*/terraform.tfstate*
         rm -f ~/.kube/config
+        ls -la ~/.kube || :
     - name: Post-check dirty dirs in self-hosted
       run: |
         ls -la .
