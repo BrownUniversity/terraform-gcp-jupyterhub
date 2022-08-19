@@ -163,7 +163,7 @@ locals {
 
 resource "null_resource" "set-context" {
   provisioner "local-exec" {
-    command = "kubectl config use-context ${var.local.kubecontext}"
+    command = "kubectl config use-context ${local.kubecontext}"
   }
   depends_on = [module.jhub_cluster]
 }
