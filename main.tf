@@ -133,9 +133,9 @@ locals {
 resource "null_resource" "cluster_credentials" {
   provisioner "local-exec" {
     command = <<-EOT
-      gcloud container clusters get-credentials ${var.cluster_name} ${local.gcloud_location2} --project ${module.jhub_project.project_id}
+      gcloud container clusters get-credentials --verbosity=debug ${var.cluster_name} ${local.gcloud_location2} --project ${module.jhub_project.project_id}
       kubectl config view
-      cp ~/.kube/config ${path.root}/kubeconfig
+      cp /tmp/kubeconfig ${path.root}/kubeconfig
       echo ${path.root}
       ls -la ${path.root}/kubeconfig
     EOT
