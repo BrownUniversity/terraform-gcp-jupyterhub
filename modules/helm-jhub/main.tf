@@ -2,7 +2,7 @@
 #   PROVIDER BLOCK
 # ------------------------------------------------------------
 provider "kubernetes" {
-  config_path = "${path.root}/kubeconfig"
+  config_path = "/tmp/kubeconfig"
   # cluster_ca_certificate = var.cluster_ca_certificate
   # host                   = var.host
   # token                  = var.token
@@ -11,7 +11,7 @@ provider "kubernetes" {
 
 provider "helm" {
   kubernetes {
-    config_path = "${path.root}/kubeconfig"
+    config_path = "/tmp/kubeconfig"
     # cluster_ca_certificate = var.cluster_ca_certificate
     # host                   = var.host
     # token                  = var.token
