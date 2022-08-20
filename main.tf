@@ -138,6 +138,7 @@ resource "null_resource" "cluster_credentials" {
       kubectl config view --kubeconfig="/tmp/kubeconfig"
       cp /tmp/kubeconfig ${path.root}/kubeconfig
       kubectl config view --kubeconfig="${path.root}/kubeconfig"
+      chmod 644 ${path.root}/kubeconfig
       echo ${path.root}
       ls -la ${path.root}/kubeconfig
     EOT
