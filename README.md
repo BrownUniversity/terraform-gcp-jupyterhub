@@ -12,21 +12,12 @@ In general this module of JupyterHub is configured as follows:
 * We provide scale-up and scale-down cronjobs that can change the number of replicas to have nodes be warm for users during class-time.
 * Optional shared nfs volume (for shared data, for instance).
 
-For general terraform examples see the[examples](/examples) folder. In practice we deploy one hub per class at Brown. Since most of the deployments are very simplicat, we use Terragrunt to keep configurations concise. While our deployment repository is not public at this moment, we hope to provide and example soon. 
+For general terraform examples see the [examples](/examples) folder. In practice we deploy one hub per class at Brown. Since most of the deployments are very similar, we use Terragrunt to keep configurations DRY. While our deployment repository is not public at this moment, we hope to provide an example soon. 
 
-# Contents:
-
-- [Getting Started](#getting-started)
-- [How to use this module](#how-to-use-this-module)
-- [Requirements](#requirements)
-- [Providers](#providers)
-- [Inputs](#inputs)
-- [Testing](#testing)
-- [Development](#development)
 
 ## Getting Started
 
-If developing locally, this module depends on you having GCP credentials of some kind. The module looks for a credential file in JSON format. You should export the following:
+This module depends on you having GCP credentials of some kind. The module looks for a credential file in JSON format. You should export the following:
 
 ```
 GOOGLE_APPLICATION_CREDENTIALS=/path/to/file.json
@@ -203,32 +194,8 @@ code by adding a `module` configuration and setting its `source` parameter to UR
 | <a name="output_zones"></a> [zones](#output\_zones) | List of zones in which the cluster resides |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 
-## Testing
 
-This repository uses Kitchen-Terraform to test the terraform modules. In the [examples](/examples)directory you can find examples of how each module can be used. Those examples are fed to [Test Kitchen][https://kitchen.ci/]. To install test kitchen, first make sure you have Ruby and bundler installed.
-
-```
-brew install ruby
-gem install bundler
-```
-
-Then install the prerequisites for test kitchen.
-
-```
-bundle install
-```
-
-You'll need to add some common credentials and secret variables. 
-
-And now you're ready to run test kitchen. Test kitchen has a couple main commands:
-
-- `bundle exec kitchen create` initializes terraform.
-- `bundle exec kitchen converge` runs our terraform examples.
-- `bundle exec kitchen verify` runs our inspec scripts against a converged kitchen.
-- `bundle exec kitchen test` does all the above.
-
-
-## Development
+## Local Development
 
 ### Merging Policy
 Use [GitLab Flow](https://docs.gitlab.com/ee/topics/gitlab_flow.html#production-branch-with-gitlab-flow).
@@ -237,10 +204,46 @@ Use [GitLab Flow](https://docs.gitlab.com/ee/topics/gitlab_flow.html#production-
 * Merge only from PR with review
 * After merging to default branch a release is drafted using a github action. Check the draft and publish if you and tests are happy
 
-### Pre-commit hooks
-Install and configure terraform [pre-commit hooks](https://github.com/antonbabenko/pre-commit-terraform)
-This repository has the following hooks, preonfigured. After intallation, you can run them using: `pre-commit run -a`
-Please make sure you run them before pushing to remote.
+### Version managers
+
+We recommend using [asdf](https://asdf-vm.com) to manage your versions of Terrafom and Ruby.
+
+```
+brew install asdf
+```
+
+Alternatively you can use [tfenv](https://github.com/tfutils/tfenv) and [rbenv](https://github.com/rbenv/rbenv)
+
+### Terraform and Ruby
+
+The tests can simply run in CI. If you want to run the tests locally, you will need to install the version of terraform and Ruby specified in the `.tool-versions` file (or `.terraform-version`, `.ruby-version`). 
+
+```
+asdf plugin-add terraform https://github.com/asdf-community/asdf-hashicorp.git
+asdf plugin add ruby https://github.com/asdf-vm/asdf-ruby.git
+asdf install
+```
+
+#### Pre-commit hooks
+You should make sure that pre-commit hooks are installed to run the formater, linter, etc. Install and configure terraform [pre-commit hooks](https://github.com/antonbabenko/pre-commit-terraform) as follows:
+
+Install dependencies
+
+```
+brew bundle install
+```
+
+Install the pre-commit hook globally
+```
+DIR=~/.git-template
+git config --global init.templateDir ${DIR}
+pre-commit init-templatedir -t pre-commit ${DIR}
+```
+
+To run the hooks specified in `.pre-commit-config.yaml`: 
+
+```
+pre-commit run -a
 
 | Hook name                                        | Description                                                                                                                |
 | ------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------- |
@@ -248,9 +251,97 @@ Please make sure you run them before pushing to remote.
 | `terraform_docs`                                 | Inserts input and output documentation into `README.md`.                                                       |
 | `terraform_tflint`                               | Validates all Terraform configuration files with [TFLint](https://github.com/terraform-linters/tflint).                              |
 | `terraform_tfsec`                                | [TFSec](https://github.com/liamg/tfsec) static analysis of terraform templates to spot potential security issues.     |
+```
+
+### GCloud and Infoblox Secrets
+
+This is only needed if running tests locally. The google-cloud-sdk and last-pass cli are included in the Brewfile so it should now be installed
+
+This repo includes a `env.sh` file that where you set the path to the google credentials file and infoblox secrets. First you'll need to make sure you are logged in to last pass,
+
+```
+lpass login
+```
+
+Then use
+
+```
+source env.sh
+```
+
+to set the related environment variables. If you need to unset them, you can use
+
+```
+deactivate
+```
+
+As of 2022-08 Gcloud authentication needs an additional plugin to be installed. Run
+
+```
+gcloud components install gke-gcloud-auth-plugin
+```
+
+See [here](https://cloud.google.com/blog/products/containers-kubernetes/kubectl-auth-changes-in-gke) for more information.
 
 
-### CI
+
+
+## Testing
+
+This repository uses Kitchen-Terraform to test the terraform modules. In the [examples](/examples) directory you can find examples of how each module can be used. Those examples are fed to [Test Kitchen](https://kitchen.ci/). To install test kitchen, first make sure you have Ruby and bundler installed.
+
+### Install testing dependencies
+
+```
+gem install bundler
+```
+
+Then install the prerequisites for test kitchen.
+
+```
+bundle install
+```
+### Setup secrets
+
+In addition to the GCLOUD and INFOBLOX variables configured by the `env.sh` file, we also need to add some additional secret variables. 
+
+In the example folders, rename the following files:
+- `local-example.tfvars` to `secrets.auto.tfvars`
+- `local-example.yaml` to `secrets.yaml`
+
+Set the corresponding values inside of the files. They should automatically be ignored via our `.gitignore` file
+
+### Run the tests
+And now you're ready to run test kitchen. Test kitchen has a couple main commands:
+
+- `bundle exec kitchen create` initializes terraform.
+- `bundle exec kitchen converge` runs our terraform examples.
+- `bundle exec kitchen verify` runs our inspec scripts against a converged kitchen.
+- `bundle exec kitchen test` does all the above.
+
+### Running terraform directly
+If you need finer control when trouble shooting, you can directly run terraform within the desired example directory.
+
+## Troubleshooting
+
+Further troubleshooting will require interacting with the kubernetes cluster directly, and you'll need to authenticate to the cluster. You can do so for instance as follows,
+
+```
+PROJECT=jhub-sample-xxxxx
+ZONE=us-east1-b
+
+gcloud container clusters get-credentials default --zone ${ZONE} --project ${PROJECT}
+```
+
+If gcloud is not authenticated, then do so as follows
+
+```
+gcloud auth activate-service-account <service-account> --key-file=<path-tojson-credentials>
+--project=$PROJECT
+```
+
+
+## CI
 This project has three workflows enabled:
 
 1. PR labeler: When opening a PR to the main branch, a label is given assigned automatically according to the name of your feature branch. The labeler follows the follows rules in [pr-labeler.yml](.github/pr-labeler.yml)
@@ -264,7 +355,8 @@ This project has three workflows enabled:
 We aim to upgrade this package at least once a year.
 
 #### Update Ruby Version
-To install/upgrade the version of Ruby we use `rbenv`. For instance to install and update to `2.7.3`:
+
+To install/upgrade the version of Ruby we use `rbenv` or `asdf`. For instance to install and update to `2.7.3`:
 
 ```
 rbenv install -v 2.7.3

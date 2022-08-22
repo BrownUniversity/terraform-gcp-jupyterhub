@@ -1,0 +1,12 @@
+proxy:
+  https:
+    type: manual
+    manual:
+      key: |
+        -----BEGIN RSA PRIVATE KEY-----
+        <KEY-HERE>
+        -----END RSA PRIVATE KEY-----        
+      cert: |
+        -----BEGIN CERTIFICATE-----
+        <CERT-HERE>
+        -----END CERTIFICATE-----
