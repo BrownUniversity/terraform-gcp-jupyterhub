@@ -1,3 +1,3 @@
-org_id          = 
-billing_account = 
-folder_id       = 
+org_id          = 000
+billing_account = 000
+folder_id       = 000

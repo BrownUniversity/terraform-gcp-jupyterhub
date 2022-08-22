@@ -40,11 +40,6 @@ variable "site_certificate_key" {
 # ---------------------------------------------------------------
 #  HELM VARIABLES
 # ---------------------------------------------------------------
-variable "kubernetes_context" {
-  type        = string
-  description = "Context of current kubernetes cluster"
-}
-
 variable "static_ip" {
   type        = string
   description = "static ip of load-balancer"

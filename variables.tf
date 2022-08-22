@@ -16,12 +16,6 @@ variable "project_name" {
   description = "Name of the project."
 }
 
-variable "random_project_id" {
-  type        = bool
-  description = "Enable random number to the end of the project."
-  default     = true
-}
-
 variable "auto_create_network" {
   type        = bool
   description = "Auto create default network."
@@ -68,52 +62,10 @@ variable "network_name" {
   default     = "kubernetes-vpc"
 }
 
-variable "routing_mode" {
-  type        = string
-  description = "Routing mode. GLOBAL or REGIONAL"
-  default     = "GLOBAL"
-}
-
 variable "subnet_name" {
   type        = string
   description = "Name of the subnet."
   default     = "kubernetes-subnet"
-}
-
-variable "subnet_ip" {
-  type        = string
-  description = "Subnet IP CIDR."
-  default     = "10.0.0.0/17"
-}
-
-variable "subnet_private_access" {
-  type        = string
-  description = "Whether this subnet will have private Google access enabled"
-  default     = "true"
-}
-
-variable "subnet_flow_logs" {
-  type        = string
-  description = "Whether the subnet will record and send flow log data to logging"
-  default     = "true"
-}
-
-variable "description" {
-  type        = string
-  description = "VPC description"
-  default     = "Deployed through Terraform."
-}
-
-variable "ip_range_pods" {
-  type        = string
-  description = "The secondary ip range to use for pods"
-  default     = "192.168.0.0/18"
-}
-
-variable "ip_range_services" {
-  type        = string
-  description = "The secondary ip range to use for pods"
-  default     = "192.168.64.0/18"
 }
 
 variable "range_name_pods" {
@@ -131,13 +83,6 @@ variable "range_name_services" {
 # --------------------------------------
 #   Infoblox
 # --------------------------------------
-variable "dns_manager" {
-  description = "Service used to manage your DNS"
-  type        = string
-  default     = "infoblox"
-}
-
-
 variable "record_domain" {
   description = "The domain on the record. hostaname.domain = FQDN"
   type        = string
@@ -174,16 +119,6 @@ variable "gcp_zone" {
   type        = string
   description = "The GCP zone to deploy the runner into."
   default     = "us-east1-b"
-}
-
-variable "network" {
-  description = "The VPC network to host the cluster in"
-  default     = "kubernetes-vpc"
-}
-
-variable "subnetwork" {
-  description = "The subnetwork to host the cluster in"
-  default     = "kubernetes-subnet"
 }
 
 variable "monitoring_service" {
@@ -325,12 +260,6 @@ variable "core_pool_initial_node_count" {
   default     = 1
 }
 
-variable "core_pool_oauth_scope" {
-  type        = string
-  description = "OAuth scope for core-component pool"
-  default     = "https://www.googleapis.com/auth/cloud-platform"
-}
-
 # ----------------------------------------
 #  USER POOL VALUES
 # ----------------------------------------
@@ -406,13 +335,6 @@ variable "user_pool_initial_node_count" {
   description = "Number of initial nodes in user pool"
   default     = 1
 }
-
-variable "user_pool_oauth_scope" {
-  type        = string
-  description = "OAuth scope for user pool"
-  default     = "https://www.googleapis.com/auth/cloud-platform"
-}
-
 
 # ---------------------------------------------------------------
 #  SHARE NFS VARIABLES
