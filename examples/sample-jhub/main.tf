@@ -36,7 +36,6 @@ module "sample-jhub" {
   maintenance_start_time     = "03:00"
   http_load_balancing        = false
   horizontal_pod_autoscaling = true
-  master_authorized_networks = var.master_authorized_networks
 
   core_pool_machine_type       = "n1-standard-4"
   core_pool_min_count          = 1
@@ -69,7 +68,7 @@ module "sample-jhub" {
 
   # ---------------- HELM/JHUB VARIABLES -----------------------
   jhub_helm_version   = "1.2.0"
-  helm_deploy_timeout = 2000
+  helm_deploy_timeout = 1000
   helm_values_file    = "./values.yaml"
 
   # ---------------- CRONJOB VARIABLES -----------------------

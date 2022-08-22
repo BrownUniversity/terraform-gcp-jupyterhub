@@ -142,7 +142,7 @@ jobs:
         TF_VAR_site_certificate_file: /tmp/tls.cer
         TF_VAR_site_certificate_key_file: /tmp/tls.key
         USE_GKE_GCLOUD_AUTH_PLUGIN: true
-        TF_VAR_master_authorized_networks: ${{ secrets.GKE_AUTH_MASTER2 }}
+        # TF_VAR_master_authorized_networks: ${{ secrets.GKE_AUTH_MASTER2 }}
         # KUBECONFIG: /tmp/kube_config
         # KUBE_CONFIG_PATH: /tmp/kube_config
     - name: Clean kitchen and terraform files

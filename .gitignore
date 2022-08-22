@@ -35,4 +35,5 @@ override.tf.json
 # example: *tfplan*
 
 # Ignore .terraform.lock.hcl in examples directories
-**/examples/.terraform.lock.hcl
+**/examples/*/.terraform.lock.hcl
+Brewfile.lock.json

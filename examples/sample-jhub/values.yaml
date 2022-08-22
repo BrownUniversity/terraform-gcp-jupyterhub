@@ -1,6 +1,6 @@
-# prePuller:
-#   continuous:
-#     enabled: true
+prePuller:
+  continuous:
+    enabled: true
 scheduling:
   userScheduler:
     enabled: true

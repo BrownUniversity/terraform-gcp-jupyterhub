@@ -68,7 +68,7 @@ module "external_infoblox_record" {
 
 # Create the cluster
 module "jhub_cluster" {
-  source                     = "git::https://github.com/BrownUniversity/terraform-gcp-cluster.git?ref=chore-up-versions"
+  source                     = "git::https://github.com/BrownUniversity/terraform-gcp-cluster.git?ref=chore-up-versions-rm-tfsec-changes"
   cluster_name               = var.cluster_name
   project_id                 = module.jhub_project.project_id
   regional                   = var.regional
@@ -88,8 +88,6 @@ module "jhub_cluster" {
   enable_private_nodes       = var.enable_private_nodes
   master_ipv4_cidr_block     = var.master_ipv4_cidr_block
   remove_default_node_pool   = var.remove_default_node_pool
-  master_authorized_networks = var.master_authorized_networks
-
 
   core_pool_name               = var.core_pool_name
   core_pool_machine_type       = var.core_pool_machine_type
@@ -146,10 +144,10 @@ module "gke_auth" {
   cluster_name = var.cluster_name
 }
 
-resource "local_file" "kubeconfig" {
-  content  = module.gke_auth.kubeconfig_raw
-  filename = "${path.module}/kubeconfig"
-}
+# resource "local_file" "kubeconfig" {
+#   content  = module.gke_auth.kubeconfig_raw
+#   filename = "${path.module}/kubeconfig"
+# }
 
 
 # # define after local-exec to create a dependency for the next module
