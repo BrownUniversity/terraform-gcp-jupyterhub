@@ -16,8 +16,6 @@ module "sample-jhub" {
 
   # ---------------- PROJECT VARIABLES -----------------------
   project_name      = "jhub-${local.jhub_tenant}"
-  random_project_id = false
-
 
   # The following variables need to be included in secrets.auto.tfvars
   org_id          = var.org_id
