@@ -37,3 +37,4 @@ override.tf.json
 # Ignore .terraform.lock.hcl in examples directories
 **/examples/*/.terraform.lock.hcl
 Brewfile.lock.json
+Gemfile.lock
