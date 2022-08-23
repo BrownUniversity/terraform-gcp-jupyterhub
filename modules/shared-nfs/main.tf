@@ -7,8 +7,7 @@ locals {
 }
 
 resource "google_compute_disk" "disk" {
-  count = var.use_shared_volume ? 1 : 0
-
+  count   = var.use_shared_volume ? 1 : 0
   name    = "${var.name}-nfs"
   type    = "pd-standard"
   size    = local.total_size
@@ -18,7 +17,6 @@ resource "google_compute_disk" "disk" {
 
 resource "kubernetes_persistent_volume" "nfs_disk" {
   count = var.use_shared_volume ? 1 : 0
-
   metadata {
     name = "${var.name}-nfs-backend"
   }
@@ -39,7 +37,6 @@ resource "kubernetes_persistent_volume" "nfs_disk" {
 
 resource "kubernetes_persistent_volume_claim" "nfs_disk" {
   count = var.use_shared_volume ? 1 : 0
-
   metadata {
     name      = "${var.name}-nfs-backend"
     namespace = var.namespace
@@ -58,7 +55,6 @@ resource "kubernetes_persistent_volume_claim" "nfs_disk" {
 
 resource "kubernetes_stateful_set" "nfs_server" {
   count = var.use_shared_volume ? 1 : 0
-
   metadata {
     name        = "${var.name}-nfs-server"
     namespace   = var.namespace
@@ -128,7 +124,6 @@ resource "kubernetes_stateful_set" "nfs_server" {
 
 resource "kubernetes_service" "nfs_server" {
   count = var.use_shared_volume ? 1 : 0
-
   metadata {
     name        = "${var.name}-nfs-server"
     namespace   = var.namespace

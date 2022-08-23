@@ -11,7 +11,7 @@ locals {
 #   PROJECT
 # ------------------------------------------------------------
 module "jhub_project" {
-  source = "git::https://github.com/BrownUniversity/terraform-gcp-project.git?ref=v0.1.3"
+  source = "git::https://github.com/BrownUniversity/terraform-gcp-project.git?ref=v0.1.4"
 
   project_name               = var.project_name
   org_id                     = var.org_id
@@ -28,7 +28,7 @@ module "jhub_project" {
 #   VPC
 # ------------------------------------------------------------
 module "jhub_vpc" {
-  source = "git::https://github.com/BrownUniversity/terraform-gcp-vpc.git?ref=v0.1.1"
+  source = "git::https://github.com/BrownUniversity/terraform-gcp-vpc.git?ref=v0.1.2"
 
   project_id          = module.jhub_project.project_id
   network_name        = var.network_name
@@ -50,7 +50,7 @@ resource "google_compute_address" "static" {
 
 # Assign Brown-DNS via infoblox
 module "production_infoblox_record" {
-  source          = "git::https://github.com/BrownUniversity/terraform-infoblox-record-a.git?ref=v0.1.2"
+  source          = "git::https://github.com/BrownUniversity/terraform-infoblox-record-a.git?ref=v0.1.3"
   record_ip       = google_compute_address.static.address
   record_hostname = var.record_hostname
   record_domain   = var.record_domain
@@ -58,7 +58,7 @@ module "production_infoblox_record" {
 }
 
 module "external_infoblox_record" {
-  source          = "git::https://github.com/BrownUniversity/terraform-infoblox-record-a.git?ref=v0.1.2"
+  source          = "git::https://github.com/BrownUniversity/terraform-infoblox-record-a.git?ref=v0.1.3"
   record_ip       = google_compute_address.static.address
   record_hostname = var.record_hostname
   record_domain   = var.record_domain
@@ -68,7 +68,7 @@ module "external_infoblox_record" {
 
 # Create the cluster
 module "jhub_cluster" {
-  source                     = "git::https://github.com/BrownUniversity/terraform-gcp-cluster.git?ref=v0.1.3"
+  source                     = "git::https://github.com/BrownUniversity/terraform-gcp-cluster.git?ref=v0.1.4"
   cluster_name               = var.cluster_name
   project_id                 = module.jhub_project.project_id
   regional                   = var.regional
@@ -88,7 +88,6 @@ module "jhub_cluster" {
   enable_private_nodes       = var.enable_private_nodes
   master_ipv4_cidr_block     = var.master_ipv4_cidr_block
   remove_default_node_pool   = var.remove_default_node_pool
-
 
   core_pool_name               = var.core_pool_name
   core_pool_machine_type       = var.core_pool_machine_type
@@ -123,25 +122,15 @@ module "jhub_cluster" {
 # ------------------------------------------------------------
 
 locals {
-  gcloud_location = var.regional ? "--region ${var.region}" : "--zone ${var.gcp_zone}"
+  gcloud_location = var.regional ? "${var.region}" : "${var.gcp_zone}"
 }
 
-resource "null_resource" "cluster_credentials" {
-  provisioner "local-exec" {
-    command = "gcloud container clusters get-credentials ${var.cluster_name} ${local.gcloud_location} --project ${module.jhub_project.project_id}"
-  }
-
-  depends_on = [module.jhub_cluster]
-}
-
-
-# define after local-exec to create a dependency for the next module
-data "null_data_source" "context" {
-  inputs = {
-    location = var.regional ? var.region : var.gcp_zone
-  }
-
-  depends_on = [null_resource.cluster_credentials]
+module "gke_auth" {
+  source       = "terraform-google-modules/kubernetes-engine/google//modules/auth"
+  depends_on   = [module.jhub_cluster]
+  project_id   = module.jhub_project.project_id
+  location     = local.gcloud_location
+  cluster_name = var.cluster_name
 }
 
 # ------------------------------------------------------------
@@ -150,13 +139,15 @@ data "null_data_source" "context" {
 module "jhub_helm" {
   source = "./modules/helm-jhub"
 
+  cluster_ca_certificate          = module.gke_auth.cluster_ca_certificate
+  host                            = module.gke_auth.host
+  token                           = module.gke_auth.token
   automount_service_account_token = var.automount_service_account_token
   helm_values_file                = var.helm_values_file
   jhub_helm_version               = var.jhub_helm_version
   jhub_url                        = "${var.record_hostname}.${var.record_domain}"
   helm_deploy_timeout             = var.helm_deploy_timeout
   static_ip                       = google_compute_address.static.address
-  kubernetes_context              = "gke_${module.jhub_project.project_id}_${data.null_data_source.context.outputs["location"]}_${var.cluster_name}"
   scale_down_name                 = var.scale_down_name
   scale_down_schedule             = var.scale_down_schedule
   scale_down_command              = var.scale_down_command

@@ -2,12 +2,16 @@
 #   PROVIDER BLOCK
 # ------------------------------------------------------------
 provider "kubernetes" {
-  config_context = var.kubernetes_context
+  cluster_ca_certificate = var.cluster_ca_certificate
+  host                   = var.host
+  token                  = var.token
 }
 
 provider "helm" {
   kubernetes {
-    config_context = var.kubernetes_context
+    cluster_ca_certificate = var.cluster_ca_certificate
+    host                   = var.host
+    token                  = var.token
   }
 }
 
@@ -49,8 +53,9 @@ locals {
 }
 
 module "shared-nfs" {
-  #When we upgrade to terraform v0.13, the count should live here instead of residing inside every resource in the nfs module
-  #count = var.use_shared_volume ? 1 : 0
+  # In theory, when we upgrade to terraform v0.13, the count should live here instead of residing inside every resource in the nfs module
+  # but we need to test, so change has not yet ben done
+  # count             = var.use_shared_volume ? 1 : 0
   source            = "../shared-nfs"
   name              = "shared-storage"
   use_shared_volume = var.use_shared_volume
@@ -71,7 +76,6 @@ locals {
 }
 
 resource "helm_release" "jhub" {
-
   name       = "jhub"
   repository = "https://jupyterhub.github.io/helm-chart"
   chart      = "jupyterhub"
@@ -132,7 +136,6 @@ resource "helm_release" "jhub" {
 # ------------------------------------------------------------
 
 resource "kubernetes_cluster_role_binding" "cronjob" {
-
   metadata {
     name = "default-clusterrolebinding"
   }

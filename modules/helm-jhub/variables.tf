@@ -1,3 +1,17 @@
+variable "cluster_ca_certificate" {
+  sensitive   = true
+  description = "The cluster_ca_certificate value for use with the kubernetes provider."
+}
+
+variable "host" {
+  description = "The host value for use with the kubernetes provider."
+}
+
+variable "token" {
+  sensitive   = true
+  description = "The token value for use with the kubernetes provider."
+}
+
 # ---------------------------------------------------------------
 #  TLS VARIABLES
 # ---------------------------------------------------------------
@@ -26,11 +40,6 @@ variable "site_certificate_key" {
 # ---------------------------------------------------------------
 #  HELM VARIABLES
 # ---------------------------------------------------------------
-variable "kubernetes_context" {
-  type        = string
-  description = "Context of current kubernetes cluster"
-}
-
 variable "static_ip" {
   type        = string
   description = "static ip of load-balancer"
