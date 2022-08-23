@@ -35,7 +35,7 @@ module "sample-jhub" {
   http_load_balancing        = false
   horizontal_pod_autoscaling = true
 
-  core_pool_machine_type       = "n1-standard-1"
+  core_pool_machine_type       = "n1-standard-2"
   core_pool_min_count          = 1
   core_pool_max_count          = 2
   core_pool_local_ssd_count    = 0
@@ -45,7 +45,7 @@ module "sample-jhub" {
   core_pool_preemptible        = false
   core_pool_initial_node_count = 1
 
-  user_pool_machine_type       = "n1-standard-1"
+  user_pool_machine_type       = "n1-standard-2"
   user_pool_min_count          = 0
   user_pool_max_count          = 2
   user_pool_local_ssd_count    = 0
