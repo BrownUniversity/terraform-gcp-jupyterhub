@@ -15,10 +15,10 @@ scheduling:
 singleuser: 
   memory:
     limit: 1G
-    guarantee: 1G
+    guarantee: 512M
   cpu:
-    limit: 0.5
-    guarantee: 0.5
+    limit: 1
+    guarantee: 0.05
   image:
     name: gcr.io/jupyterhub-docker-images/jupyterhub-scipy
     tag: phys1600-spring2020
