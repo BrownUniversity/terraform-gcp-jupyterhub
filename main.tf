@@ -68,7 +68,7 @@ module "external_infoblox_record" {
 
 # Create the cluster
 module "jhub_cluster" {
-  source                     = "git::https://github.com/BrownUniversity/terraform-gcp-cluster.git?ref= v0.1.5"
+  source                     = "git::https://github.com/BrownUniversity/terraform-gcp-cluster.git?ref=v0.1.5"
   cluster_name               = var.cluster_name
   project_id                 = module.jhub_project.project_id
   kubernetes_version         = var.kubernetes_version
