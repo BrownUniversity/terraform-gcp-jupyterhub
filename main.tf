@@ -71,7 +71,7 @@ module "jhub_cluster" {
   source                     = "git::https://github.com/BrownUniversity/terraform-gcp-cluster.git?ref= v0.1.5"
   cluster_name               = var.cluster_name
   project_id                 = module.jhub_project.project_id
-  kubernetes_version         = "1.24"
+  kubernetes_version         = var.kubernetes_version
   regional                   = var.regional
   region                     = var.region
   node_zones                 = [var.gcp_zone]
