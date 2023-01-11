@@ -1,3 +1,7 @@
+hub:
+  db:
+    pvc:
+      storageClassName: standard-rwo
 prePuller:
   continuous:
     enabled: true
