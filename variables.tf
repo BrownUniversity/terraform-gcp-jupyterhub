@@ -391,6 +391,11 @@ variable "helm_values_file" {
   description = "Relative path and file name. Example: values.yaml"
 }
 
+variable "kubernetes_version" {
+  type        = string
+  description = "The Kubernetes version of the masters. If set to 'latest' it will pull latest available version in the selected region."
+}
+
 variable "jhub_helm_version" {
   type        = string
   description = "Version of the JupyterHub Helm Chart Release"

@@ -28,6 +28,7 @@ module "sample-jhub" {
   record_domain   = local.jhub_domain
 
   # ---------------- CLUSTER VARIABLES -----------------------
+  kubernetes_version         = 1.24
   regional                   = false
   region                     = local.gcp_region
   gcp_zone                   = local.gcp_zone
