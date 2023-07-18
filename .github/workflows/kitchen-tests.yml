@@ -3,12 +3,12 @@ name: kitchen-tests
 on:
   push:
     branches:
-      - 'main'
+      - "main"
     tags:
-      - 'v*.*.*'
-  pull_request:  
+      - "v*.*.*"
+  pull_request:
     branches:
-      - 'main'
+      - "main"
 
 env:
   REGISTRY: ghcr.io
@@ -19,7 +19,7 @@ env:
 jobs:
   docker:
     runs-on: ubuntu-latest
-    
+
     permissions:
       packages: write
       contents: read
@@ -28,7 +28,7 @@ jobs:
       full_image_id: ${{ steps.save_full_image_id.outputs.full_image_id }}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - uses: dorny/paths-filter@v2.2.0
         id: filter
@@ -65,13 +65,13 @@ jobs:
 
       # NOTE: We are tapping into json output because tags could become a list if prior step is modified
       - id: save_full_image_id
-        run: echo "::set-output name=full_image_id::${{ fromJSON(steps.meta.outputs.json).tags[0] }}"
+        run: echo "full_image_id=${{ fromJSON(steps.meta.outputs.json).tags[0] }}" >> $GITHUB_OUTPUT
 
       - name: print_tag
-        run: echo "${{fromJSON(steps.meta.outputs.json).tags[0] }}"
+        run: echo "${{ fromJSON(steps.meta.outputs.json).tags[0] }}"
 
       - name: Build and push Docker image
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           context: .
           push: true
@@ -87,81 +87,81 @@ jobs:
     container:
       image: "${{ needs.docker.outputs.full_image_id }}"
     steps:
-    - uses: actions/checkout@v2
-      with:
-        clean: false #this is to avoid permissions on self-hosted runner
-    - name: Pre-check dirty dirs in self-hosted 
-      run: |
-        ls -la ~
-        ls -la .
-        ls -la examples/sample-jhub
-        ls -la examples/sample-jhub-nfs
-        kubectl config view
-    - name: Remove Kitchen File
-      run: |
-        rm -rf .kitchen
-        rm -rf .terraform
-        rm -rf examples/*/.terraform
-        rm -rf examples/*/terraform.tfstate*
-        rm -f ~/.kube/config
-        ls -la ~/.kube || :
-    - name: Post-check dirty dirs in self-hosted
-      run: |
-        ls -la ~
-        ls -la .
-        ls -la examples/sample-jhub
-        ls -la examples/sample-jhub-nfs
-    - name: Create Credential File
-      run: |
-        echo "$GCP_CREDENTIAL_JSON" | base64 -d > /tmp/credentials.json
-      env:
-        GCP_CREDENTIAL_JSON: ${{ secrets.GCP_CREDENTIAL_JSON}}
-    - name: Create TLS Files
-      run: |
-        echo "$JUPYTERHUB_TLS_CER" > /tmp/tls.cer
-        echo "$JUPYTERHUB_TLS_KEY" > /tmp/tls.key
-      env:
-        JUPYTERHUB_TLS_CER: ${{ secrets.JUPYTERHUB_TLS_CER }}
-        JUPYTERHUB_TLS_KEY: ${{ secrets.JUPYTERHUB_TLS_KEY }}
-    - name: Authorize service account
-      run: | 
-        gcloud auth activate-service-account ${{ secrets.GCP_PF_SA }} --key-file=/tmp/credentials.json
-        kubectl config view
-        ls -la /tmp
-    - name: Run Kitchen
-      run: kitchen test
-      env:
-        TF_VAR_billing_account: ${{ secrets.GCP_BILLING_ACCOUNT }}
-        TF_VAR_org_id: ${{ secrets.GCP_ORG_ID }}
-        TF_VAR_folder_id: ${{ secrets.GCP_CCV_CI_FOLDER_ID }}
-        INFOBLOX_USERNAME: ${{ secrets.INFOBLOX_JHUB_USER }}
-        INFOBLOX_PASSWORD: ${{ secrets.INFOBLOX_JHUB_PSWD }}
-        INFOBLOX_SERVER: ${{secrets.INFOBLOX_JHUB_HOST}}
-        TF_VAR_site_certificate_file: /tmp/tls.cer
-        TF_VAR_site_certificate_key_file: /tmp/tls.key
-        USE_GKE_GCLOUD_AUTH_PLUGIN: true
-    - name: Clean kitchen and terraform files
-      run: |
-        rm -rf .kitchen
-        rm -rf examples/*/.terraform
-        rm -rf examples/*/terraform.tfstate*
-        rm -f ~/.kube/config
-        ls -la ~/.kube || :
-    - name: Post-check dirty dirs in self-hosted
-      run: |
-        ls -la .
-        ls -la examples/sample-jhub
-        ls -la examples/sample-jhub-nfs
-        ls -la ~
-  
-  # Clean up dangling images in self-hosted runner to avoid filling up docker disk 
+      - uses: actions/checkout@v2
+        with:
+          clean: false #this is to avoid permissions on self-hosted runner
+      - name: Pre-check dirty dirs in self-hosted
+        run: |
+          ls -la ~
+          ls -la .
+          ls -la examples/sample-jhub
+          ls -la examples/sample-jhub-nfs
+          kubectl config view
+      - name: Remove Kitchen File
+        run: |
+          rm -rf .kitchen
+          rm -rf .terraform
+          rm -rf examples/*/.terraform
+          rm -rf examples/*/terraform.tfstate*
+          rm -f ~/.kube/config
+          ls -la ~/.kube || :
+      - name: Post-check dirty dirs in self-hosted
+        run: |
+          ls -la ~
+          ls -la .
+          ls -la examples/sample-jhub
+          ls -la examples/sample-jhub-nfs
+      - name: Create Credential File
+        run: |
+          echo "$GCP_CREDENTIAL_JSON" | base64 -d > /tmp/credentials.json
+        env:
+          GCP_CREDENTIAL_JSON: ${{ secrets.GCP_CREDENTIAL_JSON }}
+      - name: Create TLS Files
+        run: |
+          echo "$JUPYTERHUB_TLS_CER" > /tmp/tls.cer
+          echo "$JUPYTERHUB_TLS_KEY" > /tmp/tls.key
+        env:
+          JUPYTERHUB_TLS_CER: ${{ secrets.JUPYTERHUB_TLS_CER }}
+          JUPYTERHUB_TLS_KEY: ${{ secrets.JUPYTERHUB_TLS_KEY }}
+      - name: Authorize service account
+        run: |
+          gcloud auth activate-service-account ${{ secrets.GCP_PF_SA }} --key-file=/tmp/credentials.json
+          kubectl config view
+          ls -la /tmp
+      - name: Run Kitchen
+        run: kitchen test
+        env:
+          TF_VAR_billing_account: ${{ secrets.GCP_BILLING_ACCOUNT }}
+          TF_VAR_org_id: ${{ secrets.GCP_ORG_ID }}
+          TF_VAR_folder_id: ${{ secrets.GCP_CCV_CI_FOLDER_ID }}
+          INFOBLOX_USERNAME: ${{ secrets.INFOBLOX_JHUB_USER }}
+          INFOBLOX_PASSWORD: ${{ secrets.INFOBLOX_JHUB_PSWD }}
+          INFOBLOX_SERVER: ${{ secrets.INFOBLOX_JHUB_HOST }}
+          TF_VAR_site_certificate_file: /tmp/tls.cer
+          TF_VAR_site_certificate_key_file: /tmp/tls.key
+          USE_GKE_GCLOUD_AUTH_PLUGIN: true
+      - name: Clean kitchen and terraform files
+        run: |
+          rm -rf .kitchen
+          rm -rf examples/*/.terraform
+          rm -rf examples/*/terraform.tfstate*
+          rm -f ~/.kube/config
+          ls -la ~/.kube || :
+      - name: Post-check dirty dirs in self-hosted
+        run: |
+          ls -la .
+          ls -la examples/sample-jhub
+          ls -la examples/sample-jhub-nfs
+          ls -la ~
+
+  # Clean up dangling images in self-hosted runner to avoid filling up docker disk
   docker-cleanup:
     needs: [test]
-    runs-on: self-hosted 
+    runs-on: self-hosted
     steps:
-    - name: Clean up docker images
-      run: |
-        docker images --filter=reference='brownccv/kitchen-terraform'
-        docker images --filter=reference='brownccv/kitchen-terraform' --filter "dangling=true" | grep -E "brownccv/kitchen-terraform" | awk '{ print $3 }' | xargs docker rmi || :
-        echo "After cleanup"
-        docker images --filter=reference='brownccv/kitchen-terraform'
+      - name: Clean up docker images
+        run: |
+          docker images --filter=reference='brownccv/kitchen-terraform'
+          docker images --filter=reference='brownccv/kitchen-terraform' --filter "dangling=true" | grep -E "brownccv/kitchen-terraform" | awk '{ print $3 }' | xargs docker rmi || :
+          echo "After cleanup"
+          docker images --filter=reference='brownccv/kitchen-terraform'
