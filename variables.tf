@@ -146,12 +146,6 @@ variable "create_service_account" {
   default     = false
 }
 
-variable "skip_provisioners" {
-  type        = bool
-  description = "Flag to skip local-exec provisioners"
-  default     = false
-}
-
 variable "http_load_balancing" {
   type        = bool
   description = "Enable httpload balancer addon"

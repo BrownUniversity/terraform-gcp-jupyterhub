@@ -150,7 +150,6 @@ code by adding a `module` configuration and setting its `source` parameter to UR
 | <a name="input_shared_storage_capacity"></a> [shared\_storage\_capacity](#input\_shared\_storage\_capacity) | Size of the shared volume | `number` | `5` | no |
 | <a name="input_site_certificate"></a> [site\_certificate](#input\_site\_certificate) | File containing the TLS certificate | `string` | n/a | yes |
 | <a name="input_site_certificate_key"></a> [site\_certificate\_key](#input\_site\_certificate\_key) | File containing the TLS certificate key | `string` | n/a | yes |
-| <a name="input_skip_provisioners"></a> [skip\_provisioners](#input\_skip\_provisioners) | Flag to skip local-exec provisioners | `bool` | `false` | no |
 | <a name="input_subnet_name"></a> [subnet\_name](#input\_subnet\_name) | Name of the subnet. | `string` | `"kubernetes-subnet"` | no |
 | <a name="input_tls_secret_name"></a> [tls\_secret\_name](#input\_tls\_secret\_name) | TLS secret name used in secret creation, it must match with what is used by user in helm chart | `string` | `"jupyterhub-tls"` | no |
 | <a name="input_use_shared_volume"></a> [use\_shared\_volume](#input\_use\_shared\_volume) | Whether to use a shared NFS volume | `bool` | `false` | no |
