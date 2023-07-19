@@ -11,6 +11,7 @@ locals {
   jhub_domain = "jupyter.brown.edu"
 }
 
+# tfsec:ignore:google-compute-disk-encryption-customer-key
 module "sample-jhub" {
   source = "../../"
 

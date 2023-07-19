@@ -1,13 +1,16 @@
 variable "cluster_ca_certificate" {
+  type        = string
   sensitive   = true
   description = "The cluster_ca_certificate value for use with the kubernetes provider."
 }
 
 variable "host" {
+  type        = string
   description = "The host value for use with the kubernetes provider."
 }
 
 variable "token" {
+  type        = string
   sensitive   = true
   description = "The token value for use with the kubernetes provider."
 }
@@ -16,14 +19,14 @@ variable "token" {
 #  TLS VARIABLES
 # ---------------------------------------------------------------
 variable "create_tls_secret" {
-  description = "If set to true, user will be passing tls key and certificate to create a kubernetes secret, and use it in their helm chart"
   type        = bool
+  description = "If set to true, user will be passing tls key and certificate to create a kubernetes secret, and use it in their helm chart"
   default     = true
 }
 
 variable "tls_secret_name" {
-  description = "TLS secret name used in secret creation, it must match with what is used by user in helm chart"
   type        = string
+  description = "TLS secret name used in secret creation, it must match with what is used by user in helm chart"
   default     = "jupyterhub-tls"
 }
 
@@ -106,12 +109,6 @@ variable "shared_storage_capacity" {
   type        = number
   description = "Size of the shared volume"
   default     = 5
-}
-
-variable "region" {
-  type        = string
-  description = "The region to host the cluster in"
-  default     = "us-east1"
 }
 
 variable "gcp_zone" {

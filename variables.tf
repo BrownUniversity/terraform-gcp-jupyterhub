@@ -29,6 +29,7 @@ variable "activate_apis" {
 }
 
 variable "folder_id" {
+  type        = string
   description = "The ID of a folder to host this project"
 }
 
@@ -84,13 +85,13 @@ variable "range_name_services" {
 #   Infoblox
 # --------------------------------------
 variable "record_domain" {
-  description = "The domain on the record. hostaname.domain = FQDN"
   type        = string
+  description = "The domain on the record. hostaname.domain = FQDN"
 }
 
 variable "record_hostname" {
-  description = "The domain on the record. hostaname.domain = FQDN"
   type        = string
+  description = "The domain on the record. hostaname.domain = FQDN"
 }
 
 # ---------------------------------------------------------------
@@ -122,16 +123,19 @@ variable "gcp_zone" {
 }
 
 variable "monitoring_service" {
+  type        = string
   description = "The monitoring service that the cluster should write metrics to. Automatically send metrics from pods in the cluster to the Google Cloud Monitoring API. VM metrics will be collected by Google Compute Engine regardless of this setting Available options include monitoring.googleapis.com, monitoring.googleapis.com/kubernetes (beta) and none"
   default     = "monitoring.googleapis.com/kubernetes"
 }
 
 variable "logging_service" {
+  type        = string
   description = "The logging service that the cluster should write logs to. Available options include logging.googleapis.com, logging.googleapis.com/kubernetes (beta), and none"
   default     = "logging.googleapis.com/kubernetes"
 }
 
 variable "maintenance_start_time" {
+  type        = string
   description = "Time window specified for daily maintenance operations in RFC3339 format"
   default     = "03:00"
 }
@@ -355,14 +359,14 @@ variable "shared_storage_capacity" {
 #  TLS VARIABLES
 # ---------------------------------------------------------------
 variable "create_tls_secret" {
-  description = "If set to true, user will be passing tls key and certificate to create a kubernetes secret, and use it in their helm chart"
   type        = bool
+  description = "If set to true, user will be passing tls key and certificate to create a kubernetes secret, and use it in their helm chart"
   default     = true
 }
 
 variable "tls_secret_name" {
-  description = "TLS secret name used in secret creation, it must match with what is used by user in helm chart"
   type        = string
+  description = "TLS secret name used in secret creation, it must match with what is used by user in helm chart"
   default     = "jupyterhub-tls"
 }
 

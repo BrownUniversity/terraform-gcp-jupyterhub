@@ -1,4 +1,4 @@
-FROM gcr.io/google.com/cloudsdktool/cloud-sdk:398.0.0-alpine
+FROM gcr.io/google.com/cloudsdktool/cloud-sdk:439.0.0-alpine
 
 # Putting the version of alpine here.
 # Ruby version available to apk can be found here
