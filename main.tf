@@ -86,7 +86,6 @@ module "jhub_cluster" {
   maintenance_start_time     = var.maintenance_start_time
   create_service_account     = var.create_service_account
   service_account_email      = module.jhub_project.service_account_email
-  skip_provisioners          = var.skip_provisioners
   http_load_balancing        = var.http_load_balancing
   horizontal_pod_autoscaling = var.horizontal_pod_autoscaling
   network_policy             = var.network_policy
