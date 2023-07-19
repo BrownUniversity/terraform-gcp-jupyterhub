@@ -87,7 +87,7 @@ jobs:
     container:
       image: "${{ needs.docker.outputs.full_image_id }}"
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           clean: false #this is to avoid permissions on self-hosted runner
       - name: Pre-check dirty dirs in self-hosted
