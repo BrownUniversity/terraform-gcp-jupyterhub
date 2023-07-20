@@ -75,13 +75,13 @@ code by adding a `module` configuration and setting its `source` parameter to UR
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_external_infoblox_record"></a> [external\_infoblox\_record](#module\_external\_infoblox\_record) | git::https://github.com/BrownUniversity/terraform-infoblox-record-a.git | v0.1.4 |
+| <a name="module_external_infoblox_record"></a> [external\_infoblox\_record](#module\_external\_infoblox\_record) | git::https://github.com/BrownUniversity/terraform-infoblox-record-a.git | v0.1.5 |
 | <a name="module_gke_auth"></a> [gke\_auth](#module\_gke\_auth) | terraform-google-modules/kubernetes-engine/google//modules/auth | 27.0.0 |
 | <a name="module_jhub_cluster"></a> [jhub\_cluster](#module\_jhub\_cluster) | git::https://github.com/BrownUniversity/terraform-gcp-cluster.git | v0.1.6 |
 | <a name="module_jhub_helm"></a> [jhub\_helm](#module\_jhub\_helm) | ./modules/helm-jhub | n/a |
 | <a name="module_jhub_project"></a> [jhub\_project](#module\_jhub\_project) | git::https://github.com/BrownUniversity/terraform-gcp-project.git | v0.1.5 |
 | <a name="module_jhub_vpc"></a> [jhub\_vpc](#module\_jhub\_vpc) | git::https://github.com/BrownUniversity/terraform-gcp-vpc.git | v0.1.3 |
-| <a name="module_production_infoblox_record"></a> [production\_infoblox\_record](#module\_production\_infoblox\_record) | git::https://github.com/BrownUniversity/terraform-infoblox-record-a.git | v0.1.4 |
+| <a name="module_production_infoblox_record"></a> [production\_infoblox\_record](#module\_production\_infoblox\_record) | git::https://github.com/BrownUniversity/terraform-infoblox-record-a.git | v0.1.5 |
 
 ## Resources
 
