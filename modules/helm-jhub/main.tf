@@ -129,7 +129,7 @@ resource "helm_release" "jhub" {
 #   CronJobs for scaling an downnscaling during class time
 # ------------------------------------------------------------
 
-resource "kubernetes_cluster_role_binding" "cronjob" {
+resource "kubernetes_cluster_role_binding_v1" "cronjob" {
   metadata {
     name = "default-clusterrolebinding"
   }
@@ -147,7 +147,7 @@ resource "kubernetes_cluster_role_binding" "cronjob" {
   depends_on = [helm_release.jhub]
 }
 
-resource "kubernetes_cron_job" "scale_down" {
+resource "kubernetes_cron_job_v1" "scale_down" {
   metadata {
     name      = var.scale_down_name
     namespace = var.jhub_namespace
@@ -183,7 +183,7 @@ resource "kubernetes_cron_job" "scale_down" {
 }
 
 
-resource "kubernetes_cron_job" "scale_up" {
+resource "kubernetes_cron_job_v1" "scale_up" {
   metadata {
     name      = var.scale_up_name
     namespace = var.jhub_namespace
