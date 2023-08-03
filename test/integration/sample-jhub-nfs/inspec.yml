@@ -3,7 +3,7 @@ title: JupyterHub InSpec Profile
 maintainer: Brown CIS
 copyright: Brown University
 license: MIT
-summary: An InSpec Compliance Profile For JupyteHub
+summary: An InSpec Compliance Profile For JupyterHub
 version: 0.1.0
 inspec_version: ">= 2.3.5"
 supports:

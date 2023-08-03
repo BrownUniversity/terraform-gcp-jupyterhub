@@ -1,4 +1,4 @@
-FROM gcr.io/google.com/cloudsdktool/cloud-sdk:398.0.0-alpine
+FROM gcr.io/google.com/cloudsdktool/cloud-sdk:439.0.0-alpine
 
 # Putting the version of alpine here.
 # Ruby version available to apk can be found here
@@ -18,7 +18,7 @@ RUN gcloud components install gke-gcloud-auth-plugin
 RUN gcloud components install kubectl
 
 #terraform
-ENV TERRAFORM_VERSION=1.2.5
+ENV TERRAFORM_VERSION=1.5.0
 ENV TERRAFORM_URL="https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip"
 RUN curl -L ${TERRAFORM_URL} -o terraform_${TERRAFORM_VERSION}_linux_amd64.zip \
     && unzip terraform_${TERRAFORM_VERSION}_linux_amd64.zip \

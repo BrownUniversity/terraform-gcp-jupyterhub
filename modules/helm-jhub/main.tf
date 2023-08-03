@@ -42,8 +42,8 @@ resource "kubernetes_secret" "tls_secret" {
   }
 
   data = {
-    "tls.crt" = "${var.site_certificate}"
-    "tls.key" = "${var.site_certificate_key}"
+    "tls.crt" = var.site_certificate
+    "tls.key" = var.site_certificate_key
   }
 
 }
@@ -67,12 +67,6 @@ module "shared-nfs" {
 
 locals {
   helm_release_wait_condition = length(kubernetes_secret.tls_secret) > 0 ? kubernetes_secret.tls_secret[0].metadata[0].name : kubernetes_namespace.jhub.metadata[0].name
-  share_volume_helm = {
-    "singleuser.storage.extraVolumes[0].name"                                 = "nfs-volume"
-    "singleuser.storage.extraVolumes[0].persistentVolumeClaim.claimName"      = "nfs-volume"
-    "singleuser.storage.extraVolumeMounts[0].name"                            = "nfs-volume"
-    "singleuser.storage.extraVolumeMounts[0].persistentVolumeClaim.claimName" = "/home/jovyan/shared/"
-  }
 }
 
 resource "helm_release" "jhub" {
@@ -84,7 +78,7 @@ resource "helm_release" "jhub" {
   timeout    = var.helm_deploy_timeout
 
   values = [
-    "${file(var.helm_values_file)}"
+    file(var.helm_values_file)
   ]
 
   set_sensitive {
@@ -135,7 +129,7 @@ resource "helm_release" "jhub" {
 #   CronJobs for scaling an downnscaling during class time
 # ------------------------------------------------------------
 
-resource "kubernetes_cluster_role_binding" "cronjob" {
+resource "kubernetes_cluster_role_binding_v1" "cronjob" {
   metadata {
     name = "default-clusterrolebinding"
   }
@@ -153,7 +147,7 @@ resource "kubernetes_cluster_role_binding" "cronjob" {
   depends_on = [helm_release.jhub]
 }
 
-resource "kubernetes_cron_job" "scale_down" {
+resource "kubernetes_cron_job_v1" "scale_down" {
   metadata {
     name      = var.scale_down_name
     namespace = var.jhub_namespace
@@ -189,7 +183,7 @@ resource "kubernetes_cron_job" "scale_down" {
 }
 
 
-resource "kubernetes_cron_job" "scale_up" {
+resource "kubernetes_cron_job_v1" "scale_up" {
   metadata {
     name      = var.scale_up_name
     namespace = var.jhub_namespace

@@ -16,7 +16,7 @@ scheduling:
   userPods:
     nodeAffinity:
       matchNodePurpose: require
-singleuser: 
+singleuser:
   memory:
     limit: 1G
     guarantee: 512M
@@ -24,14 +24,15 @@ singleuser:
     limit: 1
     guarantee: 0.05
   image:
-    name: gcr.io/jupyterhub-docker-images/jupyterhub-scipy
-    tag: phys1600-spring2020
+    name: gcr.io/jupyterhub-docker-images/mpa2065
+    tag: latest
     pullPolicy: Always
   defaultUrl: "/lab"
   lifecycleHooks:
     postStart:
       exec:
-        command: ["/bin/sh", "-c", "chmod -f 600 /home/jovyan/.ssh/id_rsa || true;"]
+        command:
+          ["/bin/sh", "-c", "chmod -f 600 /home/jovyan/.ssh/id_rsa || true;"]
 proxy:
   https:
     enabled: true
@@ -40,7 +41,6 @@ proxy:
       name: jupyterhub-tls
       key: tls.key
       crt: tls.crt
-
 # proxy:
 #   https:
 #     enabled: true
