@@ -20,8 +20,8 @@ singleuser:
     limit: 1
     guarantee: 0.05
   image:
-    name: gcr.io/jupyterhub-docker-images/jupyterhub-scipy
-    tag: phys1600-spring2020
+    name: gcr.io/jupyterhub-docker-images/mpa2065
+    tag: latest
     pullPolicy: Always
   defaultUrl: "/lab"
   lifecycleHooks:

@@ -67,7 +67,7 @@ module "sample-jhub" {
   shared_storage_capacity = 2
 
   # ---------------- HELM/JHUB VARIABLES -----------------------
-  jhub_helm_version   = "1.2.0"
+  jhub_helm_version   = "3.0.0-beta.3.git.6259.h5b6e57ed"
   helm_deploy_timeout = 2000
   helm_values_file    = "./values.yaml"
 
