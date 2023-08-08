@@ -16,11 +16,11 @@
         driver:
           name: terraform
           root_module_directory: examples/sample-jhub
-          command_timeout: 12000
+          command_timeout: 24000
           parallelism: 1
       - name: sample-jhub-nfs
         driver:
           name: terraform
           root_module_directory: examples/sample-jhub-nfs
-          command_timeout: 12000
+          command_timeout: 24000
           parallelism: 1
