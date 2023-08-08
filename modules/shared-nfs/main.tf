@@ -43,7 +43,7 @@ resource "kubernetes_persistent_volume_claim_v1" "nfs_disk" {
   }
   spec {
     access_modes       = ["ReadWriteOnce"]
-    volume_name        = kubernetes_persistent_volume.nfs_disk[count.index].metadata[0].name
+    volume_name        = kubernetes_persistent_volume_v1.nfs_disk[count.index].metadata[0].name
     storage_class_name = local.backend_storage_class_name
     resources {
       requests = {
@@ -113,7 +113,7 @@ resource "kubernetes_stateful_set_v1" "nfs_server" {
         volume {
           name = "${var.name}-nfs-backend"
           persistent_volume_claim {
-            claim_name = kubernetes_persistent_volume_claim.nfs_disk[count.index].metadata[0].name
+            claim_name = kubernetes_persistent_volume_claim_v1.nfs_disk[count.index].metadata[0].name
           }
         }
       }
@@ -162,7 +162,7 @@ resource "kubernetes_persistent_volume_v1" "nfs" {
     persistent_volume_source {
       nfs {
         path   = "/exports/${var.namespace}-${each.key}"
-        server = kubernetes_service.nfs_server[0].spec[0].cluster_ip
+        server = kubernetes_service_v1.nfs_server[0].spec[0].cluster_ip
       }
     }
   }
