@@ -16,9 +16,7 @@ module "sample-jhub" {
   source = "../../"
 
   # ---------------- PROJECT VARIABLES -----------------------
-  project_name      = "jhub-${local.jhub_tenant}"
-  random_project_id = false
-
+  project_name = "jhub-${local.jhub_tenant}"
 
   # The following variables need to be included in secrets.auto.tfvars
   org_id          = var.org_id
@@ -30,6 +28,7 @@ module "sample-jhub" {
   record_domain   = local.jhub_domain
 
   # ---------------- CLUSTER VARIABLES -----------------------
+  kubernetes_version         = 1.27
   regional                   = false
   region                     = local.gcp_region
   gcp_zone                   = local.gcp_zone
