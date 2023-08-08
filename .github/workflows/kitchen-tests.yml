@@ -145,7 +145,7 @@ jobs:
           kubectl config view
           ls -la /tmp
       - name: Run Kitchen
-        run: kitchen test sample-jhub-nfs
+        run: kitchen test nfs
         env:
           TF_VAR_billing_account: ${{ secrets.GCP_BILLING_ACCOUNT }}
           TF_VAR_org_id: ${{ secrets.GCP_ORG_ID }}
