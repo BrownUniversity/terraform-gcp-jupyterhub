@@ -15,7 +15,7 @@ resource "google_compute_disk" "disk" {
   project = var.project_id
 }
 
-resource "kubernetes_persistent_volume" "nfs_disk" {
+resource "kubernetes_persistent_volume_v1" "nfs_disk" {
   count = var.use_shared_volume ? 1 : 0
   metadata {
     name = "${var.name}-nfs-backend"
@@ -35,7 +35,7 @@ resource "kubernetes_persistent_volume" "nfs_disk" {
   }
 }
 
-resource "kubernetes_persistent_volume_claim" "nfs_disk" {
+resource "kubernetes_persistent_volume_claim_v1" "nfs_disk" {
   count = var.use_shared_volume ? 1 : 0
   metadata {
     name      = "${var.name}-nfs-backend"
@@ -53,7 +53,7 @@ resource "kubernetes_persistent_volume_claim" "nfs_disk" {
   }
 }
 
-resource "kubernetes_stateful_set" "nfs_server" {
+resource "kubernetes_stateful_set_v1" "nfs_server" {
   count = var.use_shared_volume ? 1 : 0
   metadata {
     name        = "${var.name}-nfs-server"
@@ -122,7 +122,7 @@ resource "kubernetes_stateful_set" "nfs_server" {
   }
 }
 
-resource "kubernetes_service" "nfs_server" {
+resource "kubernetes_service_v1" "nfs_server" {
   count = var.use_shared_volume ? 1 : 0
   metadata {
     name        = "${var.name}-nfs-server"
@@ -148,7 +148,7 @@ resource "kubernetes_service" "nfs_server" {
   }
 }
 
-resource "kubernetes_persistent_volume" "nfs" {
+resource "kubernetes_persistent_volume_v1" "nfs" {
   for_each = var.volumes
   metadata {
     name = "${var.namespace}-${each.key}"
@@ -168,7 +168,7 @@ resource "kubernetes_persistent_volume" "nfs" {
   }
 }
 
-resource "kubernetes_persistent_volume_claim" "nfs" {
+resource "kubernetes_persistent_volume_claim_v1" "nfs" {
   for_each = var.volumes
   metadata {
     name      = each.key
