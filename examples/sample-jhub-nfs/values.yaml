@@ -1,3 +1,7 @@
+hub:
+  db:
+    pvc:
+      storageClassName: standard-rwo
 prePuller:
   continuous:
     enabled: true
@@ -12,7 +16,7 @@ scheduling:
   userPods:
     nodeAffinity:
       matchNodePurpose: require
-singleuser: 
+singleuser:
   memory:
     limit: 1G
     guarantee: 512M
@@ -27,14 +31,15 @@ singleuser:
   lifecycleHooks:
     postStart:
       exec:
-        command: ["/bin/sh", "-c", "chmod -f 600 /home/jovyan/.ssh/id_rsa || true;"]
+        command:
+          ["/bin/sh", "-c", "chmod -f 600 /home/jovyan/.ssh/id_rsa || true;"]
   #----Needed for shared NFS Volume
   extraEnv:
     CHOWN_HOME: "yes"
-    CHOWN_HOME_OPTS: '-R'
+    CHOWN_HOME_OPTS: "-R"
     # GRANT_SUDO: "yes"
     CHOWN_EXTRA: "/home/jovyan/shared"
-    CHOWN_EXTRA_OPTS: '-R'
+    CHOWN_EXTRA_OPTS: "-R"
   uid: 0
   fsGid: 0
   cmd: "start-singleuser.sh"
@@ -55,7 +60,6 @@ proxy:
       name: jupyterhub-tls
       key: tls.key
       crt: tls.crt
-
 # proxy:
 #   https:
 #     enabled: true
