@@ -67,12 +67,12 @@ module "shared-nfs" {
 
 locals {
   helm_release_wait_condition = length(kubernetes_secret.tls_secret) > 0 ? kubernetes_secret.tls_secret[0].metadata[0].name : kubernetes_namespace.jhub.metadata[0].name
-  share_volume_helm = {
-    "singleuser.storage.extraVolumes[0].name"                                 = "nfs-volume"
-    "singleuser.storage.extraVolumes[0].persistentVolumeClaim.claimName"      = "nfs-volume"
-    "singleuser.storage.extraVolumeMounts[0].name"                            = "nfs-volume"
-    "singleuser.storage.extraVolumeMounts[0].persistentVolumeClaim.claimName" = "/home/jovyan/shared/"
-  }
+  # share_volume_helm = {
+  #   "singleuser.storage.extraVolumes[0].name"                                 = "jhub-nfs-volume"
+  #   "singleuser.storage.extraVolumes[0].persistentVolumeClaim.claimName"      = "nfs-volume"
+  #   "singleuser.storage.extraVolumeMounts[0].name"                            = "jhub-nfs-volume"
+  #   "singleuser.storage.extraVolumeMounts[0].persistentVolumeClaim.claimName" = "/home/jovyan/shared/"
+  # }
 }
 
 resource "helm_release" "jhub" {
@@ -120,13 +120,13 @@ resource "helm_release" "jhub" {
   # This is to set the NFS-shared related variables 
   # Syntax didn't work out, but we should revisit as having it in the Helm values file doesn't
   # allow us to set the name according to the variables
-  dynamic "set" {
-    for_each = var.use_shared_volume == false ? {} : local.share_volume_helm
-    content {
-      name  = set.key
-      value = set.value
-    }
-  }
+  # dynamic "set" {
+  #   for_each = var.use_shared_volume == false ? {} : local.share_volume_helm
+  #   content {
+  #     name  = set.key
+  #     value = set.value
+  #   }
+  # }
 
   depends_on = [local.helm_release_wait_condition, module.shared-nfs]
 }
