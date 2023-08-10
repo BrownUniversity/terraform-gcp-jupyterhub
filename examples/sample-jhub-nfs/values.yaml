@@ -45,11 +45,11 @@ singleuser:
   cmd: "start-singleuser.sh"
   storage:
     extraVolumes:
-      - name: jhub-nfs-volume
+      - name: jupyterhub-shared
         persistentVolumeClaim:
           claimName: nfs-volume
     extraVolumeMounts:
-      - name: jhub-nfs-volume
+      - name: jupyterhub-shared
         mountPath: /home/jovyan/shared
   #----End of shared NFS Volume
 proxy:
