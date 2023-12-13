@@ -78,47 +78,7 @@ jobs:
           cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:buildcache
           cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:buildcache
 
-  # test-sample-jhub:
-  #   needs: [docker]
-  #   if: "!contains(github.event.commits[0].message, '[skip ci]')"
-  #   runs-on: self-hosted
-  #   container:
-  #     image: "${{ needs.docker.outputs.full_image_id }}"
-  #   steps:
-  #     - uses: actions/checkout@v3
-        
-  #     - name: Create Credential File
-  #       run: |
-  #         echo "$GCP_CREDENTIAL_JSON" | base64 -d > /tmp/credentials.json
-  #       env:
-  #         GCP_CREDENTIAL_JSON: ${{ secrets.GCP_CREDENTIAL_JSON }}
-  #     - name: Create TLS Files
-  #       run: |
-  #         echo "$JUPYTERHUB_TLS_CER" > /tmp/tls.cer
-  #         echo "$JUPYTERHUB_TLS_KEY" > /tmp/tls.key
-  #       env:
-  #         JUPYTERHUB_TLS_CER: ${{ secrets.JUPYTERHUB_TLS_CER }}
-  #         JUPYTERHUB_TLS_KEY: ${{ secrets.JUPYTERHUB_TLS_KEY }}
-  #     - name: Authorize service account
-  #       run: |
-  #         gcloud auth activate-service-account ${{ secrets.GCP_PF_SA }} --key-file=/tmp/credentials.json
-  #         kubectl config view
-  #         ls -la /tmp
-  #     - name: Run Kitchen
-  #       run: kitchen test sample-jhub
-  #       env:
-  #         TF_VAR_billing_account: ${{ secrets.GCP_BILLING_ACCOUNT }}
-  #         TF_VAR_org_id: ${{ secrets.GCP_ORG_ID }}
-  #         TF_VAR_folder_id: ${{ secrets.GCP_CCV_CI_FOLDER_ID }}
-  #         INFOBLOX_USERNAME: ${{ secrets.INFOBLOX_JHUB_USER }}
-  #         INFOBLOX_PASSWORD: ${{ secrets.INFOBLOX_JHUB_PSWD }}
-  #         INFOBLOX_SERVER: ${{ secrets.INFOBLOX_JHUB_HOST }}
-  #         TF_VAR_site_certificate_file: /tmp/tls.cer
-  #         TF_VAR_site_certificate_key_file: /tmp/tls.key
-  #         USE_GKE_GCLOUD_AUTH_PLUGIN: true
-  
-
-  test-sample-jhub-nfs:
+  test-sample-jhub:
     needs: [docker]
     if: "!contains(github.event.commits[0].message, '[skip ci]')"
     runs-on: self-hosted
@@ -126,7 +86,7 @@ jobs:
       image: "${{ needs.docker.outputs.full_image_id }}"
     steps:
       - uses: actions/checkout@v3
-        
+
       - name: Create Credential File
         run: |
           echo "$GCP_CREDENTIAL_JSON" | base64 -d > /tmp/credentials.json
@@ -145,7 +105,7 @@ jobs:
           kubectl config view
           ls -la /tmp
       - name: Run Kitchen
-        run: kitchen test nfs
+        run: kitchen test sample-jhub
         env:
           TF_VAR_billing_account: ${{ secrets.GCP_BILLING_ACCOUNT }}
           TF_VAR_org_id: ${{ secrets.GCP_ORG_ID }}
@@ -156,3 +116,42 @@ jobs:
           TF_VAR_site_certificate_file: /tmp/tls.cer
           TF_VAR_site_certificate_key_file: /tmp/tls.key
           USE_GKE_GCLOUD_AUTH_PLUGIN: true
+
+  # test-sample-jhub-nfs:
+  #   needs: [docker]
+  #   if: "!contains(github.event.commits[0].message, '[skip ci]')"
+  #   runs-on: self-hosted
+  #   container:
+  #     image: "${{ needs.docker.outputs.full_image_id }}"
+  #   steps:
+  #     - uses: actions/checkout@v3
+
+  #     - name: Create Credential File
+  #       run: |
+  #         echo "$GCP_CREDENTIAL_JSON" | base64 -d > /tmp/credentials.json
+  #       env:
+  #         GCP_CREDENTIAL_JSON: ${{ secrets.GCP_CREDENTIAL_JSON }}
+  #     - name: Create TLS Files
+  #       run: |
+  #         echo "$JUPYTERHUB_TLS_CER" > /tmp/tls.cer
+  #         echo "$JUPYTERHUB_TLS_KEY" > /tmp/tls.key
+  #       env:
+  #         JUPYTERHUB_TLS_CER: ${{ secrets.JUPYTERHUB_TLS_CER }}
+  #         JUPYTERHUB_TLS_KEY: ${{ secrets.JUPYTERHUB_TLS_KEY }}
+  #     - name: Authorize service account
+  #       run: |
+  #         gcloud auth activate-service-account ${{ secrets.GCP_PF_SA }} --key-file=/tmp/credentials.json
+  #         kubectl config view
+  #         ls -la /tmp
+  #     - name: Run Kitchen
+  #       run: kitchen test nfs
+  #       env:
+  #         TF_VAR_billing_account: ${{ secrets.GCP_BILLING_ACCOUNT }}
+  #         TF_VAR_org_id: ${{ secrets.GCP_ORG_ID }}
+  #         TF_VAR_folder_id: ${{ secrets.GCP_CCV_CI_FOLDER_ID }}
+  #         INFOBLOX_USERNAME: ${{ secrets.INFOBLOX_JHUB_USER }}
+  #         INFOBLOX_PASSWORD: ${{ secrets.INFOBLOX_JHUB_PSWD }}
+  #         INFOBLOX_SERVER: ${{ secrets.INFOBLOX_JHUB_HOST }}
+  #         TF_VAR_site_certificate_file: /tmp/tls.cer
+  #         TF_VAR_site_certificate_key_file: /tmp/tls.key
+  #         USE_GKE_GCLOUD_AUTH_PLUGIN: true
