@@ -16,9 +16,7 @@ module "sample-jhub" {
   source = "../../"
 
   # ---------------- PROJECT VARIABLES -----------------------
-  project_name      = "jhub-${local.jhub_tenant}"
-  random_project_id = false
-
+  project_name = "jhub-${local.jhub_tenant}"
 
   # The following variables need to be included in secrets.auto.tfvars
   org_id          = var.org_id
@@ -30,6 +28,7 @@ module "sample-jhub" {
   record_domain   = local.jhub_domain
 
   # ---------------- CLUSTER VARIABLES -----------------------
+  kubernetes_version         = 1.27
   regional                   = false
   region                     = local.gcp_region
   gcp_zone                   = local.gcp_zone
@@ -67,8 +66,8 @@ module "sample-jhub" {
   shared_storage_capacity = 2
 
   # ---------------- HELM/JHUB VARIABLES -----------------------
-  jhub_helm_version   = "1.2.0"
-  helm_deploy_timeout = 2000
+  jhub_helm_version   = "3.0.0-beta.3.git.6259.h5b6e57ed"
+  helm_deploy_timeout = 4000
   helm_values_file    = "./values.yaml"
 
   # ---------------- CRONJOB VARIABLES -----------------------
