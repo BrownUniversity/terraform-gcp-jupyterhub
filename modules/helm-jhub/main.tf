@@ -67,12 +67,6 @@ module "shared-nfs" {
 
 locals {
   helm_release_wait_condition = length(kubernetes_secret.tls_secret) > 0 ? kubernetes_secret.tls_secret[0].metadata[0].name : kubernetes_namespace.jhub.metadata[0].name
-  # share_volume_helm = {
-  #   "singleuser.storage.extraVolumes[0].name"                                 = "jhub-nfs-volume"
-  #   "singleuser.storage.extraVolumes[0].persistentVolumeClaim.claimName"      = "nfs-volume"
-  #   "singleuser.storage.extraVolumeMounts[0].name"                            = "jhub-nfs-volume"
-  #   "singleuser.storage.extraVolumeMounts[0].persistentVolumeClaim.claimName" = "/home/jovyan/shared/"
-  # }
 }
 
 resource "helm_release" "jhub" {
