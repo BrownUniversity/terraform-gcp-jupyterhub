@@ -1,13 +1,13 @@
 # Terraform GCP-module for JupyterHub 
 
-![kitchen-tests](https://github.com/BrownUniversity/terraform-gcp-jupyterhub/workflows/kitchen-tests/badge.svg)
+![terraform-tests](https://github.com/BrownUniversity/terraform-gcp-jupyterhub/actions/workflows/terraform-tests/badge.svg)
 
 This repository defines a [Terraform module](https://www.terraform.io/docs/modules/usage.html), which you can use in your code by adding a `module` configuration and setting its `source` parameter to URL of this folder.  This module builds a Kubernetes-based JupyterHub in Google Cloud as used by Brown University. 
 
 In general this module of JupyterHub is configured as follows:
 
 * Two pools: one for the core components, one for user pods
-* Authentication (Google OAuth has been tested, other arepossible), dummy authenticator is the default.
+* Authentication (Google OAuth has been tested, other are possible), dummy authenticator is the default.
 * We currently use Infoblox to configure our DNS, we will be making that optional in the future.
 * We provide scale-up and scale-down cronjobs that can change the number of replicas to have nodes be warm for users during class-time.
 * Optional shared nfs volume (for shared data, for instance).
@@ -59,35 +59,34 @@ code by adding a `module` configuration and setting its `source` parameter to UR
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5.0 |
-| <a name="requirement_google"></a> [google](#requirement\_google) | >= 4.72.0, <5.0.0 |
-| <a name="requirement_google-beta"></a> [google-beta](#requirement\_google-beta) | >= 4.72.0, <5.0.0 |
-| <a name="requirement_helm"></a> [helm](#requirement\_helm) | >= 2.10.1 |
-| <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | >= 2.22.0 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.9.2 |
+| <a name="requirement_google"></a> [google](#requirement\_google) | 5.38.0 |
+| <a name="requirement_helm"></a> [helm](#requirement\_helm) | 2.14.0 |
+| <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | 2.31.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_google"></a> [google](#provider\_google) | >= 4.72.0, <5.0.0 |
+| <a name="provider_google"></a> [google](#provider\_google) | 5.38.0 |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_external_infoblox_record"></a> [external\_infoblox\_record](#module\_external\_infoblox\_record) | git::https://github.com/BrownUniversity/terraform-infoblox-record-a.git | v0.1.5 |
-| <a name="module_gke_auth"></a> [gke\_auth](#module\_gke\_auth) | terraform-google-modules/kubernetes-engine/google//modules/auth | 27.0.0 |
-| <a name="module_jhub_cluster"></a> [jhub\_cluster](#module\_jhub\_cluster) | git::https://github.com/BrownUniversity/terraform-gcp-cluster.git | v0.1.6 |
+| <a name="module_external_infoblox_record"></a> [external\_infoblox\_record](#module\_external\_infoblox\_record) | git::https://github.com/BrownUniversity/terraform-infoblox-record-a.git | v0.1.6 |
+| <a name="module_gke_auth"></a> [gke\_auth](#module\_gke\_auth) | terraform-google-modules/kubernetes-engine/google//modules/auth | 31.0.0 |
+| <a name="module_jhub_cluster"></a> [jhub\_cluster](#module\_jhub\_cluster) | git::https://github.com/BrownUniversity/terraform-gcp-cluster.git | v0.1.7 |
 | <a name="module_jhub_helm"></a> [jhub\_helm](#module\_jhub\_helm) | ./modules/helm-jhub | n/a |
-| <a name="module_jhub_project"></a> [jhub\_project](#module\_jhub\_project) | git::https://github.com/BrownUniversity/terraform-gcp-project.git | v0.1.5 |
-| <a name="module_jhub_vpc"></a> [jhub\_vpc](#module\_jhub\_vpc) | git::https://github.com/BrownUniversity/terraform-gcp-vpc.git | v0.1.3 |
-| <a name="module_production_infoblox_record"></a> [production\_infoblox\_record](#module\_production\_infoblox\_record) | git::https://github.com/BrownUniversity/terraform-infoblox-record-a.git | v0.1.5 |
+| <a name="module_jhub_project"></a> [jhub\_project](#module\_jhub\_project) | git::https://github.com/BrownUniversity/terraform-gcp-project.git | v0.1.6 |
+| <a name="module_jhub_vpc"></a> [jhub\_vpc](#module\_jhub\_vpc) | git::https://github.com/BrownUniversity/terraform-gcp-vpc.git | v0.1.4 |
+| <a name="module_production_infoblox_record"></a> [production\_infoblox\_record](#module\_production\_infoblox\_record) | git::https://github.com/BrownUniversity/terraform-infoblox-record-a.git | v0.1.6 |
 
 ## Resources
 
 | Name | Type |
 |------|------|
-| [google_compute_address.static](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_address) | resource |
+| [google_compute_address.static](https://registry.terraform.io/providers/hashicorp/google/5.38.0/docs/resources/compute_address) | resource |
 
 ## Inputs
 
@@ -273,7 +272,7 @@ See [here](https://cloud.google.com/blog/products/containers-kubernetes/kubectl-
 
 ## Testing
 
-This repository uses Kitchen-Terraform to test the terraform modules. In the [examples](/examples) directory you can find examples of how each module can be used. Those examples are fed to [Test Kitchen](https://kitchen.ci/). To install test kitchen, first make sure you have Ruby and bundler installed.
+This repository uses the native terraform tests to test the modules. In the [tests](/tests) directory you can find examples of how each module can be used and the test scripts.
 
 ### Install testing dependencies
 
@@ -297,12 +296,13 @@ In the example folders, rename the following files:
 Set the corresponding values inside of the files. They should automatically be ignored via our `.gitignore` file
 
 ### Run the tests
-And now you're ready to run test kitchen. Test kitchen has a couple main commands:
 
-- `bundle exec kitchen create` initializes terraform.
-- `bundle exec kitchen converge` runs our terraform examples.
-- `bundle exec kitchen verify` runs our inspec scripts against a converged kitchen.
-- `bundle exec kitchen test` does all the above.
+Use the `terraform test` command to test the modules in this repo. You can also specify the name of the files to run each test individually:
+
+```sh
+terraform test -filter=tests/test-sample-jhub.tftest.hcl      # runs the test without nfs
+terraform test -filter=tests/test-sample-jhub-nfs.tftest.hcl  # runs the test with nfs
+```
 
 ### Running terraform directly
 If you need finer control when trouble shooting, you can directly run terraform within the desired example directory.
@@ -338,21 +338,6 @@ This project has three workflows enabled:
 ### Maintenance/Upgrades
 
 We aim to upgrade this package at least once a year.
-
-#### Update Ruby Version
-
-To install/upgrade the version of Ruby we use `rbenv` or `asdf`. For instance to install and update to `2.7.3`:
-
-```
-rbenv install -v 2.7.3
-rbenv local 2.7.3
-```
-
-This will update the `.ruby-version` file if necessary
-
-#### Gemfile
-
-Look at the Gemfile and the output of `bundle outdated` to decide what to update. Usually I update the versions in the Gemfile directly, then type `bundle update`
 
 ### Update the version of Terraform
 
