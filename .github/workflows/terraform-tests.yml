@@ -1,0 +1,83 @@
+name: kitchen-tests
+
+on:
+  push:
+    branches:
+      - "main"
+    tags:
+      - "v*.*.*"
+  pull_request:
+
+jobs:
+  test-sample-jhub:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create Credential File
+        run: |
+          echo "$GCP_CREDENTIAL_JSON" | base64 -d > /tmp/credentials.json
+        env:
+          GCP_CREDENTIAL_JSON: ${{ secrets.GCP_CREDENTIAL_JSON }}
+      - name: Create TLS Files
+        run: |
+          echo "$JUPYTERHUB_TLS_CER" > /tmp/tls.cer
+          echo "$JUPYTERHUB_TLS_KEY" > /tmp/tls.key
+        env:
+          JUPYTERHUB_TLS_CER: ${{ secrets.JUPYTERHUB_TLS_CER }}
+          JUPYTERHUB_TLS_KEY: ${{ secrets.JUPYTERHUB_TLS_KEY }}
+      - name: Authorize service account
+        run: |
+          gcloud auth activate-service-account ${{ secrets.GCP_PF_SA }} --key-file=/tmp/credentials.json
+          kubectl config view
+          ls -la /tmp
+      - name: Run Terraform Test
+        run: |
+          terraform init
+          terraform test -filter=tests/test-sample-jhub.tftest.hcl
+        env:
+          TF_VAR_billing_account: ${{ secrets.GCP_BILLING_ACCOUNT }}
+          TF_VAR_org_id: ${{ secrets.GCP_ORG_ID }}
+          TF_VAR_folder_id: ${{ secrets.GCP_CCV_CI_FOLDER_ID }}
+          INFOBLOX_USERNAME: ${{ secrets.INFOBLOX_JHUB_USER }}
+          INFOBLOX_PASSWORD: ${{ secrets.INFOBLOX_JHUB_PSWD }}
+          INFOBLOX_SERVER: ${{ secrets.INFOBLOX_JHUB_HOST }}
+          TF_VAR_site_certificate_file: /tmp/tls.cer
+          TF_VAR_site_certificate_key_file: /tmp/tls.key
+
+  test-sample-jhub-nfs:
+    if: ${{ !contains(github.event.head_commit.message, '[skip ci]') && contains(github.event.head_commit.message, '[test nfs]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create Credential File
+        run: |
+          echo "$GCP_CREDENTIAL_JSON" | base64 -d > /tmp/credentials.json
+        env:
+          GCP_CREDENTIAL_JSON: ${{ secrets.GCP_CREDENTIAL_JSON }}
+      - name: Create TLS Files
+        run: |
+          echo "$JUPYTERHUB_TLS_CER" > /tmp/tls.cer
+          echo "$JUPYTERHUB_TLS_KEY" > /tmp/tls.key
+        env:
+          JUPYTERHUB_TLS_CER: ${{ secrets.JUPYTERHUB_TLS_CER }}
+          JUPYTERHUB_TLS_KEY: ${{ secrets.JUPYTERHUB_TLS_KEY }}
+      - name: Authorize service account
+        run: |
+          gcloud auth activate-service-account ${{ secrets.GCP_PF_SA }} --key-file=/tmp/credentials.json
+          kubectl config view
+          ls -la /tmp
+      - name: Run Terraform Test
+        run: |
+          terraform init
+          terraform test -filter=tests/test-sample-jhub-nfs.tftest.hcl
+        env:
+          TF_VAR_billing_account: ${{ secrets.GCP_BILLING_ACCOUNT }}
+          TF_VAR_org_id: ${{ secrets.GCP_ORG_ID }}
+          TF_VAR_folder_id: ${{ secrets.GCP_CCV_CI_FOLDER_ID }}
+          INFOBLOX_USERNAME: ${{ secrets.INFOBLOX_JHUB_USER }}
+          INFOBLOX_PASSWORD: ${{ secrets.INFOBLOX_JHUB_PSWD }}
+          INFOBLOX_SERVER: ${{ secrets.INFOBLOX_JHUB_HOST }}
+          TF_VAR_site_certificate_file: /tmp/tls.cer
+          TF_VAR_site_certificate_key_file: /tmp/tls.key
