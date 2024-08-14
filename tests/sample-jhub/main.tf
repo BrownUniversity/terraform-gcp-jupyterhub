@@ -81,7 +81,7 @@ module "sample-jhub" {
 
 check "jhub_running" {
   data "http" "jhub_check" {
-    url    = output.jhub_url
+    url    = "https://${local.jhub_tenant}.${local.jhub_domain}"
     method = "GET"
   }
 
