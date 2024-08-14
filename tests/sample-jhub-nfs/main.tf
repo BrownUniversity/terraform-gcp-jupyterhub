@@ -81,7 +81,7 @@ module "sample-jhub" {
 check "jhub_running" {
   # Use a data block to check the website
   data "http" "jhub_check" {
-    url    = output.sample_website.jhub_url
+    url    = output.jhub_url
     method = "GET"
   }
 
