@@ -5,7 +5,7 @@ variables {
 
 run "test_website_creation" {
   # Apply the module
-  command = plan
+  command = apply
 
   module {
     source = "./tests/sample-jhub"
