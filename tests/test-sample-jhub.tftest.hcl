@@ -1,3 +1,8 @@
+variables {
+  helm_values_file = "./tests/sample-jhub/values.yaml"
+}
+
+
 run "test_website_creation" {
   # Apply the module
   command = plan
