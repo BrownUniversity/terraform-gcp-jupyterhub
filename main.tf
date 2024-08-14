@@ -89,8 +89,6 @@ module "jhub_cluster" {
   http_load_balancing        = var.http_load_balancing
   horizontal_pod_autoscaling = var.horizontal_pod_autoscaling
   network_policy             = var.network_policy
-  enable_private_nodes       = var.enable_private_nodes
-  master_ipv4_cidr_block     = var.master_ipv4_cidr_block
   remove_default_node_pool   = var.remove_default_node_pool
 
   core_pool_name               = var.core_pool_name
