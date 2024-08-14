@@ -8,7 +8,7 @@ run "test_website_creation" {
 
   # Assert that the module ran successfully
   assert {
-    condition     = output.sample_website.jhub_url != ""
+    condition     = output.jhub_url != ""
     error_message = "Website URL is empty"
   }
 }
