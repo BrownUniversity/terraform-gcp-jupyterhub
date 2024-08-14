@@ -69,7 +69,7 @@ module "sample-jhub" {
   # ---------------- HELM/JHUB VARIABLES -----------------------
   jhub_helm_version   = "3.3.7"
   helm_deploy_timeout = 1000
-  helm_values_file    = "./values.yaml"
+  helm_values_file    = "./sample-jhub/values.yaml"
 
   # ---------------- CRONJOB VARIABLES -----------------------
   scale_up_schedule   = "30 19 * * 4"
