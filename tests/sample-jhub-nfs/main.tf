@@ -77,3 +77,17 @@ module "sample-jhub" {
   scale_down_command  = ["kubectl", "scale", "--replicas=0", "statefulset/user-placeholder"]
 
 }
+
+check "jhub_running" {
+  # Use a data block to check the website
+  data "http" "jhub_check" {
+    url    = output.sample_website.jhub_url
+    method = "GET"
+  }
+
+  # Check if the website returns a successful status code
+  assert {
+    condition     = data.http.jhub_check.status_code == 200
+    error_message = "Website did not return a 200 OK status. Actual status: ${data.http.website_check.status_code}"
+  }
+}
