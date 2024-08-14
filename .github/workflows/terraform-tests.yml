@@ -31,7 +31,6 @@ jobs:
           JUPYTERHUB_TLS_KEY: ${{ secrets.JUPYTERHUB_TLS_KEY }}
       - name: Authorize service account
         run: |
-          gcloud auth activate-service-account ${{ secrets.GCP_PF_SA }} --key-file=/tmp/credentials.json
           kubectl config view
           ls -la /tmp
       - name: Run Terraform Test
@@ -47,7 +46,7 @@ jobs:
           INFOBLOX_SERVER: ${{ secrets.INFOBLOX_JHUB_HOST }}
           TF_VAR_site_certificate_file: /tmp/tls.cer
           TF_VAR_site_certificate_key_file: /tmp/tls.key
-          USE_GKE_GCLOUD_AUTH_PLUGIN: true
+          GOOGLE_APPLICAITON_CREDENTIALS: /tmp/credentials.json
 
   test-sample-jhub-nfs:
     if: ${{ !contains(github.event.head_commit.message, '[skip ci]') && contains(github.event.head_commit.message, '[test nfs]') }}
@@ -73,7 +72,6 @@ jobs:
           JUPYTERHUB_TLS_KEY: ${{ secrets.JUPYTERHUB_TLS_KEY }}
       - name: Authorize service account
         run: |
-          gcloud auth activate-service-account ${{ secrets.GCP_PF_SA }} --key-file=/tmp/credentials.json
           kubectl config view
           ls -la /tmp
       - name: Run Terraform Test
@@ -89,4 +87,4 @@ jobs:
           INFOBLOX_SERVER: ${{ secrets.INFOBLOX_JHUB_HOST }}
           TF_VAR_site_certificate_file: /tmp/tls.cer
           TF_VAR_site_certificate_key_file: /tmp/tls.key
-          USE_GKE_GCLOUD_AUTH_PLUGIN: true
+          GOOGLE_APPLICAITON_CREDENTIALS: /tmp/credentials.json
