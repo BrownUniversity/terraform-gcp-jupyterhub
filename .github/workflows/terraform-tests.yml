@@ -47,6 +47,7 @@ jobs:
           INFOBLOX_SERVER: ${{ secrets.INFOBLOX_JHUB_HOST }}
           TF_VAR_site_certificate_file: /tmp/tls.cer
           TF_VAR_site_certificate_key_file: /tmp/tls.key
+          GOOGLE_APPLICATION_CREDENTIALS: /tmp/credentials.json
 
   test-sample-jhub-nfs:
     if: ${{ !contains(github.event.head_commit.message, '[skip ci]') && contains(github.event.head_commit.message, '[test nfs]') }}
@@ -88,3 +89,4 @@ jobs:
           INFOBLOX_SERVER: ${{ secrets.INFOBLOX_JHUB_HOST }}
           TF_VAR_site_certificate_file: /tmp/tls.cer
           TF_VAR_site_certificate_key_file: /tmp/tls.key
+          GOOGLE_APPLICATION_CREDENTIALS: /tmp/credentials.json
