@@ -24,7 +24,7 @@ singleuser:
     limit: 1
     guarantee: 0.05
   image:
-    name: gcr.io/jupyterhub-docker-images/mpa2065
+    name: us-east1-docker.pkg.dev/jupyterhub-docker-images/all-classes/mpa2065
     tag: latest
     pullPolicy: Always
   defaultUrl: "/lab"
