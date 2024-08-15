@@ -5,6 +5,8 @@ hub:
 prePuller:
   continuous:
     enabled: true
+  hooks:
+    enabled: false
 scheduling:
   userScheduler:
     enabled: true
