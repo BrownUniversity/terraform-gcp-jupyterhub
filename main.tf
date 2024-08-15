@@ -72,7 +72,7 @@ module "external_infoblox_record" {
 # tfsec:ignore:google-gke-use-cluster-labels
 # tfsec:ignore:google-gke-enable-private-cluster
 module "jhub_cluster" {
-  source                     = "git::https://github.com/BrownUniversity/terraform-gcp-cluster.git?ref=chore-update-2023"
+  source                     = "git::https://github.com/BrownUniversity/terraform-gcp-cluster.git?ref=v0.1.9"
   cluster_name               = var.cluster_name
   project_id                 = module.jhub_project.project_id
   kubernetes_version         = var.kubernetes_version

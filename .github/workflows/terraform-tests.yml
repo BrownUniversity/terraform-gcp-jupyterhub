@@ -31,6 +31,7 @@ jobs:
           JUPYTERHUB_TLS_KEY: ${{ secrets.JUPYTERHUB_TLS_KEY }}
       - name: Authorize service account
         run: |
+          gcloud auth activate-service-account ${{ secrets.GCP_PF_SA }} --key-file=/tmp/credentials.json
           kubectl config view
           ls -la /tmp
       - name: Run Terraform Test
@@ -72,6 +73,7 @@ jobs:
           JUPYTERHUB_TLS_KEY: ${{ secrets.JUPYTERHUB_TLS_KEY }}
       - name: Authorize service account
         run: |
+          gcloud auth activate-service-account ${{ secrets.GCP_PF_SA }} --key-file=/tmp/credentials.json
           kubectl config view
           ls -la /tmp
       - name: Run Terraform Test
