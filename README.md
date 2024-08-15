@@ -62,8 +62,8 @@ code by adding a `module` configuration and setting its `source` parameter to UR
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.9.2 |
 | <a name="requirement_google"></a> [google](#requirement\_google) | 5.38.0 |
 | <a name="requirement_google-beta"></a> [google-beta](#requirement\_google-beta) | 5.38.0 |
-| <a name="requirement_helm"></a> [helm](#requirement\_helm) | 2.14.0 |
-| <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | 2.31.0 |
+| <a name="requirement_helm"></a> [helm](#requirement\_helm) | 2.10.1 |
+| <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | 2.22.0 |
 
 ## Providers
 
