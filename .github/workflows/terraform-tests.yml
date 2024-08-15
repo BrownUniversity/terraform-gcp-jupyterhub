@@ -8,9 +8,82 @@ on:
       - "v*.*.*"
   pull_request:
 
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: brownuniversity/terraform-gcp-jupyterhub
+  USE_GKE_GCLOUD_AUTH_PLUGIN: true
+  GOOGLE_APPLICATION_CREDENTIALS: /tmp/credentials.json
+
 jobs:
-  test-sample-jhub:
+  docker:
     runs-on: ubuntu-latest
+
+    permissions:
+      packages: write
+      contents: read
+
+    outputs:
+      full_image_id: ${{ steps.save_full_image_id.outputs.full_image_id }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          base: ${{ github.ref }}
+          filters: |
+            all:
+              - '.github/workflows/kitchen-tests.yml'
+              - 'Dockerfile'
+              - 'Gemfile*'
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log into the container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{major}}.{{minor}}
+
+      # NOTE: We are tapping into json output because tags could become a list if prior step is modified
+      - id: save_full_image_id
+        run: echo "full_image_id=${{ fromJSON(steps.meta.outputs.json).tags[0] }}" >> $GITHUB_OUTPUT
+
+      - name: print_tag
+        run: echo "${{ fromJSON(steps.meta.outputs.json).tags[0] }}"
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:buildcache
+          cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:buildcache
+
+  test-sample-jhub:
+    needs: [docker]
+    if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
+    runs-on: self-hosted
+    container:
+      image: "${{ needs.docker.outputs.full_image_id }}"
     steps:
       - uses: actions/checkout@v4
       - name: Create Credential File
@@ -18,10 +91,6 @@ jobs:
           echo "$GCP_CREDENTIAL_JSON" | base64 -d > /tmp/credentials.json
         env:
           GCP_CREDENTIAL_JSON: ${{ secrets.GCP_CREDENTIAL_JSON }}
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: 1.9.2
       - name: Create TLS Files
         run: |
           echo "$JUPYTERHUB_TLS_CER" > /tmp/tls.cer
@@ -47,11 +116,14 @@ jobs:
           INFOBLOX_SERVER: ${{ secrets.INFOBLOX_JHUB_HOST }}
           TF_VAR_site_certificate_file: /tmp/tls.cer
           TF_VAR_site_certificate_key_file: /tmp/tls.key
-          GOOGLE_APPLICATION_CREDENTIALS: /tmp/credentials.json
+          USE_GKE_GCLOUD_AUTH_PLUGIN: true
 
   test-sample-jhub-nfs:
+    needs: [docker]
     if: ${{ !contains(github.event.head_commit.message, '[skip ci]') && contains(github.event.head_commit.message, '[test nfs]') }}
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
+    container:
+      image: "${{ needs.docker.outputs.full_image_id }}"
     steps:
       - uses: actions/checkout@v4
 
@@ -60,10 +132,6 @@ jobs:
           echo "$GCP_CREDENTIAL_JSON" | base64 -d > /tmp/credentials.json
         env:
           GCP_CREDENTIAL_JSON: ${{ secrets.GCP_CREDENTIAL_JSON }}
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: 1.9.2
       - name: Create TLS Files
         run: |
           echo "$JUPYTERHUB_TLS_CER" > /tmp/tls.cer
@@ -89,4 +157,4 @@ jobs:
           INFOBLOX_SERVER: ${{ secrets.INFOBLOX_JHUB_HOST }}
           TF_VAR_site_certificate_file: /tmp/tls.cer
           TF_VAR_site_certificate_key_file: /tmp/tls.key
-          GOOGLE_APPLICATION_CREDENTIALS: /tmp/credentials.json
+          USE_GKE_GCLOUD_AUTH_PLUGIN: true
