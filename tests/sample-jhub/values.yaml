@@ -6,7 +6,7 @@ prePuller:
   continuous:
     enabled: true
   hook:
-    enabled: false
+    enabled: true
     image:
       name: docker.io/jupyterhub/k8s-image-awaiter
       tag: 3.2.0
