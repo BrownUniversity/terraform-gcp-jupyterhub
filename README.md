@@ -116,7 +116,7 @@ code by adding a `module` configuration and setting its `source` parameter to UR
 | <a name="input_create_tls_secret"></a> [create\_tls\_secret](#input\_create\_tls\_secret) | If set to true, user will be passing tls key and certificate to create a kubernetes secret, and use it in their helm chart | `bool` | `true` | no |
 | <a name="input_default_service_account"></a> [default\_service\_account](#input\_default\_service\_account) | Project default service account setting: can be one of delete, depriviledge, or keep. | `string` | `"delete"` | no |
 | <a name="input_disable_dependent_services"></a> [disable\_dependent\_services](#input\_disable\_dependent\_services) | Whether services that are enabled and which depend on this service should also be disabled when this service is destroyed. | `string` | `"true"` | no |
-| <a name="input_enable_private_nodes"></a> [enable\_private\_nodes](#input\_enable\_private\_nodes) | (Beta) Whether nodes have internal IP addresses only | `bool` | `true` | no |
+| <a name="input_enable_private_nodes"></a> [enable\_private\_nodes](#input\_enable\_private\_nodes) | (Beta) Whether nodes have internal IP addresses only | `bool` | `false` | no |
 | <a name="input_folder_id"></a> [folder\_id](#input\_folder\_id) | The ID of a folder to host this project | `string` | n/a | yes |
 | <a name="input_gcp_zone"></a> [gcp\_zone](#input\_gcp\_zone) | The GCP zone to deploy the runner into. | `string` | `"us-east1-b"` | no |
 | <a name="input_helm_deploy_timeout"></a> [helm\_deploy\_timeout](#input\_helm\_deploy\_timeout) | Time for helm to wait for deployment of chart and downloading of docker image | `number` | `1000` | no |

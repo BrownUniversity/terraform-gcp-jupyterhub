@@ -167,7 +167,7 @@ variable "network_policy" {
 variable "enable_private_nodes" {
   type        = bool
   description = "(Beta) Whether nodes have internal IP addresses only"
-  default     = true
+  default     = false
 }
 
 variable "master_ipv4_cidr_block" {

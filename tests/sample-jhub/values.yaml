@@ -5,11 +5,6 @@ hub:
 prePuller:
   continuous:
     enabled: true
-  hook:
-    enabled: true
-    image:
-      name: docker.io/jupyterhub/k8s-image-awaiter
-      tag: 3.1.0
 scheduling:
   userScheduler:
     enabled: true
