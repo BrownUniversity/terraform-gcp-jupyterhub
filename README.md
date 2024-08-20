@@ -31,12 +31,12 @@ Additionally make sure that `gcloud init` is using the appropriate service accou
 Error: error installing: Post "http://localhost/apis/apps/v1/namespaces/kube-system/deployments": dial tcp [::1]:80: connect: connection refused
 ```
 
-Finally, this module also configures records in infoblox and therefore you'll need credentials to the server. For Brown users we recommend using `lastpass-cli` to source your secrets into environment variables (ask for access to creds)., ie
+Finally, this module also configures records in infoblox and therefore you'll need credentials to the server. For Brown users we recommend using `1password-cli` to source your secrets into environment variables (ask for access to creds)., ie
 
 ```
-export INFOBLOX_USERNAME=$(lpass show infoblox --username)
-export INFOBLOX_PASSWORD=$(lpass show infoblox --password)
-export INFOBLOX_SERVER=$(lpass show infoblox --url | awk -F/ '{print $3}')
+export INFOBLOX_USERNAME=$(op item get infoblox --field username)
+export INFOBLOX_PASSWORD=$(op item get infoblox --field password --reveal)
+export INFOBLOX_SERVER=$(op item get infoblox --format json | jq -r '.urls[].href' | awk -F/ '{print $3}')
 ```
 
 The following envs are required
@@ -189,25 +189,9 @@ Use [GitLab Flow](https://docs.gitlab.com/ee/topics/gitlab_flow.html#production-
 * Merge only from PR with review
 * After merging to default branch a release is drafted using a github action. Check the draft and publish if you and tests are happy
 
-### Version managers
+### Terraform
 
-We recommend using [asdf](https://asdf-vm.com) to manage your versions of Terrafom and Ruby.
-
-```
-brew install asdf
-```
-
-Alternatively you can use [tfenv](https://github.com/tfutils/tfenv) and [rbenv](https://github.com/rbenv/rbenv)
-
-### Terraform and Ruby
-
-The tests can simply run in CI. If you want to run the tests locally, you will need to install the version of terraform and Ruby specified in the `.tool-versions` file (or `.terraform-version`, `.ruby-version`). 
-
-```
-asdf plugin-add terraform https://github.com/asdf-community/asdf-hashicorp.git
-asdf plugin add ruby https://github.com/asdf-vm/asdf-ruby.git
-asdf install
-```
+We recommend installing the latest version of terraform whenever you are updating this module. The current terraform version for this module is 1.9.2. You can install terraform with homebrew.
 
 #### Pre-commit hooks
 You should make sure that pre-commit hooks are installed to run the formater, linter, etc. Install and configure terraform [pre-commit hooks](https://github.com/antonbabenko/pre-commit-terraform) as follows:
@@ -245,7 +229,7 @@ This is only needed if running tests locally. The google-cloud-sdk and last-pass
 This repo includes a `env.sh` file that where you set the path to the google credentials file and infoblox secrets. First you'll need to make sure you are logged in to last pass,
 
 ```
-lpass login
+eval $(op signin) 
 ```
 
 Then use
@@ -275,17 +259,6 @@ See [here](https://cloud.google.com/blog/products/containers-kubernetes/kubectl-
 
 This repository uses the native terraform tests to test the modules. In the [tests](/tests) directory you can find examples of how each module can be used and the test scripts.
 
-### Install testing dependencies
-
-```
-gem install bundler
-```
-
-Then install the prerequisites for test kitchen.
-
-```
-bundle install
-```
 ### Setup secrets
 
 In addition to the GCLOUD and INFOBLOX variables configured by the `env.sh` file, we also need to add some additional secret variables. 
@@ -305,8 +278,31 @@ terraform test -filter=tests/test-sample-jhub.tftest.hcl      # runs the test wi
 terraform test -filter=tests/test-sample-jhub-nfs.tftest.hcl  # runs the test with nfs
 ```
 
-### Running terraform directly
-If you need finer control when trouble shooting, you can directly run terraform within the desired example directory.
+### Running terraform in a container
+
+If you need finer control when trouble shooting, you can directly run terraform within the container specified by the Dockerfile.
+
+First, build the Dockerfile with:
+
+```sh
+docker build -t <image_name> --platform linux/amd64 .
+```
+
+Note that `--platform linux/amd64` is necessary for ARM-based systems (e.g. Apple Silicon Macs).
+
+Then run the docker container with
+
+```sh
+docker run -t -d -v $(pwd):/usr/app --platform linux/amd64 <image_name>
+```
+
+Finally, you can get a shell inside the running container with:
+
+```sh
+docker exec -it <container_name> /bin/bash
+```
+
+Follow the next section to authenticate to Google Cloud and 1Password.
 
 ## Troubleshooting
 
@@ -326,15 +322,15 @@ gcloud auth activate-service-account <service-account> --key-file=<path-tojson-c
 --project=$PROJECT
 ```
 
-
 ## CI
+
 This project has three workflows enabled:
 
 1. PR labeler: When opening a PR to the main branch, a label is given assigned automatically according to the name of your feature branch. The labeler follows the follows rules in [pr-labeler.yml](.github/pr-labeler.yml)
 
 2. Release Drafter: When merging to master, a release is drafted using the [Release-Drafter Action](https://github.com/marketplace/actions/release-drafter)
 
-3. `Kitchen test` is run on every commit unless `[skip ci]` is added to commit message.
+3. `terraform test` is run on every commit unless `[skip ci]` is added to commit message.
 
 ### Maintenance/Upgrades
 
