@@ -103,8 +103,7 @@ resource "kubernetes_stateful_set" "nfs_server" {
             container_port = 111
           }
           security_context {
-            run_as_group = 100
-            privileged   = true # TODO test with false
+            privileged = true # TODO test with false
           }
           volume_mount {
             mount_path = "/exports"
