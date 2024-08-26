@@ -24,7 +24,7 @@ singleuser:
     limit: 1
     guarantee: 0.05
   image:
-    name: gcr.io/jupyterhub-docker-images/mpa2065
+    name: us-east1-docker.pkg.dev/jupyterhub-docker-images/all-classes/mpa2065
     tag: latest
     pullPolicy: Always
   defaultUrl: "/lab"
@@ -33,25 +33,6 @@ singleuser:
       exec:
         command:
           ["/bin/sh", "-c", "chmod -f 600 /home/jovyan/.ssh/id_rsa || true;"]
-  #----Needed for shared NFS Volume
-  extraEnv:
-    CHOWN_HOME: "yes"
-    CHOWN_HOME_OPTS: "-R"
-    # GRANT_SUDO: "yes"
-    CHOWN_EXTRA: "/home/jovyan/shared"
-    CHOWN_EXTRA_OPTS: "-R"
-  uid: 0
-  fsGid: 0
-  cmd: "start-singleuser.sh"
-  storage:
-    extraVolumes:
-      - name: jhub-nfs-volume
-        persistentVolumeClaim:
-          claimName: nfs-volume
-    extraVolumeMounts:
-      - name: jhub-nfs-volume
-        mountPath: /home/jovyan/shared
-  #----End of shared NFS Volume
 proxy:
   https:
     enabled: true

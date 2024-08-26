@@ -1,4 +1,4 @@
-name: kitchen-tests
+name: terraform-tests
 
 on:
   push:
@@ -26,9 +26,9 @@ jobs:
       full_image_id: ${{ steps.save_full_image_id.outputs.full_image_id }}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - uses: dorny/paths-filter@v2.2.0
+      - uses: dorny/paths-filter@v3
         id: filter
         with:
           base: ${{ github.ref }}
@@ -39,13 +39,13 @@ jobs:
               - 'Gemfile*'
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
 
       - name: Log into the container registry
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
@@ -53,7 +53,7 @@ jobs:
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
-        uses: docker/metadata-action@v4
+        uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
@@ -85,8 +85,7 @@ jobs:
     container:
       image: "${{ needs.docker.outputs.full_image_id }}"
     steps:
-      - uses: actions/checkout@v3
-
+      - uses: actions/checkout@v4
       - name: Create Credential File
         run: |
           echo "$GCP_CREDENTIAL_JSON" | base64 -d > /tmp/credentials.json
@@ -104,8 +103,10 @@ jobs:
           gcloud auth activate-service-account ${{ secrets.GCP_PF_SA }} --key-file=/tmp/credentials.json
           kubectl config view
           ls -la /tmp
-      - name: Run Kitchen
-        run: kitchen test sample-jhub
+      - name: Run Terraform Test
+        run: |
+          terraform init
+          terraform test -filter=tests/test-sample-jhub.tftest.hcl -verbose
         env:
           TF_VAR_billing_account: ${{ secrets.GCP_BILLING_ACCOUNT }}
           TF_VAR_org_id: ${{ secrets.GCP_ORG_ID }}
@@ -124,7 +125,7 @@ jobs:
     container:
       image: "${{ needs.docker.outputs.full_image_id }}"
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Create Credential File
         run: |
@@ -143,8 +144,10 @@ jobs:
           gcloud auth activate-service-account ${{ secrets.GCP_PF_SA }} --key-file=/tmp/credentials.json
           kubectl config view
           ls -la /tmp
-      - name: Run Kitchen
-        run: kitchen test nfs
+      - name: Run Terraform Test
+        run: |
+          terraform init
+          terraform test -filter=tests/test-sample-jhub-nfs.tftest.hcl -verbose
         env:
           TF_VAR_billing_account: ${{ secrets.GCP_BILLING_ACCOUNT }}
           TF_VAR_org_id: ${{ secrets.GCP_ORG_ID }}
