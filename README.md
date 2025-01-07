@@ -1,6 +1,6 @@
 # Terraform GCP-module for JupyterHub 
 
-![terraform-tests](https://github.com/BrownUniversity/terraform-gcp-jupyterhub/actions/workflows/terraform-tests/badge.svg)
+[![terraform-tests](https://github.com/BrownUniversity/terraform-gcp-jupyterhub/actions/workflows/terraform-tests.yml/badge.svg)](https://github.com/BrownUniversity/terraform-gcp-jupyterhub/actions/workflows/terraform-tests.yml)
 
 This repository defines a [Terraform module](https://www.terraform.io/docs/modules/usage.html), which you can use in your code by adding a `module` configuration and setting its `source` parameter to URL of this folder.  This module builds a Kubernetes-based JupyterHub in Google Cloud as used by Brown University. 
 
