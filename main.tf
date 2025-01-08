@@ -11,7 +11,7 @@ locals {
 #   PROJECT
 # ------------------------------------------------------------
 module "jhub_project" {
-  source = "git::https://github.com/BrownUniversity/terraform-gcp-project.git?ref=v0.1.6"
+  source = "git::https://github.com/BrownUniversity/terraform-gcp-project.git?ref=v0.1.7"
 
   project_name               = var.project_name
   org_id                     = var.org_id
@@ -28,7 +28,7 @@ module "jhub_project" {
 #   VPC
 # ------------------------------------------------------------
 module "jhub_vpc" {
-  source = "git::https://github.com/BrownUniversity/terraform-gcp-vpc.git?ref=v0.1.4"
+  source = "git::https://github.com/BrownUniversity/terraform-gcp-vpc.git?ref=v0.1.5"
 
   project_id          = module.jhub_project.project_id
   network_name        = var.network_name
@@ -72,7 +72,7 @@ module "external_infoblox_record" {
 # tfsec:ignore:google-gke-use-cluster-labels
 # tfsec:ignore:google-gke-enable-private-cluster
 module "jhub_cluster" {
-  source                     = "git::https://github.com/BrownUniversity/terraform-gcp-cluster.git?ref=v0.1.9"
+  source                     = "git::https://github.com/BrownUniversity/terraform-gcp-cluster.git?ref=v0.1.10"
   cluster_name               = var.cluster_name
   project_id                 = module.jhub_project.project_id
   kubernetes_version         = var.kubernetes_version
@@ -131,7 +131,7 @@ locals {
 
 module "gke_auth" {
   source       = "terraform-google-modules/kubernetes-engine/google//modules/auth"
-  version      = "31.0.0"
+  version      = "35.0.1"
   depends_on   = [module.jhub_cluster]
   project_id   = module.jhub_project.project_id
   location     = local.gcloud_location
