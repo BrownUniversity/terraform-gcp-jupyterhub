@@ -72,7 +72,7 @@ module "external_infoblox_record" {
 # tfsec:ignore:google-gke-use-cluster-labels
 # tfsec:ignore:google-gke-enable-private-cluster
 module "jhub_cluster" {
-  source                     = "git::https://github.com/BrownUniversity/terraform-gcp-cluster.git?ref=v0.1.10"
+  source                     = "git::https://github.com/BrownUniversity/terraform-gcp-cluster.git?ref=25-remove-master_ipv4_cidr_block-speciifcation"
   cluster_name               = var.cluster_name
   project_id                 = module.jhub_project.project_id
   kubernetes_version         = var.kubernetes_version
@@ -90,7 +90,6 @@ module "jhub_cluster" {
   horizontal_pod_autoscaling = var.horizontal_pod_autoscaling
   network_policy             = var.network_policy
   enable_private_nodes       = var.enable_private_nodes
-  master_ipv4_cidr_block     = var.master_ipv4_cidr_block
   remove_default_node_pool   = var.remove_default_node_pool
 
   core_pool_name               = var.core_pool_name
@@ -131,7 +130,7 @@ locals {
 
 module "gke_auth" {
   source       = "terraform-google-modules/kubernetes-engine/google//modules/auth"
-  version      = "35.0.1"
+  version      = "34.0.0"
   depends_on   = [module.jhub_cluster]
   project_id   = module.jhub_project.project_id
   location     = local.gcloud_location
