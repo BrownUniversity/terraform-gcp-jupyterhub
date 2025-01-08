@@ -130,6 +130,7 @@ locals {
 
 module "gke_auth" {
   source       = "terraform-google-modules/kubernetes-engine/google//modules/auth"
+  # THIS SHOULD NOT BE UPGRADED PAST 34.0.0 UNLESS ABSOLUTELY NECESSARY
   version      = "34.0.0"
   depends_on   = [module.jhub_cluster]
   project_id   = module.jhub_project.project_id
