@@ -72,7 +72,7 @@ module "external_infoblox_record" {
 # tfsec:ignore:google-gke-use-cluster-labels
 # tfsec:ignore:google-gke-enable-private-cluster
 module "jhub_cluster" {
-  source                     = "git::https://github.com/BrownUniversity/terraform-gcp-cluster.git?ref=25-remove-master_ipv4_cidr_block-speciifcation"
+  source                     = "git::https://github.com/BrownUniversity/terraform-gcp-cluster.git?ref=v0.1.11"
   cluster_name               = var.cluster_name
   project_id                 = module.jhub_project.project_id
   kubernetes_version         = var.kubernetes_version
@@ -129,7 +129,7 @@ locals {
 }
 
 module "gke_auth" {
-  source       = "terraform-google-modules/kubernetes-engine/google//modules/auth"
+  source = "terraform-google-modules/kubernetes-engine/google//modules/auth"
   # THIS SHOULD NOT BE UPGRADED PAST 34.0.0 UNLESS ABSOLUTELY NECESSARY
   version      = "34.0.0"
   depends_on   = [module.jhub_cluster]
