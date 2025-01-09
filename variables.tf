@@ -170,12 +170,6 @@ variable "enable_private_nodes" {
   default     = false
 }
 
-variable "master_ipv4_cidr_block" {
-  type        = string
-  description = "(Beta) The IP range in CIDR notation to use for the hosted master network"
-  default     = "172.16.0.0/28"
-}
-
 variable "remove_default_node_pool" {
   type        = bool
   description = "Remove default node pool while setting up the cluster"

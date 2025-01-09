@@ -1,6 +1,6 @@
 # Terraform GCP-module for JupyterHub 
 
-![terraform-tests](https://github.com/BrownUniversity/terraform-gcp-jupyterhub/actions/workflows/terraform-tests/badge.svg)
+[![terraform-tests](https://github.com/BrownUniversity/terraform-gcp-jupyterhub/actions/workflows/terraform-tests.yml/badge.svg)](https://github.com/BrownUniversity/terraform-gcp-jupyterhub/actions/workflows/terraform-tests.yml)
 
 This repository defines a [Terraform module](https://www.terraform.io/docs/modules/usage.html), which you can use in your code by adding a `module` configuration and setting its `source` parameter to URL of this folder.  This module builds a Kubernetes-based JupyterHub in Google Cloud as used by Brown University. 
 
@@ -59,42 +59,42 @@ code by adding a `module` configuration and setting its `source` parameter to UR
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.9.2 |
-| <a name="requirement_google"></a> [google](#requirement\_google) | 5.38.0 |
-| <a name="requirement_google-beta"></a> [google-beta](#requirement\_google-beta) | 5.38.0 |
-| <a name="requirement_helm"></a> [helm](#requirement\_helm) | 2.14.0 |
-| <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | 2.31.0 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.10.0 |
+| <a name="requirement_google"></a> [google](#requirement\_google) | 6.15.0 |
+| <a name="requirement_google-beta"></a> [google-beta](#requirement\_google-beta) | 6.15.0 |
+| <a name="requirement_helm"></a> [helm](#requirement\_helm) | 2.17.0 |
+| <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | 2.35.1 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_google"></a> [google](#provider\_google) | 5.38.0 |
+| <a name="provider_google"></a> [google](#provider\_google) | 6.15.0 |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_external_infoblox_record"></a> [external\_infoblox\_record](#module\_external\_infoblox\_record) | git::https://github.com/BrownUniversity/terraform-infoblox-record-a.git | v0.1.6 |
-| <a name="module_gke_auth"></a> [gke\_auth](#module\_gke\_auth) | terraform-google-modules/kubernetes-engine/google//modules/auth | 31.0.0 |
-| <a name="module_jhub_cluster"></a> [jhub\_cluster](#module\_jhub\_cluster) | git::https://github.com/BrownUniversity/terraform-gcp-cluster.git | v0.1.9 |
+| <a name="module_gke_auth"></a> [gke\_auth](#module\_gke\_auth) | terraform-google-modules/kubernetes-engine/google//modules/auth | 34.0.0 |
+| <a name="module_jhub_cluster"></a> [jhub\_cluster](#module\_jhub\_cluster) | git::https://github.com/BrownUniversity/terraform-gcp-cluster.git | v0.1.11 |
 | <a name="module_jhub_helm"></a> [jhub\_helm](#module\_jhub\_helm) | ./modules/helm-jhub | n/a |
-| <a name="module_jhub_project"></a> [jhub\_project](#module\_jhub\_project) | git::https://github.com/BrownUniversity/terraform-gcp-project.git | v0.1.6 |
-| <a name="module_jhub_vpc"></a> [jhub\_vpc](#module\_jhub\_vpc) | git::https://github.com/BrownUniversity/terraform-gcp-vpc.git | v0.1.4 |
+| <a name="module_jhub_project"></a> [jhub\_project](#module\_jhub\_project) | git::https://github.com/BrownUniversity/terraform-gcp-project.git | v0.1.7 |
+| <a name="module_jhub_vpc"></a> [jhub\_vpc](#module\_jhub\_vpc) | git::https://github.com/BrownUniversity/terraform-gcp-vpc.git | v0.1.5 |
 | <a name="module_production_infoblox_record"></a> [production\_infoblox\_record](#module\_production\_infoblox\_record) | git::https://github.com/BrownUniversity/terraform-infoblox-record-a.git | v0.1.6 |
 
 ## Resources
 
 | Name | Type |
 |------|------|
-| [google_compute_address.static](https://registry.terraform.io/providers/hashicorp/google/5.38.0/docs/resources/compute_address) | resource |
+| [google_compute_address.static](https://registry.terraform.io/providers/hashicorp/google/6.15.0/docs/resources/compute_address) | resource |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_activate_apis"></a> [activate\_apis](#input\_activate\_apis) | The list of apis to activate within the project | `list(string)` | `[]` | no |
-| <a name="input_auth_secretkeyvaluemap"></a> [auth\_secretkeyvaluemap](#input\_auth\_secretkeyvaluemap) | Key Value Map for secret variables used by the authenticator | `map(string)` | <pre>{<br>  "hub.config.DummyAuthenticator.password": "dummy_password"<br>}</pre> | no |
+| <a name="input_auth_secretkeyvaluemap"></a> [auth\_secretkeyvaluemap](#input\_auth\_secretkeyvaluemap) | Key Value Map for secret variables used by the authenticator | `map(string)` | <pre>{<br/>  "hub.config.DummyAuthenticator.password": "dummy_password"<br/>}</pre> | no |
 | <a name="input_auth_type"></a> [auth\_type](#input\_auth\_type) | Type OAuth e.g google | `string` | `"dummy"` | no |
 | <a name="input_auto_create_network"></a> [auto\_create\_network](#input\_auto\_create\_network) | Auto create default network. | `bool` | `false` | no |
 | <a name="input_automount_service_account_token"></a> [automount\_service\_account\_token](#input\_automount\_service\_account\_token) | Enable automatin mounting of the service account token | `bool` | `true` | no |
@@ -125,10 +125,9 @@ code by adding a `module` configuration and setting its `source` parameter to UR
 | <a name="input_http_load_balancing"></a> [http\_load\_balancing](#input\_http\_load\_balancing) | Enable httpload balancer addon | `bool` | `false` | no |
 | <a name="input_jhub_helm_version"></a> [jhub\_helm\_version](#input\_jhub\_helm\_version) | Version of the JupyterHub Helm Chart Release | `string` | n/a | yes |
 | <a name="input_kubernetes_version"></a> [kubernetes\_version](#input\_kubernetes\_version) | The Kubernetes version of the masters. If set to 'latest' it will pull latest available version in the selected region. | `string` | n/a | yes |
-| <a name="input_labels"></a> [labels](#input\_labels) | Map of labels for project. | `map(string)` | <pre>{<br>  "environment": "automation",<br>  "managed_by": "terraform"<br>}</pre> | no |
+| <a name="input_labels"></a> [labels](#input\_labels) | Map of labels for project. | `map(string)` | <pre>{<br/>  "environment": "automation",<br/>  "managed_by": "terraform"<br/>}</pre> | no |
 | <a name="input_logging_service"></a> [logging\_service](#input\_logging\_service) | The logging service that the cluster should write logs to. Available options include logging.googleapis.com, logging.googleapis.com/kubernetes (beta), and none | `string` | `"logging.googleapis.com/kubernetes"` | no |
 | <a name="input_maintenance_start_time"></a> [maintenance\_start\_time](#input\_maintenance\_start\_time) | Time window specified for daily maintenance operations in RFC3339 format | `string` | `"03:00"` | no |
-| <a name="input_master_ipv4_cidr_block"></a> [master\_ipv4\_cidr\_block](#input\_master\_ipv4\_cidr\_block) | (Beta) The IP range in CIDR notation to use for the hosted master network | `string` | `"172.16.0.0/28"` | no |
 | <a name="input_monitoring_service"></a> [monitoring\_service](#input\_monitoring\_service) | The monitoring service that the cluster should write metrics to. Automatically send metrics from pods in the cluster to the Google Cloud Monitoring API. VM metrics will be collected by Google Compute Engine regardless of this setting Available options include monitoring.googleapis.com, monitoring.googleapis.com/kubernetes (beta) and none | `string` | `"monitoring.googleapis.com/kubernetes"` | no |
 | <a name="input_network_name"></a> [network\_name](#input\_network\_name) | Name of the VPC. | `string` | `"kubernetes-vpc"` | no |
 | <a name="input_network_policy"></a> [network\_policy](#input\_network\_policy) | Enable network policy addon | `bool` | `true` | no |
@@ -141,10 +140,10 @@ code by adding a `module` configuration and setting its `source` parameter to UR
 | <a name="input_region"></a> [region](#input\_region) | The region to host the cluster in | `string` | `"us-east1"` | no |
 | <a name="input_regional"></a> [regional](#input\_regional) | Whether the master node should be regional or zonal | `bool` | `true` | no |
 | <a name="input_remove_default_node_pool"></a> [remove\_default\_node\_pool](#input\_remove\_default\_node\_pool) | Remove default node pool while setting up the cluster | `bool` | `false` | no |
-| <a name="input_scale_down_command"></a> [scale\_down\_command](#input\_scale\_down\_command) | Command for scale-down cron job | `list(string)` | <pre>[<br>  "kubectl",<br>  "scale",<br>  "--replicas=0",<br>  "statefulset/user-placeholder"<br>]</pre> | no |
+| <a name="input_scale_down_command"></a> [scale\_down\_command](#input\_scale\_down\_command) | Command for scale-down cron job | `list(string)` | <pre>[<br/>  "kubectl",<br/>  "scale",<br/>  "--replicas=0",<br/>  "statefulset/user-placeholder"<br/>]</pre> | no |
 | <a name="input_scale_down_name"></a> [scale\_down\_name](#input\_scale\_down\_name) | Name of scale-down cron job | `string` | `"scale-down"` | no |
 | <a name="input_scale_down_schedule"></a> [scale\_down\_schedule](#input\_scale\_down\_schedule) | Schedule for scale-down cron job | `string` | `"1 18 * * 1-5"` | no |
-| <a name="input_scale_up_command"></a> [scale\_up\_command](#input\_scale\_up\_command) | Command for scale-up cron job | `list(string)` | <pre>[<br>  "kubectl",<br>  "scale",<br>  "--replicas=3",<br>  "statefulset/user-placeholder"<br>]</pre> | no |
+| <a name="input_scale_up_command"></a> [scale\_up\_command](#input\_scale\_up\_command) | Command for scale-up cron job | `list(string)` | <pre>[<br/>  "kubectl",<br/>  "scale",<br/>  "--replicas=3",<br/>  "statefulset/user-placeholder"<br/>]</pre> | no |
 | <a name="input_scale_up_name"></a> [scale\_up\_name](#input\_scale\_up\_name) | Name of scale-up cron job | `string` | `"scale-up"` | no |
 | <a name="input_scale_up_schedule"></a> [scale\_up\_schedule](#input\_scale\_up\_schedule) | Schedule for scale-up cron job | `string` | `"1 6 * * 1-5"` | no |
 | <a name="input_shared_storage_capacity"></a> [shared\_storage\_capacity](#input\_shared\_storage\_capacity) | Size of the shared volume | `number` | `5` | no |

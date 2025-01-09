@@ -18,7 +18,7 @@ RUN gcloud components install gke-gcloud-auth-plugin
 RUN gcloud components install kubectl
 
 #terraform
-ENV TERRAFORM_VERSION=1.9.2
+ENV TERRAFORM_VERSION=1.10.3
 ENV TERRAFORM_URL="https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip"
 RUN curl -L ${TERRAFORM_URL} -o terraform_${TERRAFORM_VERSION}_linux_amd64.zip \
     && unzip terraform_${TERRAFORM_VERSION}_linux_amd64.zip \
