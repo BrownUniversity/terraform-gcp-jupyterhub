@@ -86,21 +86,32 @@ resource "helm_release" "jhub" {
     value = random_id.jhub_proxy_token.hex
   }
 
-  set {
-    name  = "proxy.service.loadBalancerIP"
-    value = var.static_ip
-  }
+  set = [
+    {
+      name  = "proxy.service.loadBalancerIP"
+      value = var.static_ip
+    },
+    {
+      name  = "proxy.https.hosts"
+      value = "{${var.jhub_url}}"
+    },
+    # #Authentication
+    {
+      name  = "hub.config.JupyterHub.authenticator_class"
+      value = var.auth_type
+    }
+  ]
 
-  set {
-    name  = "proxy.https.hosts"
-    value = "{${var.jhub_url}}"
-  }
+  # set  {
+  #   name  = "proxy.https.hosts"
+  #   value = "{${var.jhub_url}}"
+  # }
 
-  #Authentication
-  set {
-    name  = "hub.config.JupyterHub.authenticator_class"
-    value = var.auth_type
-  }
+  # #Authentication
+  # set {
+  #   name  = "hub.config.JupyterHub.authenticator_class"
+  #   value = var.auth_type
+  # }
 
   #Authentication secrets
   dynamic "set_sensitive" {
