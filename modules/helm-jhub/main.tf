@@ -81,10 +81,12 @@ resource "helm_release" "jhub" {
     file(var.helm_values_file)
   ]
 
-  set_sensitive {
-    name  = "proxy.secretToken"
-    value = random_id.jhub_proxy_token.hex
-  }
+  set_sensitive = [
+    {
+      name  = "proxy.secretToken"
+      value = random_id.jhub_proxy_token.hex
+    }
+  ]
 
   set = [
     {
@@ -121,6 +123,7 @@ resource "helm_release" "jhub" {
       value = set_sensitive.value
     }
   }
+
 
   # This is to set the NFS-shared related variables 
   # Syntax didn't work out, but we should revisit as having it in the Helm values file doesn't
