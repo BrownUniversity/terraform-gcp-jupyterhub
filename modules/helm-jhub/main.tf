@@ -124,13 +124,13 @@ resource "helm_release" "jhub" {
   # }
 
   #Authentication secrets
-  dynamic "set_sensitive" {
-    for_each = var.auth_secretkeyvaluemap
-    content {
-      name  = set_sensitive.key
-      value = set_sensitive.value
-    }
-  }
+  # dynamic "set_sensitive" {
+  #   for_each = var.auth_secretkeyvaluemap
+  #   content {
+  #     name  = set_sensitive.key
+  #     value = set_sensitive.value
+  #   }
+  # }
 
 
   # This is to set the NFS-shared related variables 
