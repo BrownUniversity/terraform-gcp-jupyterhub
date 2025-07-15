@@ -81,12 +81,20 @@ resource "helm_release" "jhub" {
     file(var.helm_values_file)
   ]
 
-  set_sensitive = [
-    {
-      name  = "proxy.secretToken"
-      value = random_id.jhub_proxy_token.hex
-    }
-  ]
+  set_sensitive = concat(
+    [
+      {
+        name  = "proxy.secretToken"
+        value = random_id.jhub_proxy_token.hex
+      }
+    ],
+    [
+      for k, v in var.auth_secretkeyvaluemap : {
+        name  = k
+        value = v
+      }
+    ]
+  )
 
   set = [
     {
