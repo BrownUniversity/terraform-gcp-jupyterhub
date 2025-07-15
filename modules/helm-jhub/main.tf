@@ -112,38 +112,6 @@ resource "helm_release" "jhub" {
     }
   ]
 
-  # set  {
-  #   name  = "proxy.https.hosts"
-  #   value = "{${var.jhub_url}}"
-  # }
-
-  # #Authentication
-  # set {
-  #   name  = "hub.config.JupyterHub.authenticator_class"
-  #   value = var.auth_type
-  # }
-
-  #Authentication secrets
-  # dynamic "set_sensitive" {
-  #   for_each = var.auth_secretkeyvaluemap
-  #   content {
-  #     name  = set_sensitive.key
-  #     value = set_sensitive.value
-  #   }
-  # }
-
-
-  # This is to set the NFS-shared related variables 
-  # Syntax didn't work out, but we should revisit as having it in the Helm values file doesn't
-  # allow us to set the name according to the variables
-  # dynamic "set" {
-  #   for_each = var.use_shared_volume == false ? {} : local.share_volume_helm
-  #   content {
-  #     name  = set.key
-  #     value = set.value
-  #   }
-  # }
-
   depends_on = [local.helm_release_wait_condition, module.shared-nfs]
 }
 
