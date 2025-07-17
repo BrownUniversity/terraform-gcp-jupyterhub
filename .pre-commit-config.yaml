@@ -1,10 +1,10 @@
 repos:
 - repo: https://github.com/antonbabenko/pre-commit-terraform
-  rev: v1.99.5 # Get the latest from: https://github.com/antonbabenko/pre-commit-terraform/releases
+  rev: v1.92.0 # Get the latest from: https://github.com/antonbabenko/pre-commit-terraform/releases
   hooks:
     - id: terraform_fmt
     - id: terraform_docs
     - id: terraform_tfsec
-    # - id: terraform_tflint
-    #   args:
-    #   - --args=--enable-rule=terraform_unused_declarations 
+    - id: terraform_tflint
+      args:
+      - --args=--enable-rule=terraform_unused_declarations 
