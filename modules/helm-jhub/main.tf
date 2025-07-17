@@ -8,7 +8,7 @@ provider "kubernetes" {
 }
 
 provider "helm" {
-  kubernetes {
+  kubernetes = {
     cluster_ca_certificate = var.cluster_ca_certificate
     host                   = var.host
     token                  = var.token
@@ -81,46 +81,36 @@ resource "helm_release" "jhub" {
     file(var.helm_values_file)
   ]
 
-  set_sensitive {
-    name  = "proxy.secretToken"
-    value = random_id.jhub_proxy_token.hex
-  }
+  set_sensitive = concat(
+    [
+      {
+        name  = "proxy.secretToken"
+        value = random_id.jhub_proxy_token.hex
+      }
+    ],
+    [
+      for k, v in var.auth_secretkeyvaluemap : {
+        name  = k
+        value = v
+      }
+    ]
+  )
 
-  set {
-    name  = "proxy.service.loadBalancerIP"
-    value = var.static_ip
-  }
-
-  set {
-    name  = "proxy.https.hosts"
-    value = "{${var.jhub_url}}"
-  }
-
-  #Authentication
-  set {
-    name  = "hub.config.JupyterHub.authenticator_class"
-    value = var.auth_type
-  }
-
-  #Authentication secrets
-  dynamic "set_sensitive" {
-    for_each = var.auth_secretkeyvaluemap
-    content {
-      name  = set_sensitive.key
-      value = set_sensitive.value
+  set = [
+    {
+      name  = "proxy.service.loadBalancerIP"
+      value = var.static_ip
+    },
+    {
+      name  = "proxy.https.hosts"
+      value = "{${var.jhub_url}}"
+    },
+    # #Authentication
+    {
+      name  = "hub.config.JupyterHub.authenticator_class"
+      value = var.auth_type
     }
-  }
-
-  # This is to set the NFS-shared related variables 
-  # Syntax didn't work out, but we should revisit as having it in the Helm values file doesn't
-  # allow us to set the name according to the variables
-  # dynamic "set" {
-  #   for_each = var.use_shared_volume == false ? {} : local.share_volume_helm
-  #   content {
-  #     name  = set.key
-  #     value = set.value
-  #   }
-  # }
+  ]
 
   depends_on = [local.helm_release_wait_condition, module.shared-nfs]
 }

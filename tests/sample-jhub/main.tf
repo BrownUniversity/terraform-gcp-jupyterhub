@@ -29,7 +29,7 @@ module "sample-jhub" {
   record_domain   = local.jhub_domain
 
   # ---------------- CLUSTER VARIABLES -----------------------
-  kubernetes_version         = 1.31
+  kubernetes_version         = 1.32
   regional                   = false
   region                     = local.gcp_region
   gcp_zone                   = local.gcp_zone
@@ -67,7 +67,7 @@ module "sample-jhub" {
   shared_storage_capacity = 2
 
   # ---------------- HELM/JHUB VARIABLES -----------------------
-  jhub_helm_version   = "4.0.0"
+  jhub_helm_version   = "4.2.0"
   helm_deploy_timeout = 1000
   helm_values_file    = var.helm_values_file
 
