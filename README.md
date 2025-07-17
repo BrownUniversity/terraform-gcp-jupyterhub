@@ -54,16 +54,16 @@ This repository defines a [Terraform module](https://www.terraform.io/docs/modul
 code by adding a `module` configuration and setting its `source` parameter to URL of this repository. See the [examples](/examples) folder for guidance
 
 
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.12.2 |
-| <a name="requirement_google"></a> [google](#requirement\_google) | 6.15.0 |
+| <a name="requirement_google"></a> [google](#requirement\_google) | 6.42.0 |
 | <a name="requirement_google-beta"></a> [google-beta](#requirement\_google-beta) | 6.42.0 |
-| <a name="requirement_helm"></a> [helm](#requirement\_helm) | 2.17.0 |
-| <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | 2.42.0 |
+| <a name="requirement_helm"></a> [helm](#requirement\_helm) | 3.0.2 |
+| <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | 2.37.1 |
 
 ## Providers
 
@@ -75,13 +75,13 @@ code by adding a `module` configuration and setting its `source` parameter to UR
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_external_infoblox_record"></a> [external\_infoblox\_record](#module\_external\_infoblox\_record) | git::https://github.com/BrownUniversity/terraform-infoblox-record-a.git | v0.1.6 |
+| <a name="module_external_infoblox_record"></a> [external\_infoblox\_record](#module\_external\_infoblox\_record) | git::https://github.com/BrownUniversity/terraform-infoblox-record-a.git | v0.1.7 |
 | <a name="module_gke_auth"></a> [gke\_auth](#module\_gke\_auth) | terraform-google-modules/kubernetes-engine/google//modules/auth | 37.0.0 |
 | <a name="module_jhub_cluster"></a> [jhub\_cluster](#module\_jhub\_cluster) | git::https://github.com/BrownUniversity/terraform-gcp-cluster.git | v0.1.12 |
 | <a name="module_jhub_helm"></a> [jhub\_helm](#module\_jhub\_helm) | ./modules/helm-jhub | n/a |
 | <a name="module_jhub_project"></a> [jhub\_project](#module\_jhub\_project) | git::https://github.com/BrownUniversity/terraform-gcp-project.git | v0.1.8 |
 | <a name="module_jhub_vpc"></a> [jhub\_vpc](#module\_jhub\_vpc) | git::https://github.com/BrownUniversity/terraform-gcp-vpc.git | v0.1.6 |
-| <a name="module_production_infoblox_record"></a> [production\_infoblox\_record](#module\_production\_infoblox\_record) | git::https://github.com/BrownUniversity/terraform-infoblox-record-a.git | v0.1.6 |
+| <a name="module_production_infoblox_record"></a> [production\_infoblox\_record](#module\_production\_infoblox\_record) | git::https://github.com/BrownUniversity/terraform-infoblox-record-a.git | v0.1.7 |
 
 ## Resources
 
@@ -176,7 +176,7 @@ code by adding a `module` configuration and setting its `source` parameter to UR
 | <a name="output_project_name"></a> [project\_name](#output\_project\_name) | Project Name |
 | <a name="output_region"></a> [region](#output\_region) | n/a |
 | <a name="output_zones"></a> [zones](#output\_zones) | List of zones in which the cluster resides |
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- END_TF_DOCS -->
 
 
 ## Local Development
