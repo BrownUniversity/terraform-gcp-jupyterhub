@@ -50,7 +50,7 @@ resource "google_compute_address" "static" {
 
 # Assign Brown-DNS via infoblox
 module "production_infoblox_record" {
-  source          = "git::https://github.com/BrownUniversity/terraform-infoblox-record-a.git?ref=v0.1.6"
+  source          = "git::https://github.com/BrownUniversity/terraform-infoblox-record-a.git?ref=v0.1.7"
   record_ip       = google_compute_address.static.address
   record_hostname = var.record_hostname
   record_domain   = var.record_domain
@@ -58,7 +58,7 @@ module "production_infoblox_record" {
 }
 
 module "external_infoblox_record" {
-  source          = "git::https://github.com/BrownUniversity/terraform-infoblox-record-a.git?ref=v0.1.6"
+  source          = "git::https://github.com/BrownUniversity/terraform-infoblox-record-a.git?ref=v0.1.7"
   record_ip       = google_compute_address.static.address
   record_hostname = var.record_hostname
   record_domain   = var.record_domain
